@@ -1,2 +1,2 @@
 # kwadsworth-portfolio.github.io
-Cybersecurity &amp; GRC portfolio
+Cybersecurity &amp; GRC Portfolio
