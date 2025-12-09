@@ -7,8 +7,8 @@
 </head>
 <body>
 
-<header>
-  <h1>Projects</h1>
+<header class="site-header">
+  <div class="logo">Kevin Wadsworth</div>
   <nav>
     <a href="index.html">Home</a>
     <a href="projects.html">Projects</a>
@@ -16,29 +16,119 @@
   </nav>
 </header>
 
-  <section class="sub-hero">
+<section class="sub-hero">
   <div class="sub-hero-inner">
-    <h1>Projects & Case Studies</h1>
+    <h1>Projects &amp; Case Studies</h1>
     <p>
-      Cybersecurity, cloud and GRC initiatives designed around real-world scenarios, 
-      approached through structured problem-solving and analytical decision-making 
-      to cybersecurity, cloud and GRC environment.
+      Cybersecurity, cloud and GRC initiatives designed around real-world use
+      cases, approached through structured problem-solving and analytical
+      decision-making.
     </p>
   </div>
 </section>
 
-<section class="project">
-  <h2>AWS Cloud Security Lab</h2>
-  <p>Secure AWS architecture with IAM, VPC segmentation, and logging.</p>
-</section>
+<main class="main-section">
 
-<section class="project">
-  <h2>SIEM & Incident Response</h2>
-  <p>Detection engineering and response workflows using SIEM tools.</p>
-</section>
+  <!-- PROJECT 1 -->
+  <article class="project-case">
+    <h2>Project 1: AWS Cloud Security Fundamentals Lab</h2>
+    <p class="project-meta">
+      Cybersecurity and cloud security initiative designed around real-world
+      use cases, focusing on identity, access control, network segmentation
+      and auditability.
+    </p>
 
-<footer>
-  <p>© 2025 Kevin Wadsworth</p>
+    <h3>Objective</h3>
+    <p>
+      To design and deploy a secure AWS environment and demonstrate how identity
+      management, access control, network separation and logging can be combined
+      to reduce risk and support governance requirements.
+    </p>
+
+    <h3>What I Implemented</h3>
+    <ul>
+      <li>Created an AWS environment with security guardrails and account protections enabled.</li>
+      <li>Configured IAM users, roles and policies following least-privilege principles.</li>
+      <li>Designed a VPC with public and private subnets to separate internet-facing and internal resources.</li>
+      <li>Restricted access using security groups and network controls aligned to defined use cases.</li>
+      <li>Enabled CloudTrail and basic monitoring to support auditability and incident investigation.</li>
+    </ul>
+
+    <h3>Approach &amp; Outcomes</h3>
+    <ul>
+      <li>Applied a structured, project-style approach: scoped the environment, identified risks, then implemented controls.</li>
+      <li>Documented security decisions, assumptions and residual risks for future review.</li>
+      <li>Produced architecture diagrams and configuration evidence suitable for walkthroughs or interviews.</li>
+    </ul>
+  </article>
+
+  <!-- PROJECT 2 -->
+  <article class="project-case">
+    <h2>Project 2: SIEM Visibility &amp; Detection Lab</h2>
+    <p class="project-meta">
+      Security monitoring and detection initiative based on real-world event and
+      alert use cases, focused on visibility, investigation and informed response.
+    </p>
+
+    <h3>Objective</h3>
+    <p>
+      To establish security visibility using a SIEM platform and demonstrate how
+      events move from raw logs to meaningful alerts that can support an incident
+      response workflow.
+    </p>
+
+    <h3>What I Implemented</h3>
+    <ul>
+      <li>Onboarded test systems to a SIEM to collect authentication and system activity logs.</li>
+      <li>Created detection rules for suspicious activity such as repeated failed logins and unusual process execution.</li>
+      <li>Built simple dashboards to visualise trends and highlight notable events.</li>
+      <li>Defined a basic workflow from alert triage through to investigation and response.</li>
+    </ul>
+
+    <h3>Approach &amp; Outcomes</h3>
+    <ul>
+      <li>Mapped detections to common attack behaviours to understand coverage and gaps.</li>
+      <li>Captured example alerts and investigations to demonstrate practical understanding of SIEM usage.</li>
+      <li>Used the lab to connect technical events back to business impact and risk.</li>
+    </ul>
+  </article>
+
+  <!-- PROJECT 3 -->
+  <article class="project-case">
+    <h2>Project 3: Cyber GRC &amp; Risk Management Mini-ISMS</h2>
+    <p class="project-meta">
+      Governance, risk and compliance initiative designed to reflect real-world
+      organisational risk contexts, control selection and assurance requirements.
+    </p>
+
+    <h3>Objective</h3>
+    <p>
+      To design a lightweight Information Security Management System (ISMS) for a
+      fictional organisation and demonstrate how governance, risk management and
+      security controls can be aligned with business objectives.
+    </p>
+
+    <h3>What I Implemented</h3>
+    <ul>
+      <li>Defined a simple asset inventory and data classification approach.</li>
+      <li>Built a risk register capturing threats, likelihood, impact and treatment decisions.</li>
+      <li>Drafted core information security policies (e.g. access control, incident management, acceptable use).</li>
+      <li>Mapped identified risks to appropriate security controls and documented rationale.</li>
+    </ul>
+
+    <h3>Approach &amp; Outcomes</h3>
+    <ul>
+      <li>Applied project management discipline to structure the ISMS: scope, requirements, artefacts and review.</li>
+      <li>Emphasised traceability from business risks through to chosen technical and procedural controls.</li>
+      <li>Produced documentation suitable as a starting point for a small-organisation ISMS.</li>
+    </ul>
+  </article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-accent"></div>
+  <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
 </footer>
 
 </body>
