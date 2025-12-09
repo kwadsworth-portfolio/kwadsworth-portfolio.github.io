@@ -193,13 +193,25 @@ nav a:hover {
   position: relative;
   height: 40vh;
   min-height: 260px;
-  background-image: url("assets/banner-01.jpg");
+  background-image: url("assets/Banner-Global-Data-2.jpeg");
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid #1e293b;
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom right,
+    rgba(15, 23, 42, 0.9),
+    rgba(8, 47, 73, 0.85)
+  );
 }
 
 .about-hero-inner {
