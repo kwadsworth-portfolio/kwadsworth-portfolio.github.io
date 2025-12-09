@@ -187,3 +187,36 @@ nav a:hover {
   margin: 0 auto;
   line-height: 1.5;
 }
+/* About page hero with image */
+
+.about-hero {
+  position: relative;
+  height: 40vh;
+  min-height: 260px;
+  background-image: url("assets/banner-01.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #1e293b;
+}
+
+.about-hero-inner {
+  position: relative;
+  max-width: 800px;
+  padding: 24px;
+  text-align: center;
+}
+
+.about-hero h1 {
+  font-size: clamp(1.9rem, 2.8vw, 2.3rem);
+  margin-bottom: 10px;
+}
+
+.about-hero p {
+  color: var(--muted);
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
