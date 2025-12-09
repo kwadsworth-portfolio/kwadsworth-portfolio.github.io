@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+  margin: 0;
+}
+
+header {
+  background: #020617;
+  text-align: center;
+  padding: 20px;
+}
+
+nav a {
+  margin: 0 10px;
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+section {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+}
+
+.project {
+  background: #020617;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-left: 4px solid #38bdf8;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9em;
+  background: #020617;
+}
