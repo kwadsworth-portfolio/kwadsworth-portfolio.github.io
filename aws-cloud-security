@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AWS Cloud Security Case Study | Kevin Wadsworth</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Kevin Wadsworth</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<section class="hero hero--small">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>AWS Cloud Security Case Study</h1>
+    <p>
+      Designing and implementing a secure AWS environment with a focus on identity,
+      network segmentation, logging and risk-based control selection.
+    </p>
+  </div>
+</section>
+
+<main class="main-section">
+
+  <article class="project-case">
+    <h2>1. Overview</h2>
+    <p>
+      This lab-style project was designed to mirror how a small organisation might
+      establish a secure AWS footprint. The goal was to apply cloud security
+      principles in a structured way, linking each design choice back to risk,
+      governance and operational requirements.
+    </p>
+  </article>
+
+  <article class="project-case">
+    <h2>2. Scope &amp; Assumptions</h2>
+    <ul>
+      <li>Single AWS account representing a small organisation or business unit.</li>
+      <li>Mix of internet-facing and internal workloads.</li>
+      <li>Focus on core security controls rather than advanced cloud-native services.</li>
+      <li>Emphasis on auditability, traceability and least-privilege access.</li>
+    </ul>
+  </article>
+
+  <article class="project-case">
+    <h2>3. Architecture &amp; Design</h2>
+    <p>
+      I designed a basic but secure reference architecture that can be extended
+      over time. Key design elements included:
+    </p>
+    <ul>
+      <li>VPC with separate public and private subnets.</li>
+      <li>Internet-facing resources placed only in public subnets where required.</li>
+      <li>Application and data components hosted in private subnets.</li>
+      <li>Security groups limiting inbound and outbound traffic based on role.</li>
+      <li>Use of IAM roles for services instead of long-lived access keys.</li>
+    </ul>
+    <p>
+      The architecture was documented so that each component could be explained
+      back to a non-technical stakeholder in terms of risk reduction and resilience.
+    </p>
+  </article>
+
+  <article class="project-case">
+    <h2>4. Identity &amp; Access Management</h2>
+    <p>
+      IAM was treated as a core control rather than an afterthought. I:
+    </p>
+    <ul>
+      <li>Defined roles for administrators, developers and read-only users.</li>
+      <li>Applied least-privilege policies mapped to specific job functions.</li>
+      <li>Used IAM roles for EC2 and services instead of embedding credentials.</li>
+      <li>Documented which roles had access to which resources and why.</li>
+    </ul>
+    <p>
+      This allowed me to show how access design links directly to governance and
+      audit expectations.
+    </p>
+  </article>
+
+  <article class="project-case">
+    <h2>5. Logging, Monitoring &amp; Evidence</h2>
+    <p>
+      To support investigation and assurance activities, I:
+    </p>
+    <ul>
+      <li>Enabled CloudTrail for account-level activity logging.</li>
+      <li>Ensured logs were centralised and retained for review.</li>
+      <li>Verified that key events such as console logins and IAM changes were captured.</li>
+      <li>Captured screenshots and configuration details as project evidence.</li>
+    </ul>
+    <p>
+      The focus was on being able to demonstrate “who did what, where and when”
+      in a way that aligns with audit and incident response requirements.
+    </p>
+  </article>
+
+  <article class="project-case">
+    <h2>6. Risk-Based Decisions &amp; Next Steps</h2>
+    <p>
+      Throughout the build, I noted decisions, trade-offs and residual risks. For example:
+    </p>
+    <ul>
+      <li>Which services were in scope for this phase and which were deferred.</li>
+      <li>Where default configurations were acceptable and where hardening was needed.</li>
+      <li>What controls would be prioritised in a follow-on phase (e.g. WAF, GuardDuty).</li>
+    </ul>
+    <p>
+      Future enhancements could include integration with a SIEM, automated
+      compliance checks and more detailed threat-modelling for critical workloads.
+    </p>
+  </article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-accent"></div>
+  <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
+</footer>
+
+</body>
+</html>
