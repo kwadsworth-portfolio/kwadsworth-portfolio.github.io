@@ -318,20 +318,64 @@ nav a:hover {
   font-size: 0.85rem;
 }
 /* ===============================
-   Credly Badge Styling
+   Certification cards
    =============================== */
 
-.credly-badge {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 18px;
+.cert-card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-/* wraps the Credly iframe & reduce size*/
-.credly-badge-inner {
-  transform: scale(0.7); 
-  transform-origin: top center;   
+.cert-card h3 {
+    margin-bottom: 12px;
 }
 
+.cert-card p {
+    margin: 0;
+}
 
+/* Row that holds one or more badges / placeholders */
+.cert-badge-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 18px;
+
+    /* Reserve space so the badge is never clipped
+       but keep it compact enough for future badges */
+    min-height: 120px;
+}
+
+/* Small text when there is no badge yet */
+.cert-placeholder {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+/* ===============================
+   Credly badge sizing
+   =============================== */
+
+/* Container Credly injects its iframe into */
+.credly-slot {
+    width: 120px;      /* logical badge width */
+    height: 120px;     /* logical badge height */
+    overflow: hidden;  /* hide anything outside the slot */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Scale the natural Credly badge down without cutting it */
+.credly-slot iframe {
+    border: none;
+    transform: scale(0.6);
+    transform-origin: top center;
+}
