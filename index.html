@@ -3,135 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <title>Kevin Wadsworth | Cybersecurity & GRC Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<header class="site-header">
-  <div class="logo">Kevin Wadsworth</div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="projects.html">Projects</a>
-    <a href="about.html">About</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <h1>Cybersecurity, Cloud Security & GRC</h1>
-    <p>
-      I design and implement practical security solutions across AWS, Azure,
-      SIEM, governance, risk & compliance, and Python automation.
-    </p>
-    <a class="btn" href="projects.html">View My Projects</a>
-  </div>
-</section>
-
-<main class="main-section">
-  <h2>What You’ll Find Here</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>Cloud Security Labs</h3>
-      <p>Secure architectures, IAM, logging and monitoring in AWS & Azure.</p>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo">Kevin Wadsworth</div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
     </div>
-    <div class="card">
-      <h3>GRC & ISO 27001</h3>
-      <p>Risk registers, policies, control mappings and ISMS-style projects.</p>
-    </div>
-    <div class="card">
-      <h3>SIEM & Automation</h3>
-      <p>Detection engineering, incident response workflows and Python tools.</p>
-    </div>
-  </div>
-</main>
-<section class="cert-section">
-  <div class="cert-inner">
-    <h2>Certifications &amp; Learning</h2>
-    <p>
-    I’m actively building my capability across cybersecurity, cloud and GRC.
-    This section shows issued certifications and structured learning paths.
-</p>
+  </header>
 
-<div class="cert-grid">
-
-    <!-- Reusable cert-card #1 – ISC2 CC with Credly badge -->
-    <div class="cert-card">
-  <h3>ISC² Certified in Cybersecurity (CC)</h3>
-  <p class="cert-desc">
-    Foundational cybersecurity certification focused on security, risk and incident response.
-  </p>
-
-  <div class="cert-badge-row">
-    <div class="credly-slot">
-      <div
-        data-iframe-width="180"
-        data-iframe-height="180"
-        data-share-badge-id="9148c118-6e84-4858-9a09-59dcd52f5ee1"
-        data-share-badge-host="https://www.credly.com">
+  <main>
+    <!-- Hero / Intro -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <h1>Certifications &amp; Learning</h1>
+          <p class="hero-text">
+            I’m actively building my capability across cybersecurity, cloud and GRC.
+            This section shows issued certifications and structured learning paths.
+          </p>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-    <!-- Reusable cert-card #2 – Security+ (badge later) -->
-    <div class="cert-card">
-        <h3>CompTIA Security+</h3>
-        <p>
-            Validates core security skills across networks, host, application and
-            operations.
-        </p>
+    </section>
 
-        <div class="cert-badge-row">
-            <!-- When you have the Security+ Credly badge, add it here:
-            <div
-                class="credly-slot"
-                data-share-badge-id="YOUR_SECURITY_PLUS_BADGE_ID"
-                data-share-badge-host="https://www.credly.com">
+    <!-- Certifications grid -->
+    <section class="cert-section">
+      <div class="container">
+        <div class="cert-grid">
+
+          <!-- ISC2 CC with Credly badge -->
+          <div class="cert-card">
+            <h3>ISC2 Certified in Cybersecurity (CC)</h3>
+            <p class="cert-desc">
+              Foundational cybersecurity certification focused on security, risk and incident response.
+            </p>
+
+            <div class="cert-badge-row">
+              <div class="credly-badge">
+                <div
+                  data-iframe-width="200"
+                  data-iframe-height="260"
+                  data-share-badge-id="9148c118-6e84-4858-9a09-59dcd52f5ee1"
+                  data-share-badge-host="https://www.credly.com">
+                </div>
+                <!-- Load Credly script close to the badge (most reliable) -->
+                <script
+                  type="text/javascript"
+                  async
+                  src="//cdn.credly.com/assets/utilities/embed.js">
+                </script>
+              </div>
             </div>
-            -->
-            <span class="cert-placeholder">Badge coming soon.</span>
-        </div>
-    </div>
+          </div>
 
-    <!-- Reusable cert-card #3 – Cloud & GRC path -->
-    <div class="cert-card">
-        <h3>Cloud &amp; GRC Path</h3>
-        <p>
-            Combination of cloud security and governance-focused learning and
-            practice.
-        </p>
+          <!-- Security+ path -->
+          <div class="cert-card">
+            <h3>CompTIA Security+</h3>
+            <p class="cert-desc">
+              Validates core security skills across networks, host, application and operations.
+            </p>
 
-        <div class="cert-badge-row">
-            <span class="cert-placeholder">
+            <div class="cert-badge-row">
+              <span class="cert-placeholder">Badge coming soon.</span>
+            </div>
+          </div>
+
+          <!-- Cloud & GRC path -->
+          <div class="cert-card">
+            <h3>Cloud &amp; GRC Path</h3>
+            <p class="cert-desc">
+              Combination of cloud security and governance-focused learning and practice.
+            </p>
+
+            <div class="cert-badge-row">
+              <span class="cert-placeholder">
                 Planned badges: Azure, AWS, ISO 27001 and GRC-focused certs.
-            </span>
+              </span>
+            </div>
+          </div>
         </div>
-    </div>
 
-</div>
-
-<!-- Future certifications row -->
-<div class="cert-grid">
-    <div class="cert-card">
-        <h3>Future Certifications</h3>
-        <p>
-            Roadmap of certifications including advanced cloud security,
-            governance, risk and compliance, and specialist security qualifications.
-        </p>
-    </div>
-</div>
-  
-<footer class="site-footer">
-    <p>© 2025 Kevin Wadsworth · Cybersecurity & GRC Portfolio</p>
-</footer>
-
-<!-- Credly embed script (only once per page) -->
-<script
-    type="text/javascript"
-    async
-    src="https://cdn.credly.com/assets/utilities/embed.js">
-</script>
-
-</body>
-</html>
-
+        <!-- Future certs row -->
+        <div class="cert-grid future-row">
+          <div class="cert-card">
+            <h3>Future Certifications</h3>
+            <p class="cert-desc">
+              Roadmap of certifications including advanced cloud security, governance,
+              risk and compliance, and specialist security qualifications.
+            </p>
+          </div>
+        </div>
+      </div>
+    </secti
