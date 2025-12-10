@@ -325,14 +325,13 @@ nav a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
-.credly-badge iframe {
-  width: 80px !important;
-  height: 140px !important;
-  border: none;
-  transform: scale(0.9);
+/* wraps the Credly iframe & reduce size*/
+.credly-badge-inner {
+  transform: scale(0.7); 
+  transform-origin: top center;   
 }
 
 
