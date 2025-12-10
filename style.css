@@ -337,3 +337,31 @@ nav a:hover {
   transform: scale(0.7); 
   transform-origin: top center;   
 }
+/* ===============================
+   Justified body text (centred content)
+   =============================== */
+
+/* Keep hero / banner text centred */
+.hero,
+.hero-content {
+  text-align: center;
+}
+
+/* Centre the content block, justify text inside */
+.main-section,
+.project-case,
+.about-section,
+.about-content,
+.about {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Ensure headings stay readable */
+.project-case h2,
+.about h2,
+.about h3 {
+  text-align: left;
+}
