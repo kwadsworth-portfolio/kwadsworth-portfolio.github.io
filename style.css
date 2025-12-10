@@ -173,13 +173,12 @@ a {
 /* ===============================
    Badge row / placeholder
    =============================== */
-
 .cert-badge-row {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-top: 16px;
-  min-height: 140px; /* reserves room so badge isn't clipped */
+  min-height: 260px; /* match badge height */
 }
 
 .cert-placeholder {
@@ -190,20 +189,17 @@ a {
 /* ===============================
    Credly badge sizing
    =============================== */
-
 .credly-badge {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 140px;
+  /* give the badge its full natural height */
+  min-height: 260px;
 }
 
-/* Credly injects an iframe inside this container.
-   We scale it down but keep full content visible. */
+/* Let Credly control the size – no scaling = no cropping */
 .credly-badge iframe {
   border: none;
-  transform: scale(0.6);
-  transform-origin: top center;
 }
 
 /* ===============================
