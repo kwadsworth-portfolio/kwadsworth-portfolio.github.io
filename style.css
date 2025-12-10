@@ -262,3 +262,58 @@ nav a:hover {
 .back-link:hover {
   text-decoration: underline;
 }
+/* Certifications section */
+
+.cert-section {
+  background: radial-gradient(circle at top, var(--accent-soft), #020617);
+  border-top: 1px solid #1e293b;
+  border-bottom: 1px solid #1e293b;
+}
+
+.cert-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 16px 40px;
+  text-align: center;
+}
+
+.cert-inner h2 {
+  margin-bottom: 10px;
+}
+
+.cert-inner p {
+  color: var(--muted);
+}
+
+.cert-grid {
+  margin-top: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .cert-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cert-card {
+  background: #020617;
+  border-radius: 12px;
+  border: 1px solid #1e293b;
+  padding: 14px 12px;
+}
+
+.cert-card h3 {
+  margin-top: 0;
+}
+
+.cert-card p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.cert-note {
+  margin-top: 18px;
+  font-size: 0.85rem;
+}
