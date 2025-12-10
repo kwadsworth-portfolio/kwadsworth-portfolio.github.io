@@ -317,3 +317,15 @@ nav a:hover {
   margin-top: 18px;
   font-size: 0.85rem;
 }
+/* Credly badge sizing */
+
+.credly-badge {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.credly-badge iframe {
+  max-width: 120px;
+  max-height: 200px;
+}
