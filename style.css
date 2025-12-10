@@ -421,3 +421,104 @@ nav a:hover {
   .project-case p,
   .project-case li,
   .a
+/* ===============================
+   FINAL TYPOGRAPHY POLISH
+   (Consultancy / Whitepaper Style)
+   =============================== */
+
+/* Keep hero / banner content centred */
+.hero,
+.hero-content {
+  text-align: center;
+}
+
+/* Centre content block on page */
+.main-section,
+.project-case,
+.about-section,
+.about-content,
+.about {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===============================
+   Body Text – Professional Justification
+   =============================== */
+
+.project-case p,
+.project-case ul,
+.project-case li,
+.about p,
+.about ul,
+.about li {
+  max-width: 72ch;              /* optimal readable line length */
+  line-height: 1.68;
+  text-align: justify;
+  text-justify: inter-word;
+  letter-spacing: 0.01em;
+}
+
+/* Improve paragraph rhythm */
+.project-case p,
+.about p {
+  margin-bottom: 1.15em;
+}
+
+/* ===============================
+   Headings – Clear hierarchy
+   =============================== */
+
+.project-case h2,
+.about h2,
+.about h3 {
+  max-width: 72ch;
+  text-align: left;
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+  letter-spacing: 0.02em;
+}
+
+/* ===============================
+   Lists – tighter, document-style
+   =============================== */
+
+.project-case ul,
+.about ul {
+  padding-left: 1.2em;
+  margin-bottom: 1.2em;
+}
+
+.project-case li,
+.about li {
+  margin-bottom: 0.45em;
+}
+
+/* ===============================
+   Subtle visual anchor for sections
+   =============================== */
+
+.project-case h2::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  margin-bottom: 10px;
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+/* ===============================
+   Mobile optimisation
+   =============================== */
+
+@media (max-width: 720px) {
+  /* Avoid justification gaps on small screens */
+  .project-case p,
+  .project-case li,
+  .about p,
+  .about li {
+    text-align: left;
+    hyphens: auto;
+  }
+}
