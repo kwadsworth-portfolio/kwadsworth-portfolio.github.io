@@ -365,3 +365,59 @@ nav a:hover {
 .about h3 {
   text-align: left;
 }
+/* ===============================
+   Professional Typography Polish
+   =============================== */
+
+/* Hero / banner always centred */
+.hero,
+.hero-content {
+  text-align: center;
+}
+
+/* Centre content blocks on the page */
+.main-section,
+.project-case,
+.about-section,
+.about-content,
+.about {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Justified body text (desktop & tablet) */
+.project-case p,
+.project-case ul,
+.project-case li,
+.about p,
+.about ul,
+.about li {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.65;
+  max-width: 70ch; /* optimal reading width */
+}
+
+/* Headings stay clean and readable */
+.project-case h2,
+.about h2,
+.about h3 {
+  text-align: left;
+  max-width: 70ch;
+}
+
+/* Improve paragraph rhythm */
+.project-case p,
+.about p {
+  margin-bottom: 1.1em;
+}
+
+/* ===============================
+   Mobile readability adjustment
+   =============================== */
+
+@media (max-width: 720px) {
+  /* Prevent awkward word spacing on small screens */
+  .project-case p,
+  .project-case li,
+  .a
