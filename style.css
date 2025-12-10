@@ -233,17 +233,21 @@ nav a:hover {
   line-height: 1.5;
 }
 .project-link {
-  margin-top: 10px;
+  margin-top: 16px;
 }
-
 .project-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--accent);
-  text-decoration: none;
   font-weight: 500;
+  text-decoration: none;
 }
-
 .project-link a:hover {
   text-decoration: underline;
+}
+.project-icon {
+  font-size: 1rem;
 }
 /* Back link (deep dive pages) */
 
