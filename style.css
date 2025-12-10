@@ -123,10 +123,9 @@ a {
 /* ===============================
    Certifications section
    =============================== */
-
-.cert-section {
-  padding: 8px 0 56px;
-}
+/* ===============================
+   Certification cards
+   =============================== */
 
 .cert-grid {
   display: grid;
@@ -140,7 +139,6 @@ a {
   justify-content: center;
 }
 
-/* Card styling */
 .cert-card {
   background: radial-gradient(circle at top, #0b1736 0, var(--card-bg) 45%);
   border-radius: 18px;
@@ -173,12 +171,13 @@ a {
 /* ===============================
    Badge row / placeholder
    =============================== */
+
 .cert-badge-row {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-top: 16px;
-  min-height: 260px; /* match badge height */
+  min-height: 220px; /* enough room for full badge, but not huge */
 }
 
 .cert-placeholder {
@@ -189,29 +188,19 @@ a {
 /* ===============================
    Credly badge sizing
    =============================== */
+
 .credly-badge {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  /* give the badge its full natural height */
-  min-height: 260px;
+  min-height: 220px; /* match row height */
 }
 
-/* Let Credly control the size – no scaling = no cropping */
+/* Let Credly render at normal size, then gently shrink visually */
 .credly-badge iframe {
   border: none;
-}
-
-/* ===============================
-   Footer
-   =============================== */
-
-.site-footer {
-  border-top: 1px solid rgba(43, 61, 104, 0.7);
-  padding: 18px 0 26px;
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-align: center;
+  transform: scale(0.85);
+  transform-origin: top center;
 }
 
 /* ===============================
@@ -225,30 +214,12 @@ a {
 }
 
 @media (max-width: 640px) {
-  .site-header .container {
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .nav {
-    gap: 14px;
-    font-size: 0.9rem;
-  }
-
-  .hero {
-    padding-top: 32px;
-  }
-
-  .hero h1 {
-    font-size: 1.6rem;
-  }
-
   .cert-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .cert-badge-row,
   .credly-badge {
-    min-height: 130px;
+    min-height: 200px;
   }
 }
