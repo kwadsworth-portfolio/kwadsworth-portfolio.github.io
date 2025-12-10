@@ -232,3 +232,16 @@ nav a:hover {
   margin: 0 auto;
   line-height: 1.5;
 }
+.project-link {
+  margin-top: 10px;
+}
+
+.project-link a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.project-link a:hover {
+  text-decoration: underline;
+}
