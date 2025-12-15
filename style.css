@@ -412,26 +412,6 @@ nav a:hover {
   margin-bottom: 1.1em;
 }
 
-/* ===============================
-   Mobile readability adjustment
-   =============================== */
-
-@media (max-width: 720px) {
-  /* Prevent awkward word spacing on small screens */
-  .project-case p,
-  .project-case li,
-  .a
-/* ===============================
-   FINAL TYPOGRAPHY POLISH
-   (Consultancy / Whitepaper Style)
-   =============================== */
-
-/* Keep hero / banner content centred */
-.hero,
-.hero-content {
-  text-align: center;
-}
-
 /* Centre content block on page */
 .main-section,
 .project-case,
@@ -542,5 +522,29 @@ nav a:hover {
 }
 
 .case-nav-link:hover {
+  text-decoration: underline;
+}
+/* Case study nav row: left + right aligned */
+.case-nav {
+  max-width: 1000px;
+  margin: 16px auto 0;
+  padding: 0 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Make BOTH links identical */
+.case-nav .back-link,
+.case-nav .evidence-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.case-nav .back-link:hover,
+.case-nav .evidence-link:hover {
   text-decoration: underline;
 }
