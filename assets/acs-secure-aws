@@ -1,1 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ACS Secure AWS Project | Case Study</title>
+
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --card:#111827;
+      --muted:#9ca3af;
+      --text:#e5e7eb;
+      --accent:#60a5fa;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(96,165,250,.15), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px; margin:0 auto; padding:28px 18px 80px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:18px;
+    }
+    .back{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px; border:1px solid var(--border);
+      border-radius:999px; background:rgba(255,255,255,.03);
+    }
+    .back:hover{background:rgba(255,255,255,.06); text-decoration:none}
+    .pill{
+      display:inline-flex; gap:8px; flex-wrap:wrap;
+    }
+    .tag{
+      padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .hero{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+    .hero h1{margin:0 0 8px; font-size:28px; letter-spacing:.2px}
+    .hero p{margin:0 0 14px; color:var(--muted); max-width:80ch}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .card{
+      border:1px solid var(--border);
+      background: rgba(17,24,39,.65);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .card h2{margin:0 0 8px; font-size:16px}
+    .card p{margin:0; color:var(--muted); font-size:14px}
+    .span-6{grid-column: span 6}
+    .span-12{grid-column: span 12}
+    @media (max-width: 900px){
+      .span-6{grid-column: span 12}
+    }
+
+    .section{margin-top:26px}
+    .section h2{margin:0 0 10px; font-size:18px}
+    .section .sub{margin:0 0 16px; color:var(--muted)}
+
+    .controls{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .control{
+      grid-column: span 6;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:var(--radius);
+      padding:16px;
+    }
+    .control h3{margin:0 0 6px; font-size:15px}
+    .control ul{margin:10px 0 0; padding-left:18px; color:var(--muted); font-size:14px}
+    @media (max-width: 900px){ .control{grid-column: span 12} }
+
+    .evidence{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+      margin-top:10px;
+    }
+    .shot{
+      grid-column: span 4;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      overflow:hidden;
+      background: rgba(0,0,0,.25);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .shot:hover{transform: translateY(-2px); background: rgba(255,255,255,.05)}
+    .shot img{display:block; width:100%; height:190px; object-fit:cover}
+    .shot .cap{padding:10px 12px; font-size:13px; color:var(--muted)}
+    @media (max-width: 900px){ .shot{grid-column: span 6} }
+    @media (max-width: 520px){ .shot{grid-column: span 12} }
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed; inset:0; display:none;
+      background: rgba(0,0,0,.78);
+      align-items:center; justify-content:center;
+      padding:18px; z-index:9999;
+    }
+    .lightbox.open{display:flex}
+    .lightbox-inner{
+      max-width:1100px; width:100%;
+      border:1px solid var(--border);
+      border-radius:18px;
+      overflow:hidden;
+      background:#0b0f17;
+      box-shadow: var(--shadow);
+    }
+    .lightbox-top{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:12px 14px; border-bottom:1px solid var(--border);
+      color:var(--muted); font-size:13px;
+    }
+    .xbtn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      border-radius:10px;
+      padding:6px 10px;
+      cursor:pointer;
+    }
+    .xbtn:hover{background:rgba(255,255,255,.08)}
+    .lightbox-img{display:block; width:100%; height:auto}
+    .footer-note{
+      margin-top:22px;
+      color:var(--muted);
+      font-size:13px;
+      border-top:1px solid var(--border);
+      padding-top:14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back" href="projects.html">← Back to Projects</a>
+      <div class="pill">
+        <span class="tag">AWS</span>
+        <span class="tag">Cloud Security</span>
+        <span class="tag">VPC • IAM • CloudTrail</span>
+        <span class="tag">Monitoring • Compliance</span>
+      </div>
+    </div>
+
+    <div class="hero">
+      <h1>ACS Secure AWS Project</h1>
+      <p>
+        Built a secure, auditable AWS environment using network segmentation, least-privilege IAM, centralized logging,
+        compliance rules (AWS Config), and cost controls (budgets/alarms). Evidence is captured below by domain.
+      </p>
+
+      <div class="grid">
+        <div class="card span-6">
+          <h2>Goal</h2>
+          <p>Deploy a public web tier with a controlled admin access path, strong logging/audit trail, and governance controls.</p>
+        </div>
+        <div class="card span-6">
+          <h2>Key Outcomes</h2>
+          <p>Segregated subnets, restricted SSH via bastion, CloudTrail + Flow Logs to CloudWatch, Config rules for compliance, billing alarms.</p>
+        </div>
+
+        <div class="card span-12">
+          <h2>What this demonstrates</h2>
+          <p>
+            Practical cloud security build skills: secure-by-design networking, access control, monitoring & logging,
+            continuous compliance, and cost governance — with evidence artifacts to support each control.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS OVERVIEW -->
+    <div class="section">
+      <h2>Controls implemented</h2>
+      <p class="sub">Organised like a real security review: Network, IAM, Logging/Monitoring, Compliance/Governance, Cost Management.</p>
+
+      <div class="controls">
+        <div class="control">
+          <h3>Network</h3>
+          <ul>
+            <li>Public and private subnet segmentation</li>
+            <li>Internet Gateway for public tier only</li>
+            <li>Restricted SSH via bastion security group</li>
+            <li>VPC Flow Logs enabled to CloudWatch Logs</li>
+          </ul>
+        </div>
+
+        <div class="control">
+          <h3>IAM</h3>
+          <ul>
+            <li>Admin group and controlled user access</li>
+            <li>MFA enabled for console access</li>
+          </ul>
+        </div>
+
+        <div class="control">
+          <h3>Logging & Monitoring</h3>
+          <ul>
+            <li>CloudTrail enabled (audit trail)</li>
+            <li>CloudWatch Logs receiving events</li>
+            <li>Dashboard view for at-a-glance status</li>
+          </ul>
+        </div>
+
+        <div class="control">
+          <h3>Compliance & Governance</h3>
+          <ul>
+            <li>AWS Config rules enabled (continuous evaluation)</li>
+            <li>Non-compliance visibility for remediation</li>
+          </ul>
+        </div>
+
+        <div class="control">
+          <h3>Cost Management</h3>
+          <ul>
+            <li>Budgets and billing alarms to prevent surprises</li>
+            <li>Security + billing dashboard view</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVIDENCE GALLERY -->
+    <div class="section">
+      <h2>Evidence gallery</h2>
+      <p class="sub">Click any screenshot to enlarge. This is the “audit trail” for the build.</p>
+
+      <h3 style="margin:18px 0 8px; color:var(--text); font-size:15px;">Network</h3>
+      <div class="evidence">
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/network/igw-attached.png" data-title="IGW attached to VPC">
+          <img src="assets/case-studies/acs-secure-aws/network/igw-attached.png" alt="IGW attached" />
+          <div class="cap">IGW attached to VPC (public egress controlled)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/network/public-subnet-b.png" data-title="Public subnet created">
+          <img src="assets/case-studies/acs-secure-aws/network/public-subnet-b.png" alt="Public subnet" />
+          <div class="cap">Public subnet (web tier)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/network/private-subnet-a.png" data-title="Private subnet created">
+          <img src="assets/case-studies/acs-secure-aws/network/private-subnet-a.png" alt="Private subnet" />
+          <div class="cap">Private subnet (non-internet facing workloads)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/network/bastion-sg.png" data-title="Bastion SG restricted SSH">
+          <img src="assets/case-studies/acs-secure-aws/network/bastion-sg.png" alt="Bastion SG" />
+          <div class="cap">Bastion SG: SSH restricted to a single source IP</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/network/ssh-via-bastion.png" data-title="SSH via bastion (proof)">
+          <img src="assets/case-studies/acs-secure-aws/network/ssh-via-bastion.png" alt="SSH via bastion" />
+          <div class="cap">SSH access path validated (bastion entry point)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/network/vpc-flow-logs.png" data-title="VPC Flow Logs enabled">
+          <img src="assets/case-studies/acs-secure-aws/network/vpc-flow-logs.png" alt="VPC Flow Logs" />
+          <div class="cap">VPC Flow Logs enabled to CloudWatch Logs</div>
+        </div>
+      </div>
+
+      <h3 style="margin:22px 0 8px; color:var(--text); font-size:15px;">IAM</h3>
+      <div class="evidence">
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/iam/admin-group-mfa.png" data-title="Admin group + MFA">
+          <img src="assets/case-studies/acs-secure-aws/iam/admin-group-mfa.png" alt="IAM MFA" />
+          <div class="cap">Admin group configured + MFA enabled</div>
+        </div>
+      </div>
+
+      <h3 style="margin:22px 0 8px; color:var(--text); font-size:15px;">Logging & Monitoring</h3>
+      <div class="evidence">
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/logging-monitoring/cloudtrail-trail.png" data-title="CloudTrail enabled">
+          <img src="assets/case-studies/acs-secure-aws/logging-monitoring/cloudtrail-trail.png" alt="CloudTrail" />
+          <div class="cap">CloudTrail enabled (audit trail)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/logging-monitoring/log-events.png" data-title="CloudWatch log events">
+          <img src="assets/case-studies/acs-secure-aws/logging-monitoring/log-events.png" alt="Log events" />
+          <div class="cap">CloudWatch Logs receiving events (proof of logging)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/logging-monitoring/dashboard.png" data-title="Security + billing dashboard">
+          <img src="assets/case-studies/acs-secure-aws/logging-monitoring/dashboard.png" alt="Dashboard" />
+          <div class="cap">Dashboard view (security + billing overview)</div>
+        </div>
+      </div>
+
+      <h3 style="margin:22px 0 8px; color:var(--text); font-size:15px;">Compliance & Governance</h3>
+      <div class="evidence">
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/compliance-governance/config-rules.png" data-title="AWS Config rules">
+          <img src="assets/case-studies/acs-secure-aws/compliance-governance/config-rules.png" alt="Config rules" />
+          <div class="cap">AWS Config rules enabled (continuous compliance)</div>
+        </div>
+      </div>
+
+      <h3 style="margin:22px 0 8px; color:var(--text); font-size:15px;">Cost Management</h3>
+      <div class="evidence">
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/cost-management/billing-alarm.png" data-title="Billing alarm">
+          <img src="assets/case-studies/acs-secure-aws/cost-management/billing-alarm.png" alt="Billing alarm" />
+          <div class="cap">Billing alarm configured (cost risk control)</div>
+        </div>
+
+        <div class="shot" data-full="assets/case-studies/acs-secure-aws/cost-management/budget.png" data-title="AWS Budget">
+          <img src="assets/case-studies/acs-secure-aws/cost-management/budget.png" alt="Budget" />
+          <div class="cap">AWS Budget configured (monthly threshold)</div>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        Tip: keep evidence focused. If a screenshot doesn’t clearly prove a control, leave it out.
+      </p>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-inner">
+      <div class="lightbox-top">
+        <div id="lightboxTitle">Evidence</div>
+        <button class="xbtn" id="lightboxClose" type="button">Close</button>
+      </div>
+      <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+    </div>
+  </div>
+
+  <script>
+    const lb = document.getElementById("lightbox");
+    const lbImg = document.getElementById("lightboxImg");
+    const lbTitle = document.getElementById("lightboxTitle");
+    const lbClose = document.getElementById("lightboxClose");
+
+    document.querySelectorAll(".shot").forEach(card => {
+      card.addEventListener("click", () => {
+        const full = card.getAttribute("data-full");
+        const title = card.getAttribute("data-title") || "Evidence";
+        lbTitle.textContent = title;
+        lbImg.src = full;
+        lb.classList.add("open");
+        lb.setAttribute("aria-hidden","false");
+      });
+    });
+
+    const closeLB = () => {
+      lb.classList.remove("open");
+      lb.setAttribute("aria-hidden","true");
+      lbImg.src = "";
+    };
+
+    lbClose.addEventListener("click", closeLB);
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) closeLB();
+    });
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLB();
+    });
+  </script>
+</body>
+</html>
 
