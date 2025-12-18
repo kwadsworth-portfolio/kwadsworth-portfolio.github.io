@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ACS Secure AWS — Evidence Pack</title>
+  <meta name="description" content="Single-scroll evidence pack for the ACS Secure AWS project: network, IAM, logging, compliance, cost, and workload proof." />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a2e;
+      --panel2:#0c1629;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#67e8f9;
+      --accent2:#a78bfa;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(103,232,249,.18), transparent 55%),
+                  radial-gradient(900px 500px at 85% 10%, rgba(167,139,250,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max); margin:0 auto; padding:22px 18px 64px}
+    header{
+      position:sticky; top:0; z-index:50;
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.65));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .brand strong{font-size:15px; letter-spacing:.2px}
+    .brand span{font-size:12px; color:var(--muted)}
+    .nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+      font-size:13px;
+    }
+    .pill{
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+    }
+    .pill:hover{border-color: rgba(103,232,249,.45); text-decoration:none}
+    .hero{
+      margin-top:22px;
+      background: linear-gradient(135deg, rgba(103,232,249,.10), rgba(167,139,250,.10));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:20px;
+    }
+    .hero h1{margin:0 0 6px; font-size:28px}
+    .hero p{margin:0; color:var(--muted); max-width:75ch}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+    .section{
+      background: rgba(255,255,255,.02);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+    }
+    .section-head{
+      padding:16px 16px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .section-head h2{margin:0; font-size:18px}
+    .section-head p{margin:6px 0 0; color:var(--muted); font-size:13px}
+    .cards{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 12;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    }
+    .card-inner{padding:14px}
+    .kicker{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      margin-bottom:10px;
+    }
+    .tag{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+    .tag.ok{color:var(--ok); border-color: rgba(52,211,153,.35)}
+    .tag.warn{color:var(--warn); border-color: rgba(251,191,36,.35)}
+    .tag.bad{color:var(--bad); border-color: rgba(251,113,133,.35)}
+    .card h3{margin:0 0 8px; font-size:16px}
+    .card p{margin:0; color:var(--muted); font-size:13px}
+    .meta{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:10px;
+    }
+    .meta .box{
+      grid-column: span 12;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+    }
+    .box b{display:block; font-size:12px; color:var(--text); margin-bottom:2px}
+    .box span{font-size:12px; color:var(--muted)}
+    figure{margin:0}
+    .shot{
+      width:100%;
+      display:block;
+      background: #050a14;
+      border-top:1px solid var(--line);
+      cursor: zoom-in;
+    }
+    .caption{
+      padding:10px 14px 14px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      background: rgba(0,0,0,.12);
+    }
+
+    /* responsive */
+    @media (min-width: 880px){
+      .card{grid-column: span 6;}
+      .meta .box{grid-column: span 6;}
+    }
+
+    /* lightbox */
+    .lightbox{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.75);
+      z-index:9999;
+      padding:18px;
+    }
+    .lightbox.open{display:flex;}
+    .lightbox img{
+      max-width:min(1200px, 96vw);
+      max-height: 86vh;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 22px 80px rgba(0,0,0,.55);
+      background:#050a14;
+      cursor: zoom-out;
+    }
+    .footer{
+      margin-top:18px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      color:var(--muted);
+      font-size:13px;
+      background: rgba(255,255,255,.02);
+    }
+    .footer b{color:var(--text)}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>ACS Secure AWS — Evidence Pack</strong>
+      <span>Single-scroll proof of build, security controls, monitoring, governance, and cost controls.</span>
+    </div>
+    <nav class="nav">
+      <a class="pill" href="projects.html">← Back to Projects</a>
+      <a class="pill" href="#network">Network</a>
+      <a class="pill" href="#iam">IAM</a>
+      <a class="pill" href="#logging">Logging</a>
+      <a class="pill" href="#compliance">Compliance</a>
+      <a class="pill" href="#cost">Cost</a>
+      <a class="pill" href="#workload">Workload proof</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Evidence Pack (ACS Secure AWS)</h1>
+    <p>
+      This page consolidates screenshots showing what was configured, why it matters (risk/threat/vulnerability),
+      and what action was taken. Each item is written as if you’re explaining it to a hiring manager in a real-world environment.
+    </p>
+  </section>
+
+  <!-- NETWORK -->
+  <section class="grid section" id="network">
+    <div class="section-head">
+      <h2>Network security & segmentation</h2>
+      <p>VPC design, public/private subnets, controlled ingress, and visibility through flow logs.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Risk</span>
+            <span class="tag">Network exposure</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Public vs private subnet separation</h3>
+          <p>Designed subnets to limit blast radius and keep application components private where possible.</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Direct internet access to internal workloads</span></div>
+            <div class="box"><b>Decision</b><span>Use private subnets for non-public tiers; public subnet only for what must be reachable</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/network/acs-all-subnets-1.0.png" alt="All subnets overview" data-full="assets/case-studies/acs-secure-aws/network/acs-all-subnets-1.0.png">
+          <figcaption class="caption">Evidence: subnet inventory shows segmentation (public + private subnets) to reduce attack surface.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Control</span>
+            <span class="tag">Public IP behaviour</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Public subnet configured for auto-assign public IPv4</h3>
+          <p>Public workloads require an internet-routable address; this was enabled only for the public subnet.</p>
+
+          <div class="meta">
+            <div class="box"><b>Vulnerability</b><span>Misconfigured subnets can accidentally expose private instances</span></div>
+            <div class="box"><b>Decision</b><span>Enable public IPv4 assignment only in the public subnet</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/network/acs-public-subnet-b-enable-ipv4-1.0.png" alt="Enable auto-assign public IPv4 in public subnet" data-full="assets/case-studies/acs-secure-aws/network/acs-public-subnet-b-enable-ipv4-1.0.png">
+          <figcaption class="caption">Evidence: auto-assign public IPv4 enabled for the public subnet (needed for internet-facing web tier).</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Control</span>
+            <span class="tag">Internet egress/ingress path</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Internet Gateway attached to the VPC</h3>
+          <p>Provides the controlled internet path for public subnet routing (without implying everything is public).</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Uncontrolled outbound/inbound traffic paths</span></div>
+            <div class="box"><b>Decision</b><span>Use IGW + routing only for public subnet; keep private tiers isolated</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/network/20-acs-igw-attached.png" alt="Internet gateway attached evidence" data-full="assets/case-studies/acs-secure-aws/network/20-acs-igw-attached.png">
+          <figcaption class="caption">Evidence: Internet Gateway attached to the VPC to support the public web tier.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Visibility</span>
+            <span class="tag">Detection & forensics</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>VPC Flow Logs enabled (to CloudWatch Logs)</h3>
+          <p>Captures accepted/rejected network flows to support investigations and troubleshooting.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Limited audit trail of network activity during incidents</span></div>
+            <div class="box"><b>Decision</b><span>Enable Flow Logs to CloudWatch for searchable, timestamped traffic metadata</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/network/acs-vpc-workflow-logs-1.0.png" alt="VPC Flow Logs details" data-full="assets/case-studies/acs-secure-aws/network/acs-vpc-workflow-logs-1.0.png">
+          <figcaption class="caption">Evidence: Flow Logs configured and active for network visibility.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Risk</span>
+            <span class="tag">Brute force / SSH exposure</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Restricted SSH access (admin only)</h3>
+          <p>SSH is limited to a specific trusted source rather than open internet access.</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Brute-force attempts and credential stuffing against SSH</span></div>
+            <div class="box"><b>Decision</b><span>Allow TCP/22 only from a known IP (admin access), not 0.0.0.0/0</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/network/sg-admin-ssh.png" alt="Security group with restricted SSH access" data-full="assets/case-studies/acs-secure-aws/network/sg-admin-ssh.png">
+          <figcaption class="caption">Evidence: SSH restricted to a trusted admin source IP to reduce attack surface.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Control</span>
+            <span class="tag">Access path</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Bastion access workflow validated</h3>
+          <p>Demonstrates operational access method and that remote admin access is intentionally controlled.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Ad-hoc access routes to private resources</span></div>
+            <div class="box"><b>Decision</b><span>Use a controlled access path (bastion pattern) rather than opening private tiers</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/network/sg-bastion-powershell.png" alt="PowerShell / bastion access evidence" data-full="assets/case-studies/acs-secure-aws/network/sg-bastion-powershell.png">
+          <figcaption class="caption">Evidence: bastion-style workflow shown from admin workstation (PowerShell/SSH).</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- IAM -->
+  <section class="grid section" id="iam">
+    <div class="section-head">
+      <h2>IAM hardening</h2>
+      <p>Strong authentication, reduced privilege, and account access controls.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Risk</span>
+            <span class="tag">Account takeover</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>MFA enabled</h3>
+          <p>MFA reduces the likelihood that stolen credentials alone lead to full account compromise.</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Phishing / leaked credentials</span></div>
+            <div class="box"><b>Decision</b><span>Enforce MFA for privileged access to reduce takeover risk</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/iam/acs-iam-mfa-active-1.0.png" alt="MFA active evidence" data-full="assets/case-studies/acs-secure-aws/iam/acs-iam-mfa-active-1.0.png">
+          <figcaption class="caption">Evidence: MFA configured and active to harden access against credential compromise.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Control</span>
+            <span class="tag">Privileged access</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Admin group protected with MFA</h3>
+          <p>Privileged groups are protected with stronger authentication requirements.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Privilege escalation if admin identities are compromised</span></div>
+            <div class="box"><b>Decision</b><span>Ensure admin access is tied to MFA and controlled membership</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/iam/acs-iam-admingroup-mfa-1.0.png" alt="Admin group MFA evidence" data-full="assets/case-studies/acs-secure-aws/iam/acs-iam-admingroup-mfa-1.0.png">
+          <figcaption class="caption">Evidence: admin group access hardened with MFA expectations.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Control</span>
+            <span class="tag">Password policy</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Strong password policy enforced</h3>
+          <p>Improves resistance to brute force and weak-password attacks.</p>
+
+          <div class="meta">
+            <div class="box"><b>Vulnerability</b><span>Weak or reused passwords</span></div>
+            <div class="box"><b>Decision</b><span>Enforce complexity/length requirements aligned to good practice</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/iam/acs-iam-passwordpolicy-1.0.png" alt="IAM password policy evidence" data-full="assets/case-studies/acs-secure-aws/iam/acs-iam-passwordpolicy-1.0.png">
+          <figcaption class="caption">Evidence: account password policy configured to reduce weak-credential risk.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- LOGGING -->
+  <section class="grid section" id="logging">
+    <div class="section-head">
+      <h2>Logging & monitoring</h2>
+      <p>Audit trails for governance + operational signals for detection and investigation.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Detection</span>
+            <span class="tag">Audit trail</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>CloudTrail enabled</h3>
+          <p>Records API actions for accountability, incident response, and compliance evidence.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>No reliable record of “who did what” during a security incident</span></div>
+            <div class="box"><b>Decision</b><span>Enable CloudTrail so changes to IAM, networking, and services can be traced</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/logs/acs-cloudtrail-att-1.3.png" alt="CloudTrail evidence" data-full="assets/case-studies/acs-secure-aws/logs/acs-cloudtrail-att-1.3.png">
+          <figcaption class="caption">Evidence: CloudTrail configured to provide an immutable audit trail of API actions.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Monitoring</span>
+            <span class="tag">Log group events</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>CloudWatch Logs group receiving events</h3>
+          <p>Centralises logs for visibility, alerting, and investigation workflows.</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Attacks can go unnoticed without central monitoring</span></div>
+            <div class="box"><b>Decision</b><span>Send logs to CloudWatch to make events searchable and alertable</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/logs/acs-log-group-events-1.0.png" alt="CloudWatch log group events" data-full="assets/case-studies/acs-secure-aws/logs/acs-log-group-events-1.0.png">
+          <figcaption class="caption">Evidence: log group shows events flowing into CloudWatch (central log visibility).</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- COMPLIANCE -->
+  <section class="grid section" id="compliance">
+    <div class="section-head">
+      <h2>Compliance & governance</h2>
+      <p>Policy-as-code style checks and continuous monitoring for drift and misconfiguration.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Governance</span>
+            <span class="tag">Config rules</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>AWS Config rules in place</h3>
+          <p>Provides automated checks against common misconfigurations and security drift.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Security controls weaken over time due to change/drift</span></div>
+            <div class="box"><b>Decision</b><span>Use AWS Config rules to flag non-compliance early and consistently</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/compliance/acs-config-rules-1.0.png" alt="AWS Config rules evidence" data-full="assets/case-studies/acs-secure-aws/compliance/acs-config-rules-1.0.png">
+          <figcaption class="caption">Evidence: AWS Config rules enabled to help detect policy drift and misconfiguration.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- COST -->
+  <section class="grid section" id="cost">
+    <div class="section-head">
+      <h2>Cost management & billing visibility</h2>
+      <p>Controls to prevent surprise spend and maintain transparency.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Risk</span>
+            <span class="tag">Uncontrolled spend</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Cost & usage reporting (CUR)</h3>
+          <p>Provides a detailed breakdown of spend by service for analysis and optimisation.</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Budget creep and unexpected costs</span></div>
+            <div class="box"><b>Decision</b><span>Enable CUR for accurate reporting and cost governance</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/cost/acs-billing-CUR-1.0.png" alt="Cost and Usage Report evidence" data-full="assets/case-studies/acs-secure-aws/cost/acs-billing-CUR-1.0.png">
+          <figcaption class="caption">Evidence: CUR configured for deeper billing visibility and analysis.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Visibility</span>
+            <span class="tag">Dashboard</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Security & Billing dashboard</h3>
+          <p>Single pane view that combines security/compliance signals with billing awareness.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Security and cost data viewed in silos</span></div>
+            <div class="box"><b>Decision</b><span>Create a dashboard to monitor both security posture and spend indicators</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/cost/acs-security-billing-db-1.0.png" alt="Security and billing dashboard evidence" data-full="assets/case-studies/acs-secure-aws/cost/acs-security-billing-db-1.0.png">
+          <figcaption class="caption">Evidence: dashboard provides an at-a-glance view for security & cost monitoring.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- WORKLOAD -->
+  <section class="grid section" id="workload">
+    <div class="section-head">
+      <h2>Workload proof (web tier validation)</h2>
+      <p>Evidence the web tier actually works after being deployed and secured.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Build</span>
+            <span class="tag">Service configuration</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Apache installed and enabled</h3>
+          <p>Shows the web server was installed and configured to start and run as a service.</p>
+
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>“Paper architecture” with no functional workload proof</span></div>
+            <div class="box"><b>Decision</b><span>Install and enable Apache and capture evidence of the setup steps</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/workload/apache-install-1.0.png" alt="Apache install step 1" data-full="assets/case-studies/acs-secure-aws/workload/apache-install-1.0.png">
+          <figcaption class="caption">Evidence: initial Apache install/start/enable steps executed on the instance.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Build</span>
+            <span class="tag">Dependency install</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Apache dependencies installed successfully</h3>
+          <p>Shows the installation completed and packages were pulled successfully.</p>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/workload/apache-install-1.1.png" alt="Apache install step 2" data-full="assets/case-studies/acs-secure-aws/workload/apache-install-1.1.png">
+          <figcaption class="caption">Evidence: package download and install confirmation (dependencies resolved).</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Build</span>
+            <span class="tag">Verification</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Installation verification completed</h3>
+          <p>Shows the transaction completed and the workload was installed cleanly.</p>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/workload/apache-install-1.2.png" alt="Apache install step 3" data-full="assets/case-studies/acs-secure-aws/workload/apache-install-1.2.png">
+          <figcaption class="caption">Evidence: install verification confirms packages are installed.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Validation</span>
+            <span class="tag">End-user test</span>
+            <span class="tag ok">Outcome</span>
+          </div>
+          <h3>Browser test confirms web tier is reachable</h3>
+          <p>Confirms that inbound web access works as intended (aligned with HTTP/HTTPS security group rules).</p>
+
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Misconfigured routing/security groups leading to broken access or overexposure</span></div>
+            <div class="box"><b>Decision</b><span>Validate from a browser to confirm the correct access path works</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/acs-secure-aws/workload/aws-web-browser-test-1.0.png" alt="Browser test evidence for web tier" data-full="assets/case-studies/acs-secure-aws/workload/aws-web-browser-test-1.0.png">
+          <figcaption class="caption">Evidence: HTTP response in browser demonstrates the public web tier is functioning.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section class="footer">
+    <b>Tip:</b> If you want this to feel even more “real world”, add a short “Lessons learned” block and a “What I’d improve next”
+    (e.g., HTTPS cert + ALB, SSM Session Manager instead of SSH, centralised alerting, log retention/KMS).
+  </section>
+</main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lightboxImg" alt="Expanded evidence screenshot" />
+</div>
+
+<script>
+  // Simple lightbox for all screenshots
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+
+  document.querySelectorAll('img.shot').forEach(img => {
+    img.addEventListener('click', () => {
+      const src = img.getAttribute('data-full') || img.src;
+      lbImg.src = src;
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  lb.addEventListener('click', () => {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    lbImg.src = '';
+    document.body.style.overflow = '';
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lb.classList.contains('open')) {
+      lb.click();
+    }
+  });
+</script>
+</body>
+</html>
