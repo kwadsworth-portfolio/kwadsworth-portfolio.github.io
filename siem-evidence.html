@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SIEM Detection – Evidence Pack | Kevin Wadsworth</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Kevin Wadsworth</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<section class="hero hero--small">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>SIEM Detection – Evidence Pack</h1>
+    <p>
+      Step-by-step build notes and supporting evidence for the SIEM Visibility &amp; Detection case study.
+      (Screenshots, SPL queries, alert configuration and automation outputs.)
+    </p>
+  </div>
+</section>
+
+<div class="project-nav">
+  <a href="siem-detection.html" class="project-nav-link">&larr; Back to Case Study</a>
+  <a href="projects.html" class="project-nav-link">Back to Projects &rarr;</a>
+</div>
+
+<main class="main-section">
+
+  <article class="project-case">
+    <h2>1. Evidence Summary</h2>
+    <p>
+      This page is the evidence pack for my SIEM lab build using Splunk.
+      It documents what was implemented and provides proof via screenshots and outputs.
+    </p>
+    <ul>
+      <li><strong>SIEM:</strong> Splunk (lab)</li>
+      <li><strong>Telemetry:</strong> Windows Security logs + Sysmon</li>
+      <li><strong>Coverage:</strong> Auth abuse, suspicious execution, privilege changes</li>
+      <li><strong>Outputs:</strong> Dashboards, alerts, incident artifacts, notifications</li>
+    </ul>
+  </article>
+
+  <article class="project-case">
+    <h2>2. Evidence Index</h2>
+    <ul>
+      <li><a href="#setup">Environment setup</a></li>
+      <li><a href="#onboarding">Log onboarding &amp; validation</a></li>
+      <li><a href="#detections">Detections (SPL + proof)</a></li>
+      <li><a href="#alerts">Alerts &amp; dashboards</a></li>
+      <li><a href="#automation">Automation &amp; incident artifacts</a></li>
+    </ul>
+  </article>
+
+  <article id="setup" class="project-case">
+    <h2>3. Environment Setup</h2>
+    <p>
+      Splunk was installed in a lab environment and a Windows endpoint was configured to generate
+      security telemetry. Sysmon was enabled to capture process creation and command-line activity.
+    </p>
+    <ul>
+      <li>Splunk installed and reachable</li>
+      <li>Windows endpoint configured</li>
+      <li>Sysmon running and producing events</li>
+      <li>Time sync verified</li>
+    </ul>
+
+    <p><strong>Evidence:</strong></p>
+    <ul>
+      <li>Screenshot: Splunk receiving data</li>
+      <li>Screenshot: Sysmon running</li>
+    </ul>
+
+    <!-- Add images into /assets/siem/ then update filenames below -->
+    <p><img src="assets/siem/setup-splunk-data.png" alt="Splunk receiving data" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/siem/setup-sysmon.png" alt="Sysmon running" style="max-width:100%; border-radius:12px;" /></p>
+  </article>
+
+  <article id="onboarding" class="project-case">
+    <h2>4. Log Onboarding &amp; Validation</h2>
+    <p>
+      Confirmed that key Windows Security and Sysmon EventCodes were indexing correctly.
+    </p>
+
+    <pre><code>index=wineventlog sourcetype="WinEventLog:Security"
+| stats count by EventCode
+| sort -count</code></pre>
+
+    <pre><code>index=sysmon
+| stats count by EventCode
+| sort -count</code></pre>
+
+    <p><img src="assets/siem/onboarding-validation.png" alt="Onboarding validation" style="max-width:100%; border-radius:12px;" /></p>
+  </article>
+
+  <article id="detections" class="project-case">
+    <h2>5. Detections (SPL + Evidence)</h2>
+
+    <h3>5.1 Brute force login attempts</h3>
+    <pre><code>index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
+| stats count as fails values(Account_Name) as users by IpAddress, host
+| where fails &gt;= 10
+| sor
 
