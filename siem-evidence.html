@@ -80,8 +80,8 @@
     </ul>
 
     <!-- Add images into /assets/siem/ then update filenames below -->
-    <p><img src="assets/siem/setup-splunk-data.png" alt="Splunk receiving data" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/siem/setup-sysmon.png" alt="Sysmon running" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/setup-splunk-data.png" alt="Splunk receiving data" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/setup-sysmon.png" alt="Sysmon running" style="max-width:100%; border-radius:12px;" /></p>
   </article>
 
   <article id="onboarding" class="project-case">
@@ -98,7 +98,7 @@
 | stats count by EventCode
 | sort -count</code></pre>
 
-    <p><img src="assets/siem/onboarding-validation.png" alt="Onboarding validation" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/onboarding-validation.png" alt="Onboarding validation" style="max-width:100%; border-radius:12px;" /></p>
   </article>
 
   <article id="detections" class="project-case">
@@ -109,20 +109,20 @@
 | stats count as fails values(Account_Name) as users by IpAddress, host
 | where fails &gt;= 10
 | sort -fails</code></pre>
-    <p><img src="assets/siem/detect-bruteforce.png" alt="Brute force detection" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/detect-bruteforce.png" alt="Brute force detection" style="max-width:100%; border-radius:12px;" /></p>
 
     <h3>5.2 Suspicious PowerShell (encoded)</h3>
     <pre><code>index=sysmon EventCode=1 Image="*\\powershell.exe"
 (CommandLine="*-enc*" OR CommandLine="*-EncodedCommand*")
 | table _time host User Image CommandLine
 | sort -_time</code></pre>
-    <p><img src="assets/siem/detect-powershell.png" alt="Suspicious PowerShell detection" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/detect-powershell.png" alt="Suspicious PowerShell detection" style="max-width:100%; border-radius:12px;" /></p>
 
     <h3>5.3 New local user / admin group change</h3>
     <pre><code>index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4720 OR EventCode=4732)
 | table _time host SubjectUserName TargetUserName GroupName
 | sort -_time</code></pre>
-    <p><img src="assets/siem/detect-new-admin.png" alt="New admin detection" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/detect-new-admin.png" alt="New admin detection" style="max-width:100%; border-radius:12px;" /></p>
   </article>
 
   <article id="alerts" class="project-case">
@@ -132,9 +132,9 @@
       <li>Dashboard created for auth failures, notable events and recent alerts</li>
     </ul>
 
-    <p><img src="assets/siem/alerts-config.png" alt="Alert configuration" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/siem/dashboard-overview.png" alt="Dashboard overview" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/siem/alert-triggered.png" alt="Alert triggered" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/alerts-config.png" alt="Alert configuration" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/dashboard-overview.png" alt="Dashboard overview" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/alert-triggered.png" alt="Alert triggered" style="max-width:100%; border-radius:12px;" /></p>
   </article>
 
   <article id="automation" class="project-case">
@@ -152,8 +152,8 @@
   "action": "containment_simulated"
 }</code></pre>
 
-    <p><img src="assets/siem/automation-action.png" alt="Automation action configured" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/siem/automation-output.png" alt="Automation output" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/automation-action.png" alt="Automation action configured" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/case-studies/siem/automation-output.png" alt="Automation output" style="max-width:100%; border-radius:12px;" /></p>
   </article>
 
 </main>
