@@ -108,5 +108,60 @@
     <pre><code>index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count as fails values(Account_Name) as users by IpAddress, host
 | where fails &gt;= 10
-| sor
+| sort -fails</code></pre>
+    <p><img src="assets/siem/detect-bruteforce.png" alt="Brute force detection" style="max-width:100%; border-radius:12px;" /></p>
 
+    <h3>5.2 Suspicious PowerShell (encoded)</h3>
+    <pre><code>index=sysmon EventCode=1 Image="*\\powershell.exe"
+(CommandLine="*-enc*" OR CommandLine="*-EncodedCommand*")
+| table _time host User Image CommandLine
+| sort -_time</code></pre>
+    <p><img src="assets/siem/detect-powershell.png" alt="Suspicious PowerShell detection" style="max-width:100%; border-radius:12px;" /></p>
+
+    <h3>5.3 New local user / admin group change</h3>
+    <pre><code>index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4720 OR EventCode=4732)
+| table _time host SubjectUserName TargetUserName GroupName
+| sort -_time</code></pre>
+    <p><img src="assets/siem/detect-new-admin.png" alt="New admin detection" style="max-width:100%; border-radius:12px;" /></p>
+  </article>
+
+  <article id="alerts" class="project-case">
+    <h2>6. Alerts &amp; Dashboards</h2>
+    <ul>
+      <li>Scheduled alerts configured with thresholds and severity</li>
+      <li>Dashboard created for auth failures, notable events and recent alerts</li>
+    </ul>
+
+    <p><img src="assets/siem/alerts-config.png" alt="Alert configuration" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/siem/dashboard-overview.png" alt="Dashboard overview" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/siem/alert-triggered.png" alt="Alert triggered" style="max-width:100%; border-radius:12px;" /></p>
+  </article>
+
+  <article id="automation" class="project-case">
+    <h2>7. Automation &amp; Incident Artifacts</h2>
+    <p>
+      Added a lightweight automation step to generate an incident record when an alert fires,
+      simulating a SOAR-style workflow for documentation and escalation.
+    </p>
+
+    <pre><code>{
+  "title": "Possible brute force attack",
+  "severity": "high",
+  "host": "WIN-ENDPOINT-01",
+  "detection": "BRUTE_FORCE_4625",
+  "action": "containment_simulated"
+}</code></pre>
+
+    <p><img src="assets/siem/automation-action.png" alt="Automation action configured" style="max-width:100%; border-radius:12px;" /></p>
+    <p><img src="assets/siem/automation-output.png" alt="Automation output" style="max-width:100%; border-radius:12px;" /></p>
+  </article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-accent"></div>
+  <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
+</footer>
+
+</body>
+</html>
