@@ -106,7 +106,89 @@
       ticketing, SIEM) and more formalised metrics and reporting.
     </p>
   </article>
+<article class="project-case">
+  <h2>6. Applied Case Study: Azure Cloud Governance (Helios Platform)</h2>
 
+  <p>
+    To complement the ISMS and risk management design, I implemented a practical
+    cloud governance solution in Microsoft Azure. This demonstrates how GRC
+    principles translate into real-world technical controls, monitoring and
+    evidence-based compliance.
+  </p>
+
+  <h3>Governance Implementation</h3>
+  <ul>
+    <li>Created an Azure Policy Initiative (“Helios Governance Baseline”).</li>
+    <li>Enforced controls for approved regions, mandatory tagging and storage security.</li>
+    <li>Applied deny and audit policies at subscription level.</li>
+  </ul>
+
+  <img src="images/helios-governance/policies-ia-policy-assignment.png" alt="Azure Policy Initiative Assignment">
+
+  <h3>Risk Identification</h3>
+  <p>
+    The environment was deliberately configured with misconfigurations to simulate
+    real-world risks. These were detected using Azure Policy and Resource Graph.
+  </p>
+
+  <ul>
+    <li>Public storage account with anonymous access enabled (High Risk)</li>
+    <li>Open network security group allowing unrestricted inbound access (High Risk)</li>
+    <li>Resources deployed in non-approved regions (Medium Risk)</li>
+    <li>Missing governance tags (Medium Risk)</li>
+  </ul>
+
+  <img src="images/helios-governance/policies-ic-policy-noncompliant.png" alt="Azure Policy Non-Compliance">
+
+  <h3>Evidence & Compliance Monitoring</h3>
+  <p>
+    I used Azure Resource Graph to query compliance data and validate governance
+    controls across the environment.
+  </p>
+
+  <img src="images/helios-governance/resource-graph-explorer-missing-tags.png" alt="Missing Tags Query">
+  <img src="images/helios-governance/resource-graph-explorer-blob-access.png" alt="Storage Public Access Query">
+
+  <p>
+    Evidence was stored in Azure Storage containers to simulate an audit-ready
+    compliance repository.
+  </p>
+
+  <img src="images/helios-governance/evidence-repository-01.png" alt="Evidence Storage Repository">
+
+  <h3>Automation</h3>
+  <p>
+    A scheduled Azure Function was introduced to demonstrate how compliance checks
+    can be automated and run on a recurring basis.
+  </p>
+
+  <img src="images/helios-governance/fa-daily-compliance-check-auto-01.png" alt="Azure Function Automation">
+
+  <h3>Challenges & Issues</h3>
+  <ul>
+    <li>Policy enforcement blocked deployment of required Azure resources.</li>
+    <li>Tagging requirements prevented automatic resource creation.</li>
+    <li>Function App deployment impacted by regional quota limitations.</li>
+  </ul>
+
+  <img src="images/helios-governance/func-helios-governance-issue-01.png" alt="Deployment Issue">
+
+  <h3>Resolution</h3>
+  <ul>
+    <li>Aligned resource configurations with governance policies.</li>
+    <li>Manually deployed compliant supporting resources where required.</li>
+    <li>Adjusted queries and validation methods for accurate compliance reporting.</li>
+    <li>Used alternative Azure regions where necessary.</li>
+  </ul>
+
+  <h3>Outcome</h3>
+  <p>
+    This implementation demonstrates how governance frameworks, risk management
+    and cloud security controls work together in practice. The project shows
+    the full lifecycle of GRC: policy definition, enforcement, detection,
+    remediation and audit evidence.
+  </p>
+  
 </main>
 
 <footer class="site-footer">
