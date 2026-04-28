@@ -1,1 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Azure Cloud Governance — Evidence Pack</title>
+  <meta name="description" content="Evidence pack for the Helios Azure Cloud Governance project: policy enforcement, Resource Graph detection, automation, monitoring and audit evidence." />
 
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a2e;
+      --panel2:#0c1629;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#67e8f9;
+      --accent2:#a78bfa;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(103,232,249,.18), transparent 55%),
+                  radial-gradient(900px 500px at 85% 10%, rgba(167,139,250,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max); margin:0 auto; padding:22px 18px 64px}
+    header{
+      position:sticky; top:0; z-index:50;
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.65));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand{display:flex; flex-direction:column; gap:2px}
+    .brand strong{font-size:15px; letter-spacing:.2px}
+    .brand span{font-size:12px; color:var(--muted)}
+    .nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+      font-size:13px;
+    }
+    .pill{
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+    }
+    .pill:hover{border-color: rgba(103,232,249,.45); text-decoration:none}
+    .hero{
+      margin-top:22px;
+      background: linear-gradient(135deg, rgba(103,232,249,.10), rgba(167,139,250,.10));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:20px;
+    }
+    .hero h1{margin:0 0 6px; font-size:28px}
+    .hero p{margin:0; color:var(--muted); max-width:75ch}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+    .section{
+      background: rgba(255,255,255,.02);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+    }
+    .section-head{
+      padding:16px 16px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .section-head h2{margin:0; font-size:18px}
+    .section-head p{margin:6px 0 0; color:var(--muted); font-size:13px}
+    .cards{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 12;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    }
+    .card-inner{padding:14px}
+    .kicker{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      margin-bottom:10px;
+    }
+    .tag{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+    .tag.ok{color:var(--ok); border-color: rgba(52,211,153,.35)}
+    .tag.warn{color:var(--warn); border-color: rgba(251,191,36,.35)}
+    .tag.bad{color:var(--bad); border-color: rgba(251,113,133,.35)}
+    .card h3{margin:0 0 8px; font-size:16px}
+    .card p{margin:0; color:var(--muted); font-size:13px}
+    .meta{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:10px;
+    }
+    .meta .box{
+      grid-column: span 12;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+    }
+    .box b{display:block; font-size:12px; color:var(--text); margin-bottom:2px}
+    .box span{font-size:12px; color:var(--muted)}
+    figure{margin:0}
+    .shot{
+      width:100%;
+      display:block;
+      background: #050a14;
+      border-top:1px solid var(--line);
+      cursor: zoom-in;
+    }
+    .caption{
+      padding:10px 14px 14px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      background: rgba(0,0,0,.12);
+    }
+    @media (min-width: 880px){
+      .card{grid-column: span 6;}
+      .meta .box{grid-column: span 6;}
+    }
+    .lightbox{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.75);
+      z-index:9999;
+      padding:18px;
+    }
+    .lightbox.open{display:flex;}
+    .lightbox img{
+      max-width:min(1200px, 96vw);
+      max-height: 86vh;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 22px 80px rgba(0,0,0,.55);
+      background:#050a14;
+      cursor: zoom-out;
+    }
+    .footer{
+      margin-top:18px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      color:var(--muted);
+      font-size:13px;
+      background: rgba(255,255,255,.02);
+    }
+    .footer b{color:var(--text)}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>Azure Cloud Governance — Evidence Pack</strong>
+      <span>Single-scroll proof of Azure Policy, Resource Graph, automation, monitoring and audit evidence.</span>
+    </div>
+    <nav class="nav">
+      <a class="pill" href="projects.html">← Back to Projects</a>
+      <a class="pill" href="grc-risk-management.html">Full Case Study</a>
+      <a class="pill" href="#governance">Governance</a>
+      <a class="pill" href="#detection">Detection</a>
+      <a class="pill" href="#automation">Automation</a>
+      <a class="pill" href="#evidence">Evidence</a>
+      <a class="pill" href="#challenges">Challenges</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Evidence Pack (Azure Cloud Governance)</h1>
+    <p>
+      This page consolidates screenshots showing how the Helios Azure Governance Platform was built,
+      what risks were detected, what controls were implemented, and how evidence was captured.
+      <br><br>
+      <a href="grc-risk-management.html"><strong>View the full GRC case study →</strong></a>
+    </p>
+  </section>
+
+  <section class="grid section" id="governance">
+    <div class="section-head">
+      <h2>Cloud governance & policy enforcement</h2>
+      <p>Azure Policy initiative, subscription-level assignment, region controls and mandatory tagging.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Governance</span>
+            <span class="tag">Azure Policy</span>
+            <span class="tag ok">Implemented</span>
+          </div>
+          <h3>Azure Policy Initiative assigned</h3>
+          <p>A custom governance baseline was applied to enforce approved regions, mandatory tags and storage security controls.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Uncontrolled cloud deployments and inconsistent governance controls</span></div>
+            <div class="box"><b>Decision</b><span>Apply a subscription-level Azure Policy initiative as the governance baseline</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/policies-ia-policy-assignment.png" alt="Azure Policy assignment" data-full="assets/case-studies/helios-governance/policies-ia-policy-assignment.png">
+          <figcaption class="caption">Evidence: Helios Governance Baseline policy assignment applied at subscription scope.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Non-compliance</span>
+            <span class="tag">Policy enforcement</span>
+            <span class="tag ok">Detected</span>
+          </div>
+          <h3>Non-compliant policies identified</h3>
+          <p>Azure Policy identified non-compliance including missing tags and resources outside approved regions.</p>
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Governance drift and unmanaged cloud assets</span></div>
+            <div class="box"><b>Control</b><span>Policy-based detection and enforcement of required standards</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/policies-ic-policy-noncompliant.png" alt="Azure Policy non-compliant findings" data-full="assets/case-studies/helios-governance/policies-ic-policy-noncompliant.png">
+          <figcaption class="caption">Evidence: policy compliance page showing non-compliant governance controls.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Finding</span>
+            <span class="tag">Non-compliant resource</span>
+            <span class="tag ok">Validated</span>
+          </div>
+          <h3>Non-compliant resource evidence</h3>
+          <p>Individual resource-level evidence was captured to show exactly which resources breached governance controls.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Policy summaries without traceable evidence are weak for audit purposes</span></div>
+            <div class="box"><b>Decision</b><span>Capture resource-level compliance details for audit traceability</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/policies-ic-policy-noncompliant-resource.png" alt="Non-compliant resource evidence" data-full="assets/case-studies/helios-governance/policies-ic-policy-noncompliant-resource.png">
+          <figcaption class="caption">Evidence: specific resource identified as non-compliant under the governance baseline.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid section" id="detection">
+    <div class="section-head">
+      <h2>Risk detection with Azure Resource Graph</h2>
+      <p>Resource Graph queries used to detect missing tags, non-approved regions and storage security posture.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Governance</span>
+            <span class="tag">Missing ownership</span>
+            <span class="tag ok">Detected</span>
+          </div>
+          <h3>Resources missing Owner tag</h3>
+          <p>Missing ownership metadata was detected to highlight accountability and governance gaps.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>No clear ownership for remediation, cost, or incident response</span></div>
+            <div class="box"><b>Decision</b><span>Use Resource Graph to identify missing tags across resources</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/resource-graph-explorer-missing-tags.png" alt="Missing tags query" data-full="assets/case-studies/helios-governance/resource-graph-explorer-missing-tags.png">
+          <figcaption class="caption">Evidence: Resource Graph query showing resources missing governance tags.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Risk</span>
+            <span class="tag">Region governance</span>
+            <span class="tag ok">Detected</span>
+          </div>
+          <h3>Resources outside approved regions</h3>
+          <p>Resources outside approved UK regions were identified to demonstrate data residency and regional governance monitoring.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Data residency breach or inconsistent regional control enforcement</span></div>
+            <div class="box"><b>Decision</b><span>Allow only UK South and UK West in the governance baseline</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/resource-graph-explorer-nonapproved-region.png" alt="Non-approved region query" data-full="assets/case-studies/helios-governance/resource-graph-explorer-nonapproved-region.png">
+          <figcaption class="caption">Evidence: query identifying resources deployed outside approved Azure regions.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Security</span>
+            <span class="tag">Storage exposure</span>
+            <span class="tag ok">Reviewed</span>
+          </div>
+          <h3>Storage public access status</h3>
+          <p>Storage accounts were checked for public blob access to validate exposure risk and data protection posture.</p>
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Anonymous access to sensitive data stored in blob containers</span></div>
+            <div class="box"><b>Decision</b><span>Query storage public access configuration and monitor for risky settings</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/resource-graph-explorer-blob-access.png" alt="Blob public access query" data-full="assets/case-studies/helios-governance/resource-graph-explorer-blob-access.png">
+          <figcaption class="caption">Evidence: Resource Graph query validating storage public access configuration.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Security</span>
+            <span class="tag">Secure transfer</span>
+            <span class="tag ok">Reviewed</span>
+          </div>
+          <h3>Secure transfer validation</h3>
+          <p>Storage accounts were checked for secure transfer settings to support encrypted traffic requirements.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Unencrypted traffic to storage services</span></div>
+            <div class="box"><b>Decision</b><span>Validate storage secure transfer status using Resource Graph</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/resource-graph-explorer-sa-without-secure-transfer.png" alt="Secure transfer query" data-full="assets/case-studies/helios-governance/resource-graph-explorer-sa-without-secure-transfer.png">
+          <figcaption class="caption">Evidence: query reviewing storage accounts without secure transfer enabled.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid section" id="automation">
+    <div class="section-head">
+      <h2>Automation & compliance checks</h2>
+      <p>Azure Functions used to simulate scheduled compliance checks and support ongoing monitoring.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Automation</span>
+            <span class="tag">Serverless</span>
+            <span class="tag ok">Implemented</span>
+          </div>
+          <h3>Timer-triggered compliance function</h3>
+          <p>A scheduled Azure Function was created to demonstrate how compliance checks can run automatically.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Manual compliance checks are inconsistent and not repeatable</span></div>
+            <div class="box"><b>Decision</b><span>Use a timer-triggered Function to automate governance monitoring</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/fa-daily-compliance-check-auto-01.png" alt="Azure Function automation" data-full="assets/case-studies/helios-governance/fa-daily-compliance-check-auto-01.png">
+          <figcaption class="caption">Evidence: timer-triggered Azure Function for daily compliance checks.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Monitoring</span>
+            <span class="tag">Function execution</span>
+            <span class="tag ok">Validated</span>
+          </div>
+          <h3>Function execution monitored</h3>
+          <p>Function execution and performance were reviewed to confirm the automation was running as expected.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Automation exists but cannot be validated operationally</span></div>
+            <div class="box"><b>Decision</b><span>Use availability and performance views to validate execution behaviour</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/fa-dcc-availability-performance-01.png" alt="Function performance evidence" data-full="assets/case-studies/helios-governance/fa-dcc-availability-performance-01.png">
+          <figcaption class="caption">Evidence: Function execution and performance monitoring view.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid section" id="evidence">
+    <div class="section-head">
+      <h2>Audit evidence repository</h2>
+      <p>Storage containers and evidence artefacts used to support compliance reporting and audit readiness.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Evidence</span>
+            <span class="tag">Audit readiness</span>
+            <span class="tag ok">Implemented</span>
+          </div>
+          <h3>Evidence repository created</h3>
+          <p>Azure Storage was used to hold compliance snapshots, reports and risk summaries.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Compliance findings cannot be evidenced during audit or review</span></div>
+            <div class="box"><b>Decision</b><span>Create dedicated evidence storage for governance outputs and reports</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/evidence-repository-01.png" alt="Evidence repository" data-full="assets/case-studies/helios-governance/evidence-repository-01.png">
+          <figcaption class="caption">Evidence: storage-based audit evidence repository for compliance artefacts.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Storage</span>
+            <span class="tag">Container design</span>
+            <span class="tag ok">Implemented</span>
+          </div>
+          <h3>Evidence containers configured</h3>
+          <p>Containers were created for compliance reports, evidence files and AI governance assessments.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Unstructured evidence makes audit review harder</span></div>
+            <div class="box"><b>Decision</b><span>Separate evidence by purpose using dedicated storage containers</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/sa-container-gui-01.png" alt="Storage containers" data-full="assets/case-studies/helios-governance/sa-container-gui-01.png">
+          <figcaption class="caption">Evidence: governance evidence containers created inside Azure Storage.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid section" id="challenges">
+    <div class="section-head">
+      <h2>Challenges, issues & resolution</h2>
+      <p>Real-world deployment challenges caused by policy enforcement, quota limits and monitored resource dependencies.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Issue</span>
+            <span class="tag">Policy enforcement</span>
+            <span class="tag ok">Resolved</span>
+          </div>
+          <h3>Policy blocked resource deployment</h3>
+          <p>Strict tagging controls blocked Azure from creating dependent resources that did not meet governance requirements.</p>
+          <div class="meta">
+            <div class="box"><b>Root cause</b><span>Deny policy required Owner tag and blocked auto-created resources</span></div>
+            <div class="box"><b>Resolution</b><span>Created compliant supporting resources manually and aligned deployments with governance controls</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/func-helios-governance-issue-01.png" alt="Policy blocked deployment" data-full="assets/case-studies/helios-governance/func-helios-governance-issue-01.png">
+          <figcaption class="caption">Evidence: deployment blocked by Azure Policy due to governance requirements.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Issue</span>
+            <span class="tag">Function deployment</span>
+            <span class="tag ok">Troubleshot</span>
+          </div>
+          <h3>Function deployment issue investigated</h3>
+          <p>Function App deployment was impacted by policy dependencies and regional quota constraints during implementation.</p>
+          <div class="meta">
+            <div class="box"><b>Challenge</b><span>Deployment failed while creating monitoring and function resources</span></div>
+            <div class="box"><b>Resolution</b><span>Adjusted region selection and deployed supporting monitoring resources in a compliant way</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/helios-governance/func-helios-governance-policy-issue-01.png" alt="Function deployment issue" data-full="assets/case-studies/helios-governance/func-helios-governance-policy-issue-01.png">
+          <figcaption class="caption">Evidence: Function App deployment issue caused by governance enforcement and platform constraints.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <div class="footer">
+    <b>Outcome:</b> This evidence pack demonstrates Azure governance implementation, compliance monitoring,
+    security risk detection, serverless automation and audit evidence collection. It supports the full case study narrative
+    shown on the GRC & Risk Management page.
+  </div>
+
+</main>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lightboxImg" alt="Expanded evidence screenshot" />
+</div>
+
+<script>
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+
+  document.querySelectorAll('img.shot').forEach(img => {
+    img.addEventListener('click', () => {
+      const src = img.getAttribute('data-full') || img.src;
+      lbImg.src = src;
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  lb.addEventListener('click', () => {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    lbImg.src = '';
+    document.body.style.overflow = '';
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lb.classList.contains('open')) {
+      lb.click();
+    }
+  });
+</script>
+</body>
+</html>
