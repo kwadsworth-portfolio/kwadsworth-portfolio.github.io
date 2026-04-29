@@ -4,6 +4,7 @@
   --accent: #38bdf8;
   --text: #e5e7eb;
   --muted: #94a3b8;
+  --border: #1e293b;
 }
 
 * {
@@ -11,8 +12,7 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
   margin: 0;
@@ -63,6 +63,11 @@ nav a:hover {
   justify-content: center;
 }
 
+.hero--small {
+  height: 34vh;
+  min-height: 260px;
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -75,21 +80,23 @@ nav a:hover {
 
 .hero-content {
   position: relative;
-  max-width: 800px;
+  max-width: 900px;
   padding: 24px;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: 2.1rem;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
   margin-bottom: 12px;
 }
 
 .hero p {
   color: var(--muted);
   margin-bottom: 20px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
+
+/* Buttons */
 
 .btn {
   display: inline-block;
@@ -108,16 +115,79 @@ nav a:hover {
 }
 
 /* Main content */
+
 .main-section {
-  max-width: 1150px;   /* wider but still clean */
+  max-width: 1150px;
   margin: 40px auto 56px;
-  padding: 0 24px;     /* more breathing room on sides */
+  padding: 0 24px;
 }
 
 .main-section h2 {
-  text-align: center;
   margin-bottom: 24px;
 }
+
+/* Case study content */
+
+.project-case {
+  width: 100%;
+  max-width: 1150px;
+  margin: 0 auto 46px;
+  padding: 0;
+}
+
+.project-case h2,
+.project-case h3 {
+  text-align: left;
+  letter-spacing: 0.02em;
+}
+
+.project-case h2 {
+  margin-top: 2.1em;
+  margin-bottom: 0.8em;
+  font-size: clamp(1.45rem, 2vw, 2rem);
+}
+
+.project-case h3 {
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  font-size: 1.15rem;
+}
+
+.project-case h2::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  margin-bottom: 10px;
+  background: var(--accent);
+  opacity: 0.65;
+}
+
+.project-case p,
+.project-case ul,
+.project-case li {
+  max-width: 100%;
+  line-height: 1.68;
+  letter-spacing: 0.01em;
+}
+
+.project-case p {
+  margin-bottom: 1.15em;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.project-case ul {
+  padding-left: 1.2em;
+  margin-bottom: 1.2em;
+}
+
+.project-case li {
+  margin-bottom: 0.45em;
+  text-align: left;
+}
+
+/* Cards */
 
 .cards {
   display: grid;
@@ -134,7 +204,7 @@ nav a:hover {
   background: var(--bg-alt);
   padding: 18px 16px;
   border-radius: 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border);
 }
 
 .card h3 {
@@ -147,17 +217,72 @@ nav a:hover {
   color: var(--muted);
 }
 
-/* Footer */
+/* Project links */
 
-.site-footer {
-  text-align: center;
-  padding: 16px;
-  font-size: 0.85rem;
-  color: var(--muted);
-  border-top: 1px solid #1e293b;
-  background: #020617;
+.project-link {
+  margin-top: 16px;
 }
-/* Sub-page hero (Projects / About) */
+
+.project-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.project-link a:hover {
+  text-decoration: underline;
+}
+
+.project-icon {
+  font-size: 1rem;
+}
+
+/* Back / Evidence nav row */
+
+.back-link-wrapper {
+  max-width: 1150px;
+  margin: 18px auto 0;
+  padding: 0 24px;
+}
+
+.back-link,
+.evidence-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover,
+.evidence-link:hover {
+  text-decoration: underline;
+}
+
+.case-nav {
+  max-width: 1150px;
+  margin: 24px auto 36px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.case-nav .back-link,
+.case-nav .evidence-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.case-nav .back-link:hover,
+.case-nav .evidence-link:hover {
+  text-decoration: underline;
+}
+
+/* Sub-page hero */
 
 .sub-hero {
   background: linear-gradient(
@@ -165,13 +290,13 @@ nav a:hover {
     rgba(15, 23, 42, 0.98),
     rgba(15, 23, 42, 0.92)
   );
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--border);
 }
 
 .sub-hero-inner {
-  max-width: 1000px;
+  max-width: 1150px;
   margin: 0 auto;
-  padding: 40px 16px 34px;
+  padding: 40px 24px 34px;
   text-align: center;
 }
 
@@ -182,11 +307,12 @@ nav a:hover {
 
 .sub-hero p {
   color: var(--muted);
-  max-width: 760px;
+  max-width: 850px;
   margin: 0 auto;
   line-height: 1.5;
 }
-/* About page hero with image */
+
+/* About page */
 
 .about-hero {
   position: relative;
@@ -198,7 +324,7 @@ nav a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -215,7 +341,7 @@ nav a:hover {
 
 .about-hero-inner {
   position: relative;
-  max-width: 800px;
+  max-width: 900px;
   padding: 24px;
   text-align: center;
 }
@@ -227,56 +353,31 @@ nav a:hover {
 
 .about-hero p {
   color: var(--muted);
-  max-width: 760px;
+  max-width: 850px;
   margin: 0 auto;
   line-height: 1.5;
 }
-.project-link {
-  margin-top: 16px;
-}
-.project-link a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--accent);
-  font-weight: 500;
-  text-decoration: none;
-}
-.project-link a:hover {
-  text-decoration: underline;
-}
-.project-icon {
-  font-size: 1rem;
-}
-/* Back link (deep dive pages) */
 
-.back-link-wrapper {
-  max-width: 1000px;
-  margin: 16px auto 0;
-  padding: 0 16px;
+.about,
+.about-section,
+.about-content {
+  max-width: 1150px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.back-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.back-link:hover {
-  text-decoration: underline;
-}
-/* Certifications section */
+/* Certifications */
 
 .cert-section {
-  background: radial-gradient(circle at top, var(--accent-soft), #020617);
-  border-top: 1px solid #1e293b;
-  border-bottom: 1px solid #1e293b;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.14), #020617);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .cert-inner {
-  max-width: 1000px;
+  max-width: 1150px;
   margin: 0 auto;
-  padding: 32px 16px 40px;
+  padding: 32px 24px 40px;
   text-align: center;
 }
 
@@ -303,7 +404,7 @@ nav a:hover {
 .cert-card {
   background: #020617;
   border-radius: 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border);
   padding: 14px 12px;
 }
 
@@ -320,9 +421,8 @@ nav a:hover {
   margin-top: 18px;
   font-size: 0.85rem;
 }
-/* ===============================
-   Credly Badge Styling
-   =============================== */
+
+/* Credly Badge */
 
 .credly-badge {
   display: flex;
@@ -331,247 +431,12 @@ nav a:hover {
   margin-top: 18px;
 }
 
-/* wraps the Credly iframe & reduce size*/
 .credly-badge-inner {
-  transform: scale(0.7); 
-  transform-origin: top center;   
-}
-/* ===============================
-   Justified body text (centred content)
-   =============================== */
-
-/* Keep hero / banner text centred */
-.hero,
-.hero-content {
-  text-align: center;
+  transform: scale(0.7);
+  transform-origin: top center;
 }
 
-/* Centre the content block, justify text inside */
-.main-section,
-.project-case,
-.about-section,
-.about-content,
-.about {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: justify;
-  text-justify: inter-word;
-}
-
-/* Ensure headings stay readable */
-.project-case h2,
-.about h2,
-.about h3 {
-  text-align: left;
-}
-/* ===============================
-   Professional Typography Polish
-   =============================== */
-
-/* Hero / banner always centred */
-.hero,
-.hero-content {
-  text-align: center;
-}
-
-/* Centre content blocks on the page */
-.main-section,
-.project-case,
-.about-section,
-.about-content,
-.about {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Justified body text (desktop & tablet) */
-.project-case p,
-.project-case ul,
-.project-case li,
-.about p,
-.about ul,
-.about li {
-  text-align: justify;
-  text-justify: inter-word;
-  line-height: 1.65;
-  max-width: 70ch; /* optimal reading width */
-}
-
-/* Headings stay clean and readable */
-.project-case h2,
-.about h2,
-.about h3 {
-  text-align: left;
-  max-width: 70ch;
-}
-
-/* Improve paragraph rhythm */
-.project-case p,
-.about p {
-  margin-bottom: 1.1em;
-}
-
-/* Centre content block on page */
-.main-section,
-.project-case,
-.about-section,
-.about-content,
-.about {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ===============================
-   Body Text – Professional Justification
-   =============================== */
-
-.project-case p,
-.project-case ul,
-.project-case li,
-.about p,
-.about ul,
-.about li {
-  max-width: 72ch;              /* optimal readable line length */
-  line-height: 1.68;
-  text-align: justify;
-  text-justify: inter-word;
-  letter-spacing: 0.01em;
-}
-
-/* Improve paragraph rhythm */
-.project-case p,
-.about p {
-  margin-bottom: 1.15em;
-}
-
-/* ===============================
-   Headings – Clear hierarchy
-   =============================== */
-
-.project-case h2,
-.about h2,
-.about h3 {
-  max-width: 72ch;
-  text-align: left;
-  margin-top: 2.2em;
-  margin-bottom: 0.6em;
-  letter-spacing: 0.02em;
-}
-
-/* ===============================
-   Lists – tighter, document-style
-   =============================== */
-
-.project-case ul,
-.about ul {
-  padding-left: 1.2em;
-  margin-bottom: 1.2em;
-}
-
-.project-case li,
-.about li {
-  margin-bottom: 0.45em;
-}
-
-/* ===============================
-   Subtle visual anchor for sections
-   =============================== */
-
-.project-case h2::before {
-  content: "";
-  display: block;
-  width: 36px;
-  height: 2px;
-  margin-bottom: 10px;
-  background: var(--accent);
-  opacity: 0.55;
-}
-
-/* ===============================
-   Mobile optimisation
-   =============================== */
-
-@media (max-width: 720px) {
-  /* Avoid justification gaps on small screens */
-  .project-case p,
-  .project-case li,
-  .about p,
-  .about li {
-    text-align: left;
-    hyphens: auto;
-  }
-}
-/* Case study navigation row */
-.case-nav {
-  max-width: 1100px;
-  margin: 2rem auto 3rem;
-  padding: 0 1.5rem;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Match Back to Projects style exactly */
-.case-nav-link {
-  color: #4db5ff;
-  font-size: 0.95rem;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.case-nav-link:hover {
-  text-decoration: underline;
-}
-/* Case study nav row: left + right aligned */
-.case-nav {
-  max-width: 1000px;
-  margin: 16px auto 0;
-  padding: 0 16px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Make BOTH links identical */
-.case-nav .back-link,
-.case-nav .evidence-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-
-.case-nav .back-link:hover,
-.case-nav .evidence-link:hover {
-  text-decoration: underline;
-}
-/* Project nav links (Back / Evidence) */
-.project-nav{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 22px 20px 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.project-nav-link,
-.project-nav-link:visited{
-  color: #4fc3ff;
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-.project-nav-link:hover{
-  opacity: 0.8;
-  text-decoration: none;
-}
-/* ============================= */
-/* GRC DOCUMENT LINKS (FINAL) */
-/* ============================= */
+/* GRC document links */
 
 .grc-links {
   margin-top: 20px;
@@ -581,69 +446,10 @@ nav a:hover {
 
 .grc-links li {
   margin-bottom: 12px;
-}
-
-/* Link styling */
-.grc-links a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  color: #8fd3ff; /* light blue */
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 15px;
-
-  transition: all 0.2s ease;
-}
-
-/* Hover effect */
-.grc-links a:hover {
-  color: #ffffff;
-  transform: translateX(4px); /* subtle slide effect */
-}
-
-/* File icons */
-.file-icon {
-  font-size: 18px;
-  min-width: 20px;
-}
-
-/* PDF icon colour */
-.file-icon.pdf {
-  color: #ff6b6b;
-}
-
-/* Excel icon colour */
-.file-icon.excel {
-  color: #4ade80;
-}
-
-/* New tab indicator */
-.new-tab {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-left: 4px;
-}
-/* ===============================
-   Fix GRC document link alignment
-   =============================== */
-
-.project-case .grc-links {
-  max-width: 72ch;
-  margin-top: 20px;
-  margin-left: 0;
-  margin-right: auto;
-  padding-left: 0;
-  list-style: none;
-}
-
-.project-case .grc-links li {
-  margin-bottom: 12px;
   text-align: left;
 }
 
-.project-case .grc-links a {
+.grc-links a {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -652,21 +458,72 @@ nav a:hover {
   font-weight: 500;
   font-size: 15px;
   line-height: 1.5;
+  transition: all 0.2s ease;
 }
 
-.project-case .grc-links a:hover {
+.grc-links a:hover {
   color: #ffffff;
   transform: translateX(4px);
 }
 
-.project-case .file-icon {
+.file-icon {
   font-size: 18px;
   min-width: 22px;
   text-align: center;
 }
 
-.project-case .new-tab {
+.file-icon.pdf {
+  color: #ff6b6b;
+}
+
+.file-icon.excel {
+  color: #4ade80;
+}
+
+.new-tab {
   font-size: 12px;
   opacity: 0.75;
   margin-left: 4px;
+}
+
+/* Footer */
+
+.site-footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: #020617;
+}
+
+/* Mobile optimisation */
+
+@media (max-width: 720px) {
+  .site-header {
+    padding: 14px 18px;
+  }
+
+  nav a {
+    margin-left: 12px;
+    font-size: 0.9rem;
+  }
+
+  .main-section,
+  .case-nav,
+  .back-link-wrapper {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .case-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .project-case p {
+    text-align: left;
+    hyphens: auto;
+  }
 }
