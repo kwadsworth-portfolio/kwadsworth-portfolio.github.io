@@ -108,11 +108,10 @@ nav a:hover {
 }
 
 /* Main content */
-
 .main-section {
-  max-width: 1000px;
-  margin: 32px auto 48px;
-  padding: 0 16px;
+  max-width: 1150px;   /* wider but still clean */
+  margin: 40px auto 56px;
+  padding: 0 24px;     /* more breathing room on sides */
 }
 
 .main-section h2 {
