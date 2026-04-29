@@ -626,3 +626,48 @@ nav a:hover {
   opacity: 0.7;
   margin-left: 4px;
 }
+/* ===============================
+   Fix GRC document link alignment
+   =============================== */
+
+.project-case .grc-links {
+  max-width: 72ch;
+  margin-top: 20px;
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 0;
+  list-style: none;
+}
+
+.project-case .grc-links li {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.project-case .grc-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #8fd3ff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.project-case .grc-links a:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.project-case .file-icon {
+  font-size: 18px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.project-case .new-tab {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-left: 4px;
+}
