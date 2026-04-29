@@ -570,3 +570,59 @@ nav a:hover {
   opacity: 0.8;
   text-decoration: none;
 }
+/* ============================= */
+/* GRC DOCUMENT LINKS (FINAL) */
+/* ============================= */
+
+.grc-links {
+  margin-top: 20px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.grc-links li {
+  margin-bottom: 12px;
+}
+
+/* Link styling */
+.grc-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #8fd3ff; /* light blue */
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.grc-links a:hover {
+  color: #ffffff;
+  transform: translateX(4px); /* subtle slide effect */
+}
+
+/* File icons */
+.file-icon {
+  font-size: 18px;
+  min-width: 20px;
+}
+
+/* PDF icon colour */
+.file-icon.pdf {
+  color: #ff6b6b;
+}
+
+/* Excel icon colour */
+.file-icon.excel {
+  color: #4ade80;
+}
+
+/* New tab indicator */
+.new-tab {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-left: 4px;
+}
