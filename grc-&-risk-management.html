@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cyber GRC & Risk Management Case Study | Kevin Wadsworth</title>
+  <title>GRC & Azure Cloud Governance Case Study | Kevin Wadsworth</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -20,11 +20,10 @@
 <section class="hero hero--small">
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <h1>Project 3: Cyber GRC & Azure Cloud Governance Platform</h1>
+    <h1>Cyber GRC &amp; Azure Cloud Governance Platform</h1>
     <p>
-      Governance, risk and compliance initiative aligned to ISO&nbsp;27001 principles,
-      demonstrating how a lightweight ISMS and structured risk management can support
-      better security decision-making.
+      A practical GRC case study demonstrating how ISO 27001-style governance,
+      risk management and cloud security controls can be applied within Microsoft Azure.
     </p>
   </div>
 </section>
@@ -40,138 +39,143 @@
 <main class="main-section">
 
   <article class="project-case">
-    <h2>1. Overview</h2>
+    <h2>1. Executive Summary</h2>
     <p>
-      This project focused on designing a lightweight ISMS and risk management approach.
-      The aim was to demonstrate how governance, risk and control can be applied in a
-      practical, scalable way.
+      This project demonstrates the design and implementation of a lightweight governance,
+      risk and compliance model for a simulated organisation, Helios Energy Analytics.
+      The aim was to show how GRC principles can move beyond documentation and be applied
+      directly within a cloud environment.
+    </p>
+    <p>
+      The solution combines ISMS-style thinking, Azure Policy, Resource Graph queries,
+      compliance monitoring and evidence collection to demonstrate a practical governance
+      operating model.
     </p>
   </article>
 
   <article class="project-case">
-    <h2>2. Scope &amp; Objectives</h2>
+    <h2>2. Project Objectives</h2>
     <ul>
-      <li>Establish a GRC framework aligned to ISO&nbsp;27001.</li>
-      <li>Create a structured risk register.</li>
-      <li>Define proportionate controls mapped to risks.</li>
-      <li>Produce governance documentation and accountability model.</li>
+      <li>Design a practical GRC model aligned to ISO 27001 principles.</li>
+      <li>Apply cloud governance controls using Azure Policy.</li>
+      <li>Detect and classify common cloud risks and misconfigurations.</li>
+      <li>Create audit-ready evidence to support compliance reporting.</li>
+      <li>Demonstrate how governance can be automated and monitored over time.</li>
     </ul>
   </article>
 
   <article class="project-case">
-    <h2>3. ISMS &amp; Risk Design</h2>
+    <h2>3. Governance &amp; ISMS Approach</h2>
     <p>
-      A mini-ISMS was designed with focus on traceability between assets, risks and controls.
+      I designed a lightweight ISMS-style approach focused on accountability,
+      traceability and proportionate control selection. The governance model linked
+      assets, risks, owners, policies and controls together so that security decisions
+      could be explained clearly to both technical and non-technical stakeholders.
     </p>
     <ul>
-      <li>Asset identification and classification</li>
-      <li>Risk scoring model</li>
-      <li>Threat and vulnerability mapping</li>
-      <li>ISO-style control alignment</li>
+      <li>Defined ownership and accountability for cloud resources.</li>
+      <li>Mapped risks to practical mitigating controls.</li>
+      <li>Established policy requirements for tagging, location and storage security.</li>
+      <li>Created a structure for ongoing review, exception handling and evidence capture.</li>
     </ul>
   </article>
 
   <article class="project-case">
-    <h2>4. Governance, Policies &amp; Procedures</h2>
+    <h2>4. Azure Governance Implementation</h2>
+    <p>
+      To translate the GRC model into a real technical environment, I implemented an
+      Azure Policy initiative called <strong>Helios Governance Baseline</strong>.
+      This baseline applied governance controls at subscription level and helped
+      enforce consistent standards across the environment.
+    </p>
     <ul>
-      <li>Defined ownership and accountability</li>
-      <li>Created core security policies</li>
-      <li>Established review cycles</li>
-      <li>Defined exception handling process</li>
+      <li>Mandatory ownership tagging to improve accountability.</li>
+      <li>Approved Azure regions to support location and data residency control.</li>
+      <li>Storage account security policies to reduce exposure risk.</li>
+      <li>Policy effects including deny and audit to enforce or monitor compliance.</li>
     </ul>
   </article>
 
   <article class="project-case">
-    <h2>5. Outcomes &amp; Lessons Learned</h2>
+    <h2>5. Risk Identification &amp; Monitoring</h2>
+    <p>
+      I used Azure Policy and Azure Resource Graph to identify governance gaps and
+      security risks across the environment. The project was designed to show both
+      compliant and non-compliant outcomes, making it clear how cloud risks can be
+      surfaced and reviewed.
+    </p>
     <ul>
-      <li>Clear linkage between risks and controls</li>
-      <li>Improved stakeholder visibility</li>
-      <li>Scalable governance model</li>
+      <li><strong>High risk:</strong> public storage exposure.</li>
+      <li><strong>High risk:</strong> unrestricted network security group access.</li>
+      <li><strong>Medium risk:</strong> resources deployed outside approved regions.</li>
+      <li><strong>Medium risk:</strong> missing ownership tags.</li>
     </ul>
   </article>
 
-  <!-- 🔥 AZURE CASE STUDY -->
+  <article class="project-case">
+    <h2>6. Automation &amp; Evidence Collection</h2>
+    <p>
+      A timer-triggered Azure Function was introduced to demonstrate how compliance
+      checks could be automated and repeated over time. I also created an evidence
+      repository in Azure Storage to hold compliance snapshots, risk summaries and
+      audit artefacts.
+    </p>
+    <p>
+      This helped demonstrate how governance can become operational rather than
+      remaining a static policy document.
+    </p>
+  </article>
 
   <article class="project-case">
-    <h2>6. Applied Case Study: Azure Cloud Governance (Helios Platform)</h2>
-
-    <p><strong>End-to-end Azure governance implementation demonstrating real-world GRC application.</strong></p>
-
+    <h2>7. Challenges &amp; Resolution</h2>
     <p>
-      To complement the ISMS design, I implemented a cloud governance solution in Azure,
-      demonstrating how policy enforcement, monitoring and evidence collection operate
-      in practice.
+      The project included realistic implementation challenges that reflected how
+      governance controls can affect day-to-day cloud delivery.
     </p>
-
-    <h3>Governance Implementation</h3>
     <ul>
-      <li>Created Azure Policy Initiative ("Helios Governance Baseline")</li>
-      <li>Enforced tagging, region and storage controls</li>
-      <li>Applied governance at subscription level</li>
+      <li>
+        <strong>Policy blocked deployments:</strong> resolved by aligning resources
+        with required tags and governance standards.
+      </li>
+      <li>
+        <strong>Auto-created resources failed policy checks:</strong> resolved by
+        manually creating compliant supporting resources.
+      </li>
+      <li>
+        <strong>Regional quota limitations:</strong> resolved by selecting an
+        alternative Azure region for deployment.
+      </li>
+      <li>
+        <strong>Query issues:</strong> resolved by adjusting Resource Graph queries
+        and validating results against the Azure portal.
+      </li>
     </ul>
+  </article>
 
-    <img src="assets/case-studies/helios-governance/policies-ia-policy-assignment.png">
+  <article class="project-case">
+    <h2>8. Outcome</h2>
+    <p>
+      The final outcome was a working Azure governance case study showing the full
+      lifecycle of GRC in practice: policy definition, enforcement, detection,
+      remediation, automation and evidence collection.
+    </p>
+    <p>
+      The project demonstrates practical capability across cloud governance, Azure
+      security, risk management, compliance monitoring and audit readiness.
+    </p>
+  </article>
 
-    <h3>Risk Identification</h3>
+  <article class="project-case">
+    <h2>9. Skills Demonstrated</h2>
     <ul>
-      <li><strong>High:</strong> Public storage access</li>
-      <li><strong>High:</strong> Open network security group</li>
-      <li><strong>Medium:</strong> Non-approved region</li>
-      <li><strong>Medium:</strong> Missing tags</li>
+      <li>Azure Policy and governance baseline design</li>
+      <li>Cloud risk identification and control mapping</li>
+      <li>Azure Resource Graph querying</li>
+      <li>Compliance monitoring and audit evidence collection</li>
+      <li>Azure Functions automation</li>
+      <li>ISO 27001 and NIST CSF-aligned thinking</li>
+      <li>Problem-solving through deployment and policy issues</li>
     </ul>
-
-    <img src="assets/case-studies/helios-governance/policies-ic-policy-noncompliant.png">
-
-    <h3>Detection & Monitoring</h3>
-    <p>
-      Azure Resource Graph was used to query and validate compliance across resources.
-    </p>
-
-    <img src="assets/case-studies/helios-governance/resource-graph-explorer-missing-tags.png">
-    <img src="assets/case-studies/helios-governance/resource-graph-explorer-blob-access.png">
-
-    <h3>Automation</h3>
-    <p>
-      A timer-triggered Azure Function was implemented to simulate automated compliance monitoring.
-    </p>
-
-    <img src="assets/case-studies/helios-governance/fa-daily-compliance-check-auto-01.png">
-
-    <h3>Evidence & Audit</h3>
-    <p>
-      Compliance outputs were stored in Azure Storage to simulate an audit-ready evidence repository.
-    </p>
-
-    <img src="assets/case-studies/helios-governance/evidence-repository-01.png">
-
-    <h3>Challenges</h3>
-    <ul>
-      <li>Policy blocking resource deployments</li>
-      <li>Tag enforcement preventing auto-created resources</li>
-      <li>Regional quota limitations</li>
-    </ul>
-
-    <img src="assets/case-studies/helios-governance/func-helios-governance-issue-01.png">
-
-    <h3>Resolution</h3>
-    <ul>
-      <li>Aligned deployments with governance controls</li>
-      <li>Manually created compliant resources</li>
-      <li>Adjusted queries for accurate results</li>
-      <li>Used alternative regions</li>
-    </ul>
-
-    <h3>Outcome</h3>
-    <p>
-      Demonstrates full GRC lifecycle: policy definition, enforcement, detection,
-      remediation and evidence collection.
-    </p>
-
-    <p>
-      Aligns with ISO 27001 (Access Control, Network Security) and NIST CSF
-      (Identify, Protect, Detect).
-    </p>
-
   </article>
 
 </main>
