@@ -191,6 +191,47 @@
       background: rgba(255,255,255,.02);
     }
     .footer b{color:var(--text)}
+
+    /* Banner hero */
+    .banner-hero{
+      position:relative;
+      height:34vh;
+      min-height:240px;
+      background-image: url("assets/banner-01.jpg");
+      background-size:cover;
+      background-position:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .banner-overlay{
+      position:absolute;
+      inset:0;
+      background: linear-gradient(
+        to bottom right,
+        rgba(11,18,32,0.88),
+        rgba(8,47,73,0.78)
+      );
+    }
+    .banner-content{
+      position:relative;
+      max-width:900px;
+      padding:24px 32px;
+      text-align:center;
+    }
+    .banner-content h1{
+      font-size:clamp(1.6rem, 3vw, 2.4rem);
+      font-weight:700;
+      margin:0 0 10px;
+    }
+    .banner-content p{
+      color:var(--muted);
+      margin:0;
+      font-size:1rem;
+      line-height:1.55;
+      max-width:68ch;
+    }
   </style>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -211,7 +252,16 @@
 </div>
 
 <main class="wrap">
-  <section class="hero">
+  <section class="banner-hero">
+  <div class="banner-overlay"></div>
+  <div class="banner-content">
+    <h1>Evidence Pack — ACS Secure AWS</h1>
+    <p>Single-scroll proof of build, security controls, monitoring, governance and cost controls.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  
     <h1>Evidence Pack (ACS Secure AWS)</h1>
     <p>
       This page consolidates screenshots showing what was configured, why it matters (risk/threat/vulnerability),

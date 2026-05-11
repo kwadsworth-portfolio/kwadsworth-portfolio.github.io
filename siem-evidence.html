@@ -1,156 +1,638 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SIEM Detection – Evidence Pack | Kevin Wadsworth</title>
-  <meta name="description" content="Step-by-step build notes and evidence for the SIEM Visibility and Detection case study — Splunk, SPL queries, alerts and automation outputs." />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <meta name="description" content="Evidence pack for the SIEM Visibility and Detection project: Splunk setup, log onboarding, SPL detections, dashboards, alerts and automation outputs." />
 
-<header class="site-header">
-  <div class="logo">Kevin Wadsworth</div>
-  <nav aria-label="Primary navigation">
-    <a href="index.html">Home</a>
-    <a href="projects.html">Projects</a>
-    <a href="about.html">About</a>
-  </nav>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a2e;
+      --panel2:#0c1629;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#67e8f9;
+      --accent2:#a78bfa;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(103,232,249,.18), transparent 55%),
+                  radial-gradient(900px 500px at 85% 10%, rgba(167,139,250,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max); margin:0 auto; padding:22px 18px 64px}
+    header{
+      position:sticky; top:0; z-index:50;
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.65));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .brand strong{font-size:15px; letter-spacing:.2px}
+    .brand span{font-size:12px; color:var(--muted)}
+    .nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+      font-size:13px;
+    }
+    .pill{
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+    }
+    .pill:hover{border-color: rgba(103,232,249,.45); text-decoration:none}
+    .hero{
+      margin-top:22px;
+      background: linear-gradient(135deg, rgba(103,232,249,.10), rgba(167,139,250,.10));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:20px;
+    }
+    .hero h1{margin:0 0 6px; font-size:28px}
+    .hero p{margin:0; color:var(--muted); max-width:75ch}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+    .section{
+      background: rgba(255,255,255,.02);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+    }
+    .section-head{
+      padding:16px 16px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .section-head h2{margin:0; font-size:18px}
+    .section-head p{margin:6px 0 0; color:var(--muted); font-size:13px}
+    .cards{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 12;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    }
+    .card-inner{padding:14px}
+    .kicker{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      margin-bottom:10px;
+    }
+    .tag{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+    .tag.ok{color:var(--ok); border-color: rgba(52,211,153,.35)}
+    .tag.warn{color:var(--warn); border-color: rgba(251,191,36,.35)}
+    .tag.bad{color:var(--bad); border-color: rgba(251,113,133,.35)}
+    .card h3{margin:0 0 8px; font-size:16px}
+    .card p{margin:0; color:var(--muted); font-size:13px}
+    .meta{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:10px;
+    }
+    .meta .box{
+      grid-column: span 12;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+    }
+    .box b{display:block; font-size:12px; color:var(--text); margin-bottom:2px}
+    .box span{font-size:12px; color:var(--muted)}
+    figure{margin:0}
+    .shot{
+      width:100%;
+      display:block;
+      background: #050a14;
+      border-top:1px solid var(--line);
+      cursor: zoom-in;
+    }
+    .caption{
+      padding:10px 14px 14px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      background: rgba(0,0,0,.12);
+    }
+    .code-block{
+      margin:0;
+      padding:14px 16px;
+      background: rgba(0,0,0,.35);
+      border-top:1px solid var(--line);
+      overflow-x:auto;
+    }
+    .code-block code{
+      font-family: ui-monospace, "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size:12px;
+      color:#a5f3fc;
+      white-space:pre;
+    }
+    @media (min-width: 880px){
+      .card{grid-column: span 6;}
+      .meta .box{grid-column: span 6;}
+    }
+    .lightbox{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.75);
+      z-index:9999;
+      padding:18px;
+    }
+    .lightbox.open{display:flex;}
+    .lightbox img{
+      max-width:min(1200px, 96vw);
+      max-height: 86vh;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 22px 80px rgba(0,0,0,.55);
+      background:#050a14;
+      cursor: zoom-out;
+    }
+    .footer{
+      margin-top:18px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      color:var(--muted);
+      font-size:13px;
+      background: rgba(255,255,255,.02);
+    }
+    .footer b{color:var(--text)}
+
+    /* Banner hero */
+    .banner-hero{
+      position:relative;
+      height:34vh;
+      min-height:240px;
+      background-image: url("assets/banner-01.jpg");
+      background-size:cover;
+      background-position:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .banner-overlay{
+      position:absolute;
+      inset:0;
+      background: linear-gradient(
+        to bottom right,
+        rgba(11,18,32,0.88),
+        rgba(8,47,73,0.78)
+      );
+    }
+    .banner-content{
+      position:relative;
+      max-width:900px;
+      padding:24px 32px;
+      text-align:center;
+    }
+    .banner-content h1{
+      font-size:clamp(1.6rem, 3vw, 2.4rem);
+      font-weight:700;
+      margin:0 0 10px;
+    }
+    .banner-content p{
+      color:var(--muted);
+      margin:0;
+      font-size:1rem;
+      line-height:1.55;
+      max-width:68ch;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>Kevin Wadsworth</strong>
+      <span>Cybersecurity &amp; GRC Portfolio</span>
+    </div>
+    <nav class="nav">
+      <a class="pill" href="projects.html">← Back to Projects</a>
+      <a class="pill" href="siem-detection.html">Case Study</a>
+      <a class="pill" href="#setup">Setup</a>
+      <a class="pill" href="#onboarding">Onboarding</a>
+      <a class="pill" href="#detections">Detections</a>
+      <a class="pill" href="#alerts">Alerts</a>
+      <a class="pill" href="#automation">Automation</a>
+    </nav>
+  </div>
 </header>
 
-<section class="hero hero--small">
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <h1>SIEM Detection – Evidence Pack</h1>
-    <p>
-      Step-by-step build notes and supporting evidence for the SIEM Visibility &amp; Detection
-      case study — screenshots, SPL queries, alert configuration and automation outputs.
-    </p>
+<main class="wrap">
+  <section class="banner-hero">
+  <div class="banner-overlay"></div>
+  <div class="banner-content">
+    <h1>Evidence Pack — SIEM Visibility &amp; Detection</h1>
+    <p>Splunk setup, log onboarding, SPL detections, dashboards, alerts and automation outputs.</p>
   </div>
 </section>
 
-<div class="case-nav">
-  <a href="siem-detection.html">&larr; Back to Case Study</a>
-  <a href="projects.html">Back to Projects &rarr;</a>
-</div>
-
-<main class="main-section">
-
-  <article class="project-case">
-    <h2>1. Evidence Summary</h2>
+<main class="wrap">
+  
+    <h1>Evidence Pack (SIEM Visibility &amp; Detection)</h1>
     <p>
-      This page is the evidence pack for the SIEM lab build using Splunk. It documents
-      what was implemented and provides proof via screenshots and configuration outputs.
+      This page consolidates screenshots and SPL queries showing what was configured,
+      why it matters (risk/threat/vulnerability), and what action was taken.
+      Each item is written as if explaining it to a hiring manager in a real-world environment.
     </p>
-    <ul>
-      <li><strong>SIEM:</strong> Splunk (lab environment)</li>
-      <li><strong>Telemetry:</strong> Windows Security logs and Sysmon</li>
-      <li><strong>Coverage:</strong> Authentication abuse, suspicious execution, privilege changes</li>
-      <li><strong>Outputs:</strong> Dashboards, scheduled alerts, incident artefacts and notifications</li>
-    </ul>
-  </article>
+  </section>
 
-  <article class="project-case">
-    <h2>2. Evidence Index</h2>
-    <ul>
-      <li><a href="#setup">Environment setup</a></li>
-      <li><a href="#onboarding">Log onboarding &amp; validation</a></li>
-      <li><a href="#detections">Detections (SPL queries and proof)</a></li>
-      <li><a href="#alerts">Alerts &amp; dashboards</a></li>
-      <li><a href="#automation">Automation &amp; incident artefacts</a></li>
-    </ul>
-  </article>
+  <!-- SETUP -->
+  <section class="grid section" id="setup">
+    <div class="section-head">
+      <h2>Environment setup</h2>
+      <p>Splunk installation, Windows endpoint configuration and Sysmon deployment.</p>
+    </div>
 
-  <article id="setup" class="project-case">
-    <h2>3. Environment Setup</h2>
-    <p>
-      Splunk was installed in a lab environment and a Windows endpoint was configured to generate
-      security telemetry. Sysmon was enabled to capture process creation and command-line activity.
-    </p>
-    <ul>
-      <li>Splunk installed and accessible via the web interface.</li>
-      <li>Windows endpoint configured and sending events.</li>
-      <li>Sysmon running and producing structured process and network events.</li>
-      <li>Time synchronisation verified across systems.</li>
-    </ul>
-    <p><strong>Evidence:</strong></p>
-    <img src="assets/case-studies/siem/setup-splunk-data.png" alt="Splunk receiving data" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
-    <img src="assets/case-studies/siem/setup-sysmon.png" alt="Sysmon running" style="max-width:100%; border-radius:12px;" />
-  </article>
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Build</span>
+            <span class="tag">SIEM platform</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Splunk installed and receiving data</h3>
+          <p>Splunk was installed in a lab environment and verified to be ingesting events from the Windows endpoint.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>No visibility without a functioning SIEM receiving telemetry</span></div>
+            <div class="box"><b>Decision</b><span>Deploy Splunk as the central log aggregation and analysis platform</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/setup-splunk-data.png" alt="Splunk receiving data" data-full="assets/case-studies/siem/setup-splunk-data.png">
+          <figcaption class="caption">Evidence: Splunk web interface showing data being received and indexed from the endpoint.</figcaption>
+        </figure>
+      </article>
 
-  <article id="onboarding" class="project-case">
-    <h2>4. Log Onboarding &amp; Validation</h2>
-    <p>
-      Confirmed that key Windows Security and Sysmon EventCodes were indexing correctly
-      using the following SPL queries:
-    </p>
-    <pre><code>index=wineventlog sourcetype="WinEventLog:Security"
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Build</span>
+            <span class="tag">Endpoint telemetry</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Sysmon deployed and running</h3>
+          <p>Sysmon was installed on the Windows endpoint to capture structured process creation, network connections and command-line activity.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Windows Security logs alone lack process and command-line context for investigations</span></div>
+            <div class="box"><b>Decision</b><span>Deploy Sysmon to enrich telemetry with high-fidelity endpoint events</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/setup-sysmon.png" alt="Sysmon running" data-full="assets/case-studies/siem/setup-sysmon.png">
+          <figcaption class="caption">Evidence: Sysmon service running and generating structured endpoint telemetry.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- ONBOARDING -->
+  <section class="grid section" id="onboarding">
+    <div class="section-head">
+      <h2>Log onboarding &amp; validation</h2>
+      <p>Confirming that key Windows Security and Sysmon EventCodes were indexing correctly.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Validation</span>
+            <span class="tag">Windows Security logs</span>
+            <span class="tag ok">Confirmed</span>
+          </div>
+          <h3>Windows Security EventCodes validated</h3>
+          <p>Queried the Security index to confirm authentication, account and privilege events were being captured correctly.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Missing EventCodes means gaps in detection coverage before rules are written</span></div>
+            <div class="box"><b>Decision</b><span>Validate index content before building detections to ensure reliable coverage</span></div>
+          </div>
+        </div>
+        <div class="code-block"><code>index=wineventlog sourcetype="WinEventLog:Security"
 | stats count by EventCode
-| sort -count</code></pre>
-    <pre><code>index=sysmon
+| sort -count</code></div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/onboarding-validation.png" alt="Log onboarding validation" data-full="assets/case-studies/siem/onboarding-validation.png">
+          <figcaption class="caption">Evidence: EventCode distribution confirming key Windows Security events are indexed.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Validation</span>
+            <span class="tag">Sysmon events</span>
+            <span class="tag ok">Confirmed</span>
+          </div>
+          <h3>Sysmon EventCodes validated</h3>
+          <p>Queried the Sysmon index to confirm process creation, network and other key event types were flowing correctly.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Sysmon may install but fail to forward events if the input is misconfigured</span></div>
+            <div class="box"><b>Decision</b><span>Verify Sysmon event distribution before relying on it for detections</span></div>
+          </div>
+        </div>
+        <div class="code-block"><code>index=sysmon
 | stats count by EventCode
-| sort -count</code></pre>
-    <img src="assets/case-studies/siem/onboarding-validation.png" alt="Log onboarding validation" style="max-width:100%; border-radius:12px;" />
-  </article>
+| sort -count</code></div>
+      </article>
+    </div>
+  </section>
 
-  <article id="detections" class="project-case">
-    <h2>5. Detections (SPL + Evidence)</h2>
+  <!-- DETECTIONS -->
+  <section class="grid section" id="detections">
+    <div class="section-head">
+      <h2>Detections (SPL queries + evidence)</h2>
+      <p>Detection rules for authentication abuse, suspicious execution and privilege changes.</p>
+    </div>
 
-    <h3>5.1 Brute Force Login Attempts</h3>
-    <pre><code>index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Risk</span>
+            <span class="tag">Brute force / credential abuse</span>
+            <span class="tag ok">Detected</span>
+          </div>
+          <h3>Brute force login attempts</h3>
+          <p>Detects multiple failed logins from the same source — a common indicator of credential stuffing or brute force activity.</p>
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Attacker attempting to guess credentials via repeated authentication failures</span></div>
+            <div class="box"><b>Decision</b><span>Alert when a single source generates 10+ failed logins against any host</span></div>
+          </div>
+        </div>
+        <div class="code-block"><code>index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count as fails values(Account_Name) as users by IpAddress, host
 | where fails >= 10
-| sort -fails</code></pre>
-    <img src="assets/case-studies/siem/detect-bruteforce.png" alt="Brute force detection" style="max-width:100%; border-radius:12px;" />
+| sort -fails</code></div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/detect-bruteforce.png" alt="Brute force detection" data-full="assets/case-studies/siem/detect-bruteforce.png">
+          <figcaption class="caption">Evidence: SPL query surfacing hosts and sources with 10+ failed login attempts.</figcaption>
+        </figure>
+      </article>
 
-    <h3>5.2 Suspicious PowerShell (Encoded Commands)</h3>
-    <pre><code>index=sysmon EventCode=1 Image="*\\powershell.exe"
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Risk</span>
+            <span class="tag">Suspicious execution</span>
+            <span class="tag ok">Detected</span>
+          </div>
+          <h3>Suspicious PowerShell (encoded commands)</h3>
+          <p>Detects PowerShell launched with encoded command arguments — a common technique used to obfuscate malicious activity.</p>
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Attacker using encoded PowerShell to bypass script-based defences or logging</span></div>
+            <div class="box"><b>Decision</b><span>Flag any PowerShell execution using -enc or -EncodedCommand for review</span></div>
+          </div>
+        </div>
+        <div class="code-block"><code>index=sysmon EventCode=1 Image="*\\powershell.exe"
 (CommandLine="*-enc*" OR CommandLine="*-EncodedCommand*")
 | table _time host User Image CommandLine
-| sort -_time</code></pre>
-    <img src="assets/case-studies/siem/detect-powershell.png" alt="Suspicious PowerShell detection" style="max-width:100%; border-radius:12px;" />
+| sort -_time</code></div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/detect-powershell.png" alt="Suspicious PowerShell detection" data-full="assets/case-studies/siem/detect-powershell.png">
+          <figcaption class="caption">Evidence: encoded PowerShell execution detected via Sysmon process creation events.</figcaption>
+        </figure>
+      </article>
 
-    <h3>5.3 New Local User / Admin Group Change</h3>
-    <pre><code>index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4720 OR EventCode=4732)
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag bad">Risk</span>
+            <span class="tag">Privilege escalation</span>
+            <span class="tag ok">Detected</span>
+          </div>
+          <h3>New local user / admin group change</h3>
+          <p>Detects new local account creation or addition to privileged groups — often indicative of persistence or privilege escalation.</p>
+          <div class="meta">
+            <div class="box"><b>Threat</b><span>Attacker creating a backdoor account or escalating privileges on a compromised host</span></div>
+            <div class="box"><b>Decision</b><span>Alert on EventCode 4720 (user created) and 4732 (added to admin group)</span></div>
+          </div>
+        </div>
+        <div class="code-block"><code>index=wineventlog sourcetype="WinEventLog:Security"
+(EventCode=4720 OR EventCode=4732)
 | table _time host SubjectUserName TargetUserName GroupName
-| sort -_time</code></pre>
-    <img src="assets/case-studies/siem/detect-new-admin.png" alt="New admin detection" style="max-width:100%; border-radius:12px;" />
-  </article>
+| sort -_time</code></div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/detect-new-admin.png" alt="New admin detection" data-full="assets/case-studies/siem/detect-new-admin.png">
+          <figcaption class="caption">Evidence: detection showing new account creation and admin group membership changes.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
 
-  <article id="alerts" class="project-case">
-    <h2>6. Alerts &amp; Dashboards</h2>
-    <ul>
-      <li>Scheduled alerts configured with thresholds, severity levels and notification actions.</li>
-      <li>Dashboard created for authentication failures, notable events and recent alert activity.</li>
-    </ul>
-    <img src="assets/case-studies/siem/alerts-config.png" alt="Alert configuration" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
-    <img src="assets/case-studies/siem/dashboard-overview.png" alt="Dashboard overview" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
-    <img src="assets/case-studies/siem/alert-triggered.png" alt="Alert triggered" style="max-width:100%; border-radius:12px;" />
-  </article>
+  <!-- ALERTS & DASHBOARDS -->
+  <section class="grid section" id="alerts">
+    <div class="section-head">
+      <h2>Alerts &amp; dashboards</h2>
+      <p>Scheduled alerts with severity thresholds and a monitoring dashboard for ongoing visibility.</p>
+    </div>
 
-  <article id="automation" class="project-case">
-    <h2>7. Automation &amp; Incident Artefacts</h2>
-    <p>
-      A lightweight automation step was added to generate an incident record when an alert fires,
-      simulating a SOAR-style workflow for documentation and escalation.
-    </p>
-    <pre><code>{
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag warn">Monitoring</span>
+            <span class="tag">Alert configuration</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Scheduled alerts configured</h3>
+          <p>Alerts were created with severity levels, thresholds and notification actions to support timely triage.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Without alerting, detections require manual review and may never be acted on</span></div>
+            <div class="box"><b>Decision</b><span>Configure scheduled alerts so detections fire automatically and notify on trigger</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/alerts-config.png" alt="Alert configuration" data-full="assets/case-studies/siem/alerts-config.png">
+          <figcaption class="caption">Evidence: Splunk alert configuration showing scheduled search, threshold and severity settings.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Visibility</span>
+            <span class="tag">Dashboard</span>
+            <span class="tag ok">Action taken</span>
+          </div>
+          <h3>Security monitoring dashboard</h3>
+          <p>Dashboard built to surface authentication failures, notable events and recent alert activity in a single view.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Individual searches do not provide a consolidated operational picture</span></div>
+            <div class="box"><b>Decision</b><span>Create a dashboard to give a quick overview of security events and alert status</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/dashboard-overview.png" alt="Dashboard overview" data-full="assets/case-studies/siem/dashboard-overview.png">
+          <figcaption class="caption">Evidence: Splunk dashboard showing authentication failures, notable events and recent activity.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Validation</span>
+            <span class="tag">Alert fired</span>
+            <span class="tag ok">Confirmed</span>
+          </div>
+          <h3>Alert triggered successfully</h3>
+          <p>Alert firing was validated by simulating the detection condition and confirming the alert triggered as expected.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>An alert that never fires offers no assurance it will trigger in a real incident</span></div>
+            <div class="box"><b>Decision</b><span>Simulate the detection condition and confirm the alert fires and notifies correctly</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/alert-triggered.png" alt="Alert triggered" data-full="assets/case-studies/siem/alert-triggered.png">
+          <figcaption class="caption">Evidence: alert shown as triggered in Splunk, confirming the detection fired as configured.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- AUTOMATION -->
+  <section class="grid section" id="automation">
+    <div class="section-head">
+      <h2>Automation &amp; incident artefacts</h2>
+      <p>Lightweight SOAR-style automation to generate structured incident records when alerts fire.</p>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Automation</span>
+            <span class="tag">Incident record</span>
+            <span class="tag ok">Implemented</span>
+          </div>
+          <h3>Automated incident record generation</h3>
+          <p>A lightweight automation step was added to generate a structured incident record when a high-severity alert fires, simulating a SOAR-style workflow.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Manual alert handling is inconsistent and leaves no audit trail of triage decisions</span></div>
+            <div class="box"><b>Decision</b><span>Automate incident record creation on alert trigger to support documentation and escalation</span></div>
+          </div>
+        </div>
+        <div class="code-block"><code>{
   "title": "Possible brute force attack",
   "severity": "high",
   "host": "WIN-ENDPOINT-01",
   "detection": "BRUTE_FORCE_4625",
   "action": "containment_simulated"
-}</code></pre>
-    <img src="assets/case-studies/siem/automation-action.png" alt="Automation action configured" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
-    <img src="assets/case-studies/siem/automation-output.png" alt="Automation output" style="max-width:100%; border-radius:12px;" />
-  </article>
+}</code></div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/automation-action.png" alt="Automation action configured" data-full="assets/case-studies/siem/automation-action.png">
+          <figcaption class="caption">Evidence: automation action configured to generate an incident record when the alert fires.</figcaption>
+        </figure>
+      </article>
+
+      <article class="card">
+        <div class="card-inner">
+          <div class="kicker">
+            <span class="tag ok">Validation</span>
+            <span class="tag">Automation output</span>
+            <span class="tag ok">Confirmed</span>
+          </div>
+          <h3>Automation output validated</h3>
+          <p>The generated incident record was reviewed to confirm it contained the correct structured data for downstream use.</p>
+          <div class="meta">
+            <div class="box"><b>Risk</b><span>Automation that produces incorrect or incomplete records undermines the response workflow</span></div>
+            <div class="box"><b>Decision</b><span>Review automation output to confirm it captures the required incident context correctly</span></div>
+          </div>
+        </div>
+        <figure>
+          <img class="shot" src="assets/case-studies/siem/automation-output.png" alt="Automation output" data-full="assets/case-studies/siem/automation-output.png">
+          <figcaption class="caption">Evidence: generated incident record showing structured output from the automation workflow.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <div class="footer">
+    <b>Outcome:</b> This evidence pack demonstrates SIEM platform setup, log onboarding and validation,
+    detection engineering using SPL, dashboard creation, alert configuration and lightweight automation.
+    It supports the full case study narrative on the
+    <a href="siem-detection.html">SIEM Visibility &amp; Detection case study page</a>.
+  </div>
 
 </main>
 
-<footer class="site-footer">
-  <div class="footer-accent"></div>
-  <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
-</footer>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lightboxImg" alt="Expanded evidence screenshot" />
+</div>
 
+<script>
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+
+  document.querySelectorAll('img.shot').forEach(img => {
+    img.addEventListener('click', () => {
+      const src = img.getAttribute('data-full') || img.src;
+      lbImg.src = src;
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  lb.addEventListener('click', () => {
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    lbImg.src = '';
+    document.body.style.overflow = '';
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lb.classList.contains('open')) {
+      lb.click();
+    }
+  });
+</script>
 </body>
 </html>
