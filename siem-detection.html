@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SIEM Visibility & Detection Case Study | Kevin Wadsworth</title>
+  <title>SIEM Visibility &amp; Detection Case Study | Kevin Wadsworth</title>
+  <meta name="description" content="A case study covering SIEM log ingestion, detection engineering, dashboards and incident response workflows using Splunk." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header class="site-header">
   <div class="logo">Kevin Wadsworth</div>
-  <nav>
+  <nav aria-label="Primary navigation">
     <a href="index.html">Home</a>
     <a href="projects.html">Projects</a>
     <a href="about.html">About</a>
@@ -22,18 +23,16 @@
   <div class="hero-content">
     <h1>SIEM Visibility &amp; Detection Case Study</h1>
     <p>
-      Establishing security visibility through log collection, detections and
-      a simple incident response workflow, with a focus on linking alerts back
-      to business risk and operational impact.
+      Establishing security visibility through log collection, detections and a
+      lightweight incident response workflow — linking alerts back to business risk
+      and operational impact.
     </p>
   </div>
 </section>
 
-</section>
-
-<div class="project-nav">
-  <a href="projects.html" class="project-nav-link">&larr; Back to Projects</a>
-  <a href="siem-evidence.html" class="project-nav-link">View project evidence &rarr;</a>
+<div class="case-nav">
+  <a href="projects.html">&larr; Back to Projects</a>
+  <a href="siem-evidence.html">View project evidence &rarr;</a>
 </div>
 
 <main class="main-section">
@@ -41,55 +40,54 @@
   <article class="project-case">
     <h2>1. Overview</h2>
     <p>
-      This project focuses on building practical experience with a Security
-      Information and Event Management (SIEM) platform. The goal is to move
-      from raw log data to meaningful alerts and investigations, using a
-      structured, risk-aware approach that mirrors how SOC and security
-      teams operate in practice.
+      This project focuses on building practical experience with a Security Information
+      and Event Management (SIEM) platform. The goal is to move from raw log data to
+      meaningful alerts and investigations, using a structured, risk-aware approach
+      that mirrors how SOC and security teams operate in practice.
     </p>
   </article>
 
   <article class="project-case">
     <h2>2. Scope &amp; Assumptions</h2>
     <ul>
-      <li>Small set of systems (e.g. one Windows host, one Linux host or lab VMs).</li>
-      <li>Focus on authentication, system activity and basic security events.</li>
-      <li>Objective is understanding flow: log &rarr; event &rarr; alert &rarr; investigation.</li>
-      <li>Assumes a hosted or lab SIEM platform is available for testing.</li>
+      <li>Small set of systems — one Windows host and one Linux host running as lab virtual machines.</li>
+      <li>Focus on authentication events, system activity and core security log sources.</li>
+      <li>Objective is understanding the full flow: log &rarr; event &rarr; alert &rarr; investigation.</li>
+      <li>Assumes a hosted or lab SIEM platform (Splunk) is available for testing and configuration.</li>
     </ul>
   </article>
 
   <article class="project-case">
     <h2>3. Log Sources &amp; Onboarding</h2>
     <p>
-      I began by selecting which log sources would add the most value for a
-      small environment, then onboarded them into the SIEM:
+      I began by selecting which log sources would add the most value for a small
+      environment, then onboarded them into the SIEM:
     </p>
     <ul>
-      <li>Authentication logs (logon success/failure, account lockouts).</li>
-      <li>System logs for key services and security-relevant events.</li>
-      <li>Optional: basic firewall or endpoint security logs if available.</li>
+      <li>Authentication logs — logon success and failure events, account lockouts.</li>
+      <li>System logs covering key services and security-relevant activity.</li>
+      <li>Sysmon telemetry for process creation, command-line and network events.</li>
     </ul>
     <p>
-      The aim was to ensure that any investigation into a suspicious login or
-      system change would have enough supporting detail to be meaningful.
+      The aim was to ensure that any investigation into suspicious activity would have
+      sufficient supporting detail to be meaningful and traceable.
     </p>
   </article>
 
   <article class="project-case">
     <h2>4. Detections &amp; Use Cases</h2>
     <p>
-      I then defined a set of simple but realistic detection use cases, such as:
+      I defined a set of practical detection use cases that reflect common attack patterns:
     </p>
     <ul>
-      <li>Multiple failed logins followed by a successful login from the same source.</li>
-      <li>Logins outside expected working hours.</li>
+      <li>Multiple failed logins followed by a successful login from the same source (brute force).</li>
+      <li>Authentication events occurring outside expected working hours.</li>
       <li>New local user creation on a server or critical host.</li>
-      <li>Service or process execution that is unusual for that system role.</li>
+      <li>Suspicious PowerShell execution using encoded commands.</li>
     </ul>
     <p>
-      For each use case, I created detection rules or queries in the SIEM and
-      validated that they would trigger under the right conditions.
+      For each use case, I created detection rules or SPL queries in Splunk and validated
+      that they would trigger correctly under the expected conditions.
     </p>
   </article>
 
@@ -99,14 +97,14 @@
       To support ongoing monitoring and incident handling, I:
     </p>
     <ul>
-      <li>Built simple dashboards to show failed logins, account lockouts and key security events.</li>
-      <li>Configured alert views for quick triage.</li>
+      <li>Built dashboards to surface failed logins, account lockouts and key security events.</li>
+      <li>Configured alert views to support rapid triage and prioritisation.</li>
       <li>Performed test investigations using simulated suspicious activity.</li>
-      <li>Documented the steps taken from initial alert through to basic root cause analysis.</li>
+      <li>Documented the steps from initial alert through to basic root cause analysis.</li>
     </ul>
     <p>
-      This helped connect the technical view (logs and alerts) with the
-      operational view (what this means for the organisation).
+      This process helped connect the technical view — logs and alerts — with the
+      operational view of what an event means for the organisation.
     </p>
   </article>
 
@@ -116,15 +114,14 @@
       I outlined a lightweight incident handling workflow covering:
     </p>
     <ul>
-      <li>Alert review and initial triage.</li>
-      <li>Enrichment and gathering of additional context.</li>
+      <li>Alert review and initial triage against defined severity thresholds.</li>
+      <li>Enrichment and gathering of additional context to support decisions.</li>
       <li>Escalation criteria and potential containment steps.</li>
-      <li>Documentation of findings and recommendations.</li>
+      <li>Documentation of findings and recommendations for improvement.</li>
     </ul>
     <p>
-      I also captured lessons learned around noise reduction, alert tuning and
-      the importance of understanding normal behaviour before defining what is
-      “suspicious”.
+      I also captured lessons learned around noise reduction, alert tuning and the importance
+      of understanding normal system behaviour before defining what constitutes a suspicious event.
     </p>
   </article>
 
@@ -134,15 +131,14 @@
       Future enhancements to this lab could include:
     </p>
     <ul>
-      <li>Integrating additional log sources such as cloud platforms or SaaS tools.</li>
-      <li>Building more advanced correlation rules across multiple systems.</li>
-      <li>Linking detections to a formal playbook or SOAR-style automation.</li>
-      <li>Mapping detections to frameworks such as ATT&amp;CK for coverage analysis.</li>
+      <li>Integrating additional log sources such as cloud platforms or SaaS applications.</li>
+      <li>Building more advanced correlation rules across multiple systems and event types.</li>
+      <li>Linking detections to a formal playbook or SOAR-style automation workflow.</li>
+      <li>Mapping detections to MITRE ATT&amp;CK for structured coverage analysis.</li>
     </ul>
     <p>
-      Overall, this project demonstrates how I approach visibility, detection and
-      incident handling using a structured and risk-based perspective, rather than
-      focusing purely on tooling.
+      Overall, this project demonstrates how I approach visibility, detection and incident
+      handling using a structured and risk-based perspective, rather than focusing purely on tooling.
     </p>
   </article>
 
@@ -155,4 +151,3 @@
 
 </body>
 </html>
-

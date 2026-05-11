@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SIEM Detection – Evidence Pack | Kevin Wadsworth</title>
+  <meta name="description" content="Step-by-step build notes and evidence for the SIEM Visibility and Detection case study — Splunk, SPL queries, alerts and automation outputs." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header class="site-header">
   <div class="logo">Kevin Wadsworth</div>
-  <nav>
+  <nav aria-label="Primary navigation">
     <a href="index.html">Home</a>
     <a href="projects.html">Projects</a>
     <a href="about.html">About</a>
@@ -22,15 +23,15 @@
   <div class="hero-content">
     <h1>SIEM Detection – Evidence Pack</h1>
     <p>
-      Step-by-step build notes and supporting evidence for the SIEM Visibility &amp; Detection case study.
-      (Screenshots, SPL queries, alert configuration and automation outputs.)
+      Step-by-step build notes and supporting evidence for the SIEM Visibility &amp; Detection
+      case study — screenshots, SPL queries, alert configuration and automation outputs.
     </p>
   </div>
 </section>
 
-<div class="project-nav">
-  <a href="siem-detection.html" class="project-nav-link">&larr; Back to Case Study</a>
-  <a href="projects.html" class="project-nav-link">Back to Projects &rarr;</a>
+<div class="case-nav">
+  <a href="siem-detection.html">&larr; Back to Case Study</a>
+  <a href="projects.html">Back to Projects &rarr;</a>
 </div>
 
 <main class="main-section">
@@ -38,14 +39,14 @@
   <article class="project-case">
     <h2>1. Evidence Summary</h2>
     <p>
-      This page is the evidence pack for my SIEM lab build using Splunk.
-      It documents what was implemented and provides proof via screenshots and outputs.
+      This page is the evidence pack for the SIEM lab build using Splunk. It documents
+      what was implemented and provides proof via screenshots and configuration outputs.
     </p>
     <ul>
-      <li><strong>SIEM:</strong> Splunk (lab)</li>
-      <li><strong>Telemetry:</strong> Windows Security logs + Sysmon</li>
-      <li><strong>Coverage:</strong> Auth abuse, suspicious execution, privilege changes</li>
-      <li><strong>Outputs:</strong> Dashboards, alerts, incident artifacts, notifications</li>
+      <li><strong>SIEM:</strong> Splunk (lab environment)</li>
+      <li><strong>Telemetry:</strong> Windows Security logs and Sysmon</li>
+      <li><strong>Coverage:</strong> Authentication abuse, suspicious execution, privilege changes</li>
+      <li><strong>Outputs:</strong> Dashboards, scheduled alerts, incident artefacts and notifications</li>
     </ul>
   </article>
 
@@ -54,9 +55,9 @@
     <ul>
       <li><a href="#setup">Environment setup</a></li>
       <li><a href="#onboarding">Log onboarding &amp; validation</a></li>
-      <li><a href="#detections">Detections (SPL + proof)</a></li>
+      <li><a href="#detections">Detections (SPL queries and proof)</a></li>
       <li><a href="#alerts">Alerts &amp; dashboards</a></li>
-      <li><a href="#automation">Automation &amp; incident artifacts</a></li>
+      <li><a href="#automation">Automation &amp; incident artefacts</a></li>
     </ul>
   </article>
 
@@ -67,83 +68,72 @@
       security telemetry. Sysmon was enabled to capture process creation and command-line activity.
     </p>
     <ul>
-      <li>Splunk installed and reachable</li>
-      <li>Windows endpoint configured</li>
-      <li>Sysmon running and producing events</li>
-      <li>Time sync verified</li>
+      <li>Splunk installed and accessible via the web interface.</li>
+      <li>Windows endpoint configured and sending events.</li>
+      <li>Sysmon running and producing structured process and network events.</li>
+      <li>Time synchronisation verified across systems.</li>
     </ul>
-
     <p><strong>Evidence:</strong></p>
-    <ul>
-      <li>Screenshot: Splunk receiving data</li>
-      <li>Screenshot: Sysmon running</li>
-    </ul>
-
-    <!-- Add images into /assets/siem/ then update filenames below -->
-    <p><img src="assets/case-studies/siem/setup-splunk-data.png" alt="Splunk receiving data" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/case-studies/siem/setup-sysmon.png" alt="Sysmon running" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/setup-splunk-data.png" alt="Splunk receiving data" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
+    <img src="assets/case-studies/siem/setup-sysmon.png" alt="Sysmon running" style="max-width:100%; border-radius:12px;" />
   </article>
 
   <article id="onboarding" class="project-case">
     <h2>4. Log Onboarding &amp; Validation</h2>
     <p>
-      Confirmed that key Windows Security and Sysmon EventCodes were indexing correctly.
+      Confirmed that key Windows Security and Sysmon EventCodes were indexing correctly
+      using the following SPL queries:
     </p>
-
     <pre><code>index=wineventlog sourcetype="WinEventLog:Security"
 | stats count by EventCode
 | sort -count</code></pre>
-
     <pre><code>index=sysmon
 | stats count by EventCode
 | sort -count</code></pre>
-
-    <p><img src="assets/case-studies/siem/onboarding-validation.png" alt="Onboarding validation" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/onboarding-validation.png" alt="Log onboarding validation" style="max-width:100%; border-radius:12px;" />
   </article>
 
   <article id="detections" class="project-case">
     <h2>5. Detections (SPL + Evidence)</h2>
 
-    <h3>5.1 Brute force login attempts</h3>
+    <h3>5.1 Brute Force Login Attempts</h3>
     <pre><code>index=wineventlog sourcetype="WinEventLog:Security" EventCode=4625
 | stats count as fails values(Account_Name) as users by IpAddress, host
-| where fails &gt;= 10
+| where fails >= 10
 | sort -fails</code></pre>
-    <p><img src="assets/case-studies/siem/detect-bruteforce.png" alt="Brute force detection" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/detect-bruteforce.png" alt="Brute force detection" style="max-width:100%; border-radius:12px;" />
 
-    <h3>5.2 Suspicious PowerShell (encoded)</h3>
+    <h3>5.2 Suspicious PowerShell (Encoded Commands)</h3>
     <pre><code>index=sysmon EventCode=1 Image="*\\powershell.exe"
 (CommandLine="*-enc*" OR CommandLine="*-EncodedCommand*")
 | table _time host User Image CommandLine
 | sort -_time</code></pre>
-    <p><img src="assets/case-studies/siem/detect-powershell.png" alt="Suspicious PowerShell detection" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/detect-powershell.png" alt="Suspicious PowerShell detection" style="max-width:100%; border-radius:12px;" />
 
-    <h3>5.3 New local user / admin group change</h3>
+    <h3>5.3 New Local User / Admin Group Change</h3>
     <pre><code>index=wineventlog sourcetype="WinEventLog:Security" (EventCode=4720 OR EventCode=4732)
 | table _time host SubjectUserName TargetUserName GroupName
 | sort -_time</code></pre>
-    <p><img src="assets/case-studies/siem/detect-new-admin.png" alt="New admin detection" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/detect-new-admin.png" alt="New admin detection" style="max-width:100%; border-radius:12px;" />
   </article>
 
   <article id="alerts" class="project-case">
     <h2>6. Alerts &amp; Dashboards</h2>
     <ul>
-      <li>Scheduled alerts configured with thresholds and severity</li>
-      <li>Dashboard created for auth failures, notable events and recent alerts</li>
+      <li>Scheduled alerts configured with thresholds, severity levels and notification actions.</li>
+      <li>Dashboard created for authentication failures, notable events and recent alert activity.</li>
     </ul>
-
-    <p><img src="assets/case-studies/siem/alerts-config.png" alt="Alert configuration" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/case-studies/siem/dashboard-overview.png" alt="Dashboard overview" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/case-studies/siem/alert-triggered.png" alt="Alert triggered" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/alerts-config.png" alt="Alert configuration" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
+    <img src="assets/case-studies/siem/dashboard-overview.png" alt="Dashboard overview" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
+    <img src="assets/case-studies/siem/alert-triggered.png" alt="Alert triggered" style="max-width:100%; border-radius:12px;" />
   </article>
 
   <article id="automation" class="project-case">
-    <h2>7. Automation &amp; Incident Artifacts</h2>
+    <h2>7. Automation &amp; Incident Artefacts</h2>
     <p>
-      Added a lightweight automation step to generate an incident record when an alert fires,
+      A lightweight automation step was added to generate an incident record when an alert fires,
       simulating a SOAR-style workflow for documentation and escalation.
     </p>
-
     <pre><code>{
   "title": "Possible brute force attack",
   "severity": "high",
@@ -151,9 +141,8 @@
   "detection": "BRUTE_FORCE_4625",
   "action": "containment_simulated"
 }</code></pre>
-
-    <p><img src="assets/case-studies/siem/automation-action.png" alt="Automation action configured" style="max-width:100%; border-radius:12px;" /></p>
-    <p><img src="assets/case-studies/siem/automation-output.png" alt="Automation output" style="max-width:100%; border-radius:12px;" /></p>
+    <img src="assets/case-studies/siem/automation-action.png" alt="Automation action configured" style="max-width:100%; border-radius:12px; margin-bottom:12px;" />
+    <img src="assets/case-studies/siem/automation-output.png" alt="Automation output" style="max-width:100%; border-radius:12px;" />
   </article>
 
 </main>
