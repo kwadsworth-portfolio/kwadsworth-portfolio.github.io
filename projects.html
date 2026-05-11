@@ -1,136 +1,380 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Projects | Kevin Wadsworth</title>
-  <meta name="description" content="Cybersecurity, cloud security and GRC projects by Kevin Wadsworth — AWS, Azure, SIEM and ISO 27001." />
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Cybersecurity, cloud and GRC projects by Kevin Wadsworth."/>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#67e8f9;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --radius:18px;
+      --max:1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 600px at 20% -10%,rgba(103,232,249,.18),transparent 55%),
+                 radial-gradient(900px 500px at 85% 10%,rgba(167,139,250,.18),transparent 55%),
+                 var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    /* Header */
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(to bottom,rgba(11,18,32,.92),rgba(11,18,32,.65));
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max);margin:0 auto;padding:14px 18px;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand strong{font-size:15px;letter-spacing:.2px}
+    .brand span{font-size:12px;color:var(--muted)}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:13px}
+    .pill{
+      padding:8px 12px;border:1px solid var(--line);border-radius:999px;
+      background:rgba(255,255,255,.03);color:var(--accent);
+    }
+    .pill:hover{border-color:rgba(103,232,249,.45);text-decoration:none}
+    .pill.active{background:rgba(103,232,249,.12);border-color:rgba(103,232,249,.4)}
+    /* Banner */
+    .banner-hero{
+      position:relative;height:34vh;min-height:240px;
+      background-image:url("assets/banner-01.jpg");
+      background-size:cover;background-position:center;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
+    .banner-hero.tall{height:52vh;min-height:320px}
+    .banner-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(to bottom right,rgba(11,18,32,.88),rgba(8,47,73,.78));
+    }
+    .banner-content{
+      position:relative;max-width:900px;padding:24px 32px;text-align:center;
+    }
+    .banner-content h1{font-size:clamp(1.7rem,3vw,2.6rem);font-weight:700;margin:0 0 12px}
+    .banner-content p{color:var(--muted);margin:0 0 20px;font-size:1rem;line-height:1.55;max-width:68ch}
+    /* CTA button */
+    .btn{
+      display:inline-block;padding:10px 24px;border-radius:999px;
+      border:1.5px solid var(--accent);color:var(--accent);
+      font-weight:600;font-size:.92rem;transition:background .2s,color .2s;
+    }
+    .btn:hover{background:var(--accent);color:#0b1220;text-decoration:none}
+    /* Page nav row */
+    .page-nav{
+      max-width:var(--max);margin:24px auto 36px;padding:0 18px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    }
+    .page-nav a{color:var(--accent);font-weight:500;font-size:.9rem}
+    .page-nav a:hover{opacity:.75;text-decoration:none}
+    /* Wrap */
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 64px}
+    /* Hero card (homepage) */
+    .hero-card{
+      margin-top:22px;
+      background:linear-gradient(135deg,rgba(103,232,249,.10),rgba(167,139,250,.10));
+      border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:24px;
+    }
+    .hero-card h2{margin:0 0 8px;font-size:20px}
+    .hero-card p{margin:0;color:var(--muted);max-width:75ch}
+    /* Sections */
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    .section{
+      background:rgba(255,255,255,.02);border:1px solid var(--line);
+      border-radius:var(--radius);overflow:hidden;
+    }
+    .section-head{
+      padding:16px 16px 12px;
+      background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .section-head h2{margin:0;font-size:18px}
+    .section-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    /* Cards */
+    .cards{padding:14px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .card{
+      grid-column:span 12;
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      border:1px solid var(--line);border-radius:16px;overflow:hidden;
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+    }
+    .card.half{grid-column:span 12}
+    .card.full{grid-column:span 12}
+    .card-inner{padding:16px}
+    .kicker{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+    .tag{
+      font-size:12px;padding:4px 10px;border-radius:999px;
+      border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);
+    }
+    .tag.ok{color:var(--ok);border-color:rgba(52,211,153,.35)}
+    .tag.warn{color:var(--warn);border-color:rgba(251,191,36,.35)}
+    .tag.bad{color:var(--bad);border-color:rgba(251,113,133,.35)}
+    .tag.accent{color:var(--accent);border-color:rgba(103,232,249,.35)}
+    .card h3{margin:0 0 8px;font-size:16px;color:var(--text)}
+    .card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .card ul{margin:8px 0 0;padding-left:1.2em;color:var(--muted);font-size:13px;line-height:1.7}
+    .card li{margin-bottom:.35em}
+    .meta{margin-top:12px;display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    .meta .box{
+      grid-column:span 12;padding:10px 12px;border-radius:14px;
+      border:1px dashed rgba(255,255,255,.14);background:rgba(0,0,0,.14);
+    }
+    .box b{display:block;font-size:12px;color:var(--text);margin-bottom:2px}
+    .box span{font-size:12px;color:var(--muted)}
+    /* Card link arrow */
+    .card-link{
+      display:inline-flex;align-items:center;gap:6px;
+      margin-top:14px;color:var(--accent);font-size:.88rem;font-weight:500;
+    }
+    .card-link:hover{gap:10px;text-decoration:none}
+    /* Code blocks */
+    .code-block{
+      margin:0;padding:14px 16px;background:rgba(0,0,0,.35);
+      border-top:1px solid var(--line);overflow-x:auto;
+    }
+    .code-block code{
+      font-family:ui-monospace,"JetBrains Mono","Fira Code",Consolas,monospace;
+      font-size:12px;color:#a5f3fc;white-space:pre;
+    }
+    /* Screenshot + caption */
+    figure{margin:0}
+    .shot{
+      width:100%;display:block;background:#050a14;
+      border-top:1px solid var(--line);cursor:zoom-in;
+    }
+    .caption{
+      padding:10px 14px 14px;border-top:1px solid var(--line);
+      color:var(--muted);font-size:12px;background:rgba(0,0,0,.12);
+    }
+    /* Footer outcome block */
+    .outcome{
+      margin-top:18px;padding:16px;border:1px solid var(--line);
+      border-radius:var(--radius);color:var(--muted);font-size:13px;
+      background:rgba(255,255,255,.02);
+    }
+    .outcome b{color:var(--text)}
+    /* Site footer */
+    .site-footer{
+      text-align:center;padding:20px 16px;font-size:.83rem;
+      color:var(--muted);border-top:1px solid var(--line);background:rgba(11,18,32,.6);
+    }
+    .footer-accent{
+      width:40px;height:2px;background:var(--accent);
+      opacity:.45;margin:0 auto 14px;border-radius:2px;
+    }
+    /* Lightbox */
+    .lightbox{
+      position:fixed;inset:0;display:none;
+      align-items:center;justify-content:center;
+      background:rgba(0,0,0,.75);z-index:9999;padding:18px;
+    }
+    .lightbox.open{display:flex}
+    .lightbox img{
+      max-width:min(1200px,96vw);max-height:86vh;border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);box-shadow:0 22px 80px rgba(0,0,0,.55);
+      background:#050a14;cursor:zoom-out;
+    }
+    /* Responsive */
+    @media(min-width:880px){
+      .card.half{grid-column:span 6}
+      .meta .box{grid-column:span 6}
+    }
+    @media(min-width:1024px){
+      .card.third{grid-column:span 4}
+    }
+    @media(max-width:640px){
+      .topbar{flex-direction:column;align-items:flex-start;gap:10px}
+      .nav{justify-content:flex-start}
+      .banner-content{padding:20px 18px}
+      .page-nav{flex-direction:column;align-items:flex-start}
+    }
+
+  </style>
 </head>
 <body>
-
-<header class="site-header">
-  <div class="logo">Kevin Wadsworth</div>
-  <nav aria-label="Primary navigation">
-    <a href="index.html">Home</a>
-    <a href="projects.html" aria-current="page">Projects</a>
-    <a href="about.html">About</a>
-  </nav>
-</header>
-
-<section class="hero hero--small">
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>Kevin Wadsworth</strong>
+      <span>Cybersecurity &amp; GRC Portfolio</span>
+    </div>
+    <nav class="nav">
+      <a class="pill" href="index.html">Home</a>
+      <a class="pill  active" href="projects.html">Projects</a>
+      <a class="pill" href="about.html">About</a>
+    </nav>
+  </div>
+</header><section class="banner-hero">
+  <div class="banner-overlay"></div>
+  <div class="banner-content">
     <h1>Projects &amp; Case Studies</h1>
-    <p>
-      Cybersecurity, cloud and GRC initiatives designed around real-world use cases,
-      approached through structured problem-solving and risk-based decision-making.
-    </p>
+    <p>Cybersecurity, cloud and GRC initiatives designed around real-world use cases — approached through structured problem-solving and risk-based decision-making.</p>
   </div>
 </section>
+<main class="wrap">
+  <div class="grid">
+    <section class="section">
+      <div class="section-head">
+        <h2>Project 1: AWS Cloud Security Fundamentals</h2>
+        <p>Cloud security · Identity &amp; access control · Network segmentation · Logging &amp; auditability</p>
+      </div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag accent">Objective</span></div>
+            <h3>Goal</h3>
+            <p>Design and deploy a secure AWS environment demonstrating how cloud security principles reduce risk and support governance and compliance requirements.</p>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Implemented</span></div>
+            <h3>What I Built</h3>
+            <ul>
+              <li>Secure AWS account with foundational security controls.</li>
+              <li>IAM roles and policies aligned to least-privilege principles.</li>
+              <li>VPC design with public and private subnet separation.</li>
+              <li>Network access controls using security groups.</li>
+              <li>Centralised logging and monitoring via CloudTrail.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag warn">Outcomes</span></div>
+            <h3>Approach &amp; Results</h3>
+            <ul>
+              <li>Structured delivery: scope, risk identification, control implementation.</li>
+              <li>Documented security decisions and residual risks throughout.</li>
+              <li>Produced artefacts suitable for stakeholder walkthroughs.</li>
+            </ul>
+            <a class="card-link" href="aws-cloud-security.html">View full case study →</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
-<main class="main-section">
+    <section class="section">
+      <div class="section-head">
+        <h2>Project 2: SIEM Visibility &amp; Incident Detection</h2>
+        <p>Security monitoring · Detection engineering · Incident response workflows · Splunk</p>
+      </div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag accent">Objective</span></div>
+            <h3>Goal</h3>
+            <p>Establish security visibility through log collection and demonstrate how raw events become actionable alerts within a SIEM platform.</p>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Implemented</span></div>
+            <h3>What I Built</h3>
+            <ul>
+              <li>Connected systems to Splunk for structured log ingestion.</li>
+              <li>SPL detection rules for brute force, encoded PowerShell and privilege changes.</li>
+              <li>Dashboards to surface trends, anomalies and notable events.</li>
+              <li>Alert triage, investigation workflows and automation.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag warn">Outcomes</span></div>
+            <h3>Approach &amp; Results</h3>
+            <ul>
+              <li>Mapped detections to MITRE ATT&amp;CK techniques.</li>
+              <li>Demonstrated the link between technical alerts and business risk.</li>
+              <li>Documented findings and detection coverage recommendations.</li>
+            </ul>
+            <a class="card-link" href="siem-detection.html">View full case study →</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
-  <article class="project-case">
-    <h2>Project 1: AWS Cloud Security Fundamentals</h2>
-    <p class="project-meta">Cloud security · Identity &amp; access control · Network segmentation · Auditability</p>
-
-    <h3>Objective</h3>
-    <p>
-      To design and deploy a secure AWS environment, demonstrating how cloud security
-      principles can be applied to reduce risk and support governance and compliance
-      requirements.
-    </p>
-
-    <h3>What I Implemented</h3>
-    <ul>
-      <li>Secure AWS account setup with foundational security controls.</li>
-      <li>IAM users, roles and policies aligned to least-privilege principles.</li>
-      <li>VPC design with public and private subnet separation.</li>
-      <li>Network access controls using security groups and flow logging.</li>
-      <li>Centralised logging and monitoring to support investigation and audit.</li>
-    </ul>
-
-    <h3>Approach &amp; Outcomes</h3>
-    <ul>
-      <li>Applied a structured delivery approach: scope, risk identification, control implementation.</li>
-      <li>Documented security decisions and residual risks throughout the build.</li>
-      <li>Produced artefacts suitable for stakeholder walkthroughs and interview discussion.</li>
-    </ul>
-
-    <div class="project-link">
-      <a href="aws-cloud-security.html">View full case study →</a>
-    </div>
-  </article>
-
-  <article class="project-case">
-    <h2>Project 2: SIEM Visibility &amp; Incident Detection</h2>
-    <p class="project-meta">Security monitoring · Detection engineering · Incident response workflows</p>
-
-    <h3>Objective</h3>
-    <p>
-      To establish security visibility through log collection and demonstrate how raw
-      events become actionable alerts within a SIEM platform.
-    </p>
-
-    <h3>What I Implemented</h3>
-    <ul>
-      <li>Connected systems to a SIEM for structured log ingestion.</li>
-      <li>Created detection rules for suspicious authentication activity and privilege changes.</li>
-      <li>Built dashboards to surface trends, anomalies and notable events.</li>
-      <li>Performed basic alert triage, investigation and documentation.</li>
-    </ul>
-
-    <h3>Approach &amp; Outcomes</h3>
-    <ul>
-      <li>Mapped detections to common attack behaviours and MITRE ATT&amp;CK techniques.</li>
-      <li>Demonstrated the link between technical alerts and business risk context.</li>
-      <li>Documented findings, limitations and recommended improvements to detection coverage.</li>
-    </ul>
-
-    <div class="project-link">
-      <a href="siem-detection.html">View full case study →</a>
-    </div>
-  </article>
-
-  <article class="project-case">
-    <h2>Project 3: Cyber GRC &amp; Azure Cloud Governance Platform</h2>
-    <p class="project-meta">ISO 27001 · Azure Policy · Risk management · Compliance monitoring · Audit evidence</p>
-
-    <h3>Objective</h3>
-    <p>
-      To design a lightweight Information Security Management System (ISMS) and
-      operationalise governance through Azure Policy enforcement, compliance monitoring
-      and audit-ready evidence collection.
-    </p>
-
-    <h3>What I Implemented</h3>
-    <ul>
-      <li>ISMS-style risk register, asset identification and data classification.</li>
-      <li>Azure Policy initiative enforcing tagging, region controls and storage security.</li>
-      <li>Resource Graph queries to detect misconfigurations and governance drift.</li>
-      <li>Automated compliance checks using a timer-triggered Azure Function.</li>
-      <li>Core security policies, control mappings and GRC artefacts.</li>
-    </ul>
-
-    <h3>Approach &amp; Outcomes</h3>
-    <ul>
-      <li>Ensured traceability between risks, controls and governance objectives.</li>
-      <li>Applied project discipline to structure documentation, reviews and evidence collection.</li>
-      <li>Created a practical governance foundation aligned to ISO 27001 and NIST CSF 2.0.</li>
-    </ul>
-
-    <div class="project-link">
-      <a href="grc-risk-management.html">View full case study →</a>
-    </div>
-  </article>
-
+    <section class="section">
+      <div class="section-head">
+        <h2>Project 3: Cyber GRC &amp; Azure Cloud Governance Platform</h2>
+        <p>ISO 27001 · Azure Policy · Risk management · Compliance monitoring · Audit evidence</p>
+      </div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag accent">Objective</span></div>
+            <h3>Goal</h3>
+            <p>Design a lightweight ISMS and operationalise governance through Azure Policy enforcement, compliance monitoring and audit-ready evidence collection.</p>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Implemented</span></div>
+            <h3>What I Built</h3>
+            <ul>
+              <li>ISMS-style risk register, asset identification and data classification.</li>
+              <li>Azure Policy initiative enforcing tagging, regions and storage security.</li>
+              <li>Resource Graph queries to detect misconfigurations and drift.</li>
+              <li>Timer-triggered Azure Function for automated compliance checks.</li>
+              <li>Core security policies, control mappings and GRC artefacts.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag warn">Outcomes</span></div>
+            <h3>Approach &amp; Results</h3>
+            <ul>
+              <li>Full traceability between risks, controls and governance objectives.</li>
+              <li>Governance foundation aligned to ISO 27001 and NIST CSF 2.0.</li>
+              <li>Practical experience troubleshooting policy and deployment issues.</li>
+            </ul>
+            <a class="card-link" href="grc-risk-management.html">View full case study →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
 </main>
-
 <footer class="site-footer">
   <div class="footer-accent"></div>
   <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
 </footer>
-
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lightboxImg" alt="Expanded screenshot"/>
+</div>
+<script>
+  const lb=document.getElementById('lightbox');
+  const lbImg=document.getElementById('lightboxImg');
+  document.querySelectorAll('img.shot').forEach(img=>{
+    img.addEventListener('click',()=>{
+      lbImg.src=img.getAttribute('data-full')||img.src;
+      lb.classList.add('open');lb.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    });
+  });
+  lb.addEventListener('click',()=>{
+    lb.classList.remove('open');lb.setAttribute('aria-hidden','true');
+    lbImg.src='';document.body.style.overflow='';
+  });
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&lb.classList.contains('open'))lb.click();});
+</script>
 </body>
 </html>

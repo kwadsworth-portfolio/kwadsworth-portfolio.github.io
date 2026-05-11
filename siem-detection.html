@@ -1,153 +1,410 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SIEM Visibility &amp; Detection Case Study | Kevin Wadsworth</title>
-  <meta name="description" content="A case study covering SIEM log ingestion, detection engineering, dashboards and incident response workflows using Splunk." />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>SIEM Visibility & Detection Case Study | Kevin Wadsworth</title>
+  <meta name="description" content="SIEM log ingestion, detection engineering, dashboards and incident response using Splunk."/>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#67e8f9;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --radius:18px;
+      --max:1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 600px at 20% -10%,rgba(103,232,249,.18),transparent 55%),
+                 radial-gradient(900px 500px at 85% 10%,rgba(167,139,250,.18),transparent 55%),
+                 var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    /* Header */
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(to bottom,rgba(11,18,32,.92),rgba(11,18,32,.65));
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max);margin:0 auto;padding:14px 18px;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand strong{font-size:15px;letter-spacing:.2px}
+    .brand span{font-size:12px;color:var(--muted)}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:13px}
+    .pill{
+      padding:8px 12px;border:1px solid var(--line);border-radius:999px;
+      background:rgba(255,255,255,.03);color:var(--accent);
+    }
+    .pill:hover{border-color:rgba(103,232,249,.45);text-decoration:none}
+    .pill.active{background:rgba(103,232,249,.12);border-color:rgba(103,232,249,.4)}
+    /* Banner */
+    .banner-hero{
+      position:relative;height:34vh;min-height:240px;
+      background-image:url("assets/banner-01.jpg");
+      background-size:cover;background-position:center;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
+    .banner-hero.tall{height:52vh;min-height:320px}
+    .banner-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(to bottom right,rgba(11,18,32,.88),rgba(8,47,73,.78));
+    }
+    .banner-content{
+      position:relative;max-width:900px;padding:24px 32px;text-align:center;
+    }
+    .banner-content h1{font-size:clamp(1.7rem,3vw,2.6rem);font-weight:700;margin:0 0 12px}
+    .banner-content p{color:var(--muted);margin:0 0 20px;font-size:1rem;line-height:1.55;max-width:68ch}
+    /* CTA button */
+    .btn{
+      display:inline-block;padding:10px 24px;border-radius:999px;
+      border:1.5px solid var(--accent);color:var(--accent);
+      font-weight:600;font-size:.92rem;transition:background .2s,color .2s;
+    }
+    .btn:hover{background:var(--accent);color:#0b1220;text-decoration:none}
+    /* Page nav row */
+    .page-nav{
+      max-width:var(--max);margin:24px auto 36px;padding:0 18px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    }
+    .page-nav a{color:var(--accent);font-weight:500;font-size:.9rem}
+    .page-nav a:hover{opacity:.75;text-decoration:none}
+    /* Wrap */
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 64px}
+    /* Hero card (homepage) */
+    .hero-card{
+      margin-top:22px;
+      background:linear-gradient(135deg,rgba(103,232,249,.10),rgba(167,139,250,.10));
+      border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:24px;
+    }
+    .hero-card h2{margin:0 0 8px;font-size:20px}
+    .hero-card p{margin:0;color:var(--muted);max-width:75ch}
+    /* Sections */
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    .section{
+      background:rgba(255,255,255,.02);border:1px solid var(--line);
+      border-radius:var(--radius);overflow:hidden;
+    }
+    .section-head{
+      padding:16px 16px 12px;
+      background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .section-head h2{margin:0;font-size:18px}
+    .section-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    /* Cards */
+    .cards{padding:14px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .card{
+      grid-column:span 12;
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      border:1px solid var(--line);border-radius:16px;overflow:hidden;
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+    }
+    .card.half{grid-column:span 12}
+    .card.full{grid-column:span 12}
+    .card-inner{padding:16px}
+    .kicker{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+    .tag{
+      font-size:12px;padding:4px 10px;border-radius:999px;
+      border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);
+    }
+    .tag.ok{color:var(--ok);border-color:rgba(52,211,153,.35)}
+    .tag.warn{color:var(--warn);border-color:rgba(251,191,36,.35)}
+    .tag.bad{color:var(--bad);border-color:rgba(251,113,133,.35)}
+    .tag.accent{color:var(--accent);border-color:rgba(103,232,249,.35)}
+    .card h3{margin:0 0 8px;font-size:16px;color:var(--text)}
+    .card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .card ul{margin:8px 0 0;padding-left:1.2em;color:var(--muted);font-size:13px;line-height:1.7}
+    .card li{margin-bottom:.35em}
+    .meta{margin-top:12px;display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    .meta .box{
+      grid-column:span 12;padding:10px 12px;border-radius:14px;
+      border:1px dashed rgba(255,255,255,.14);background:rgba(0,0,0,.14);
+    }
+    .box b{display:block;font-size:12px;color:var(--text);margin-bottom:2px}
+    .box span{font-size:12px;color:var(--muted)}
+    /* Card link arrow */
+    .card-link{
+      display:inline-flex;align-items:center;gap:6px;
+      margin-top:14px;color:var(--accent);font-size:.88rem;font-weight:500;
+    }
+    .card-link:hover{gap:10px;text-decoration:none}
+    /* Code blocks */
+    .code-block{
+      margin:0;padding:14px 16px;background:rgba(0,0,0,.35);
+      border-top:1px solid var(--line);overflow-x:auto;
+    }
+    .code-block code{
+      font-family:ui-monospace,"JetBrains Mono","Fira Code",Consolas,monospace;
+      font-size:12px;color:#a5f3fc;white-space:pre;
+    }
+    /* Screenshot + caption */
+    figure{margin:0}
+    .shot{
+      width:100%;display:block;background:#050a14;
+      border-top:1px solid var(--line);cursor:zoom-in;
+    }
+    .caption{
+      padding:10px 14px 14px;border-top:1px solid var(--line);
+      color:var(--muted);font-size:12px;background:rgba(0,0,0,.12);
+    }
+    /* Footer outcome block */
+    .outcome{
+      margin-top:18px;padding:16px;border:1px solid var(--line);
+      border-radius:var(--radius);color:var(--muted);font-size:13px;
+      background:rgba(255,255,255,.02);
+    }
+    .outcome b{color:var(--text)}
+    /* Site footer */
+    .site-footer{
+      text-align:center;padding:20px 16px;font-size:.83rem;
+      color:var(--muted);border-top:1px solid var(--line);background:rgba(11,18,32,.6);
+    }
+    .footer-accent{
+      width:40px;height:2px;background:var(--accent);
+      opacity:.45;margin:0 auto 14px;border-radius:2px;
+    }
+    /* Lightbox */
+    .lightbox{
+      position:fixed;inset:0;display:none;
+      align-items:center;justify-content:center;
+      background:rgba(0,0,0,.75);z-index:9999;padding:18px;
+    }
+    .lightbox.open{display:flex}
+    .lightbox img{
+      max-width:min(1200px,96vw);max-height:86vh;border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);box-shadow:0 22px 80px rgba(0,0,0,.55);
+      background:#050a14;cursor:zoom-out;
+    }
+    /* Responsive */
+    @media(min-width:880px){
+      .card.half{grid-column:span 6}
+      .meta .box{grid-column:span 6}
+    }
+    @media(min-width:1024px){
+      .card.third{grid-column:span 4}
+    }
+    @media(max-width:640px){
+      .topbar{flex-direction:column;align-items:flex-start;gap:10px}
+      .nav{justify-content:flex-start}
+      .banner-content{padding:20px 18px}
+      .page-nav{flex-direction:column;align-items:flex-start}
+    }
+
+  </style>
 </head>
 <body>
-
-<header class="site-header">
-  <div class="logo">Kevin Wadsworth</div>
-  <nav aria-label="Primary navigation">
-    <a href="index.html">Home</a>
-    <a href="projects.html">Projects</a>
-    <a href="about.html">About</a>
-  </nav>
-</header>
-
-<section class="hero hero--small">
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>Kevin Wadsworth</strong>
+      <span>Cybersecurity &amp; GRC Portfolio</span>
+    </div>
+    <nav class="nav">
+      <a class="pill" href="index.html">Home</a>
+      <a class="pill  active" href="projects.html">Projects</a>
+      <a class="pill" href="about.html">About</a>
+    </nav>
+  </div>
+</header><section class="banner-hero">
+  <div class="banner-overlay"></div>
+  <div class="banner-content">
     <h1>SIEM Visibility &amp; Detection Case Study</h1>
-    <p>
-      Establishing security visibility through log collection, detections and a
-      lightweight incident response workflow — linking alerts back to business risk
-      and operational impact.
-    </p>
+    <p>Establishing security visibility through log collection, detections and a lightweight incident response workflow — linking alerts to business risk and operational impact.</p>
   </div>
 </section>
-
-<div class="case-nav">
-  <a href="projects.html">&larr; Back to Projects</a>
-  <a href="siem-evidence.html">View project evidence &rarr;</a>
+<div class="page-nav">
+  <a href="projects.html">← Back to Projects</a>
+  <a href="siem-evidence.html">View project evidence →</a>
 </div>
-
-<main class="main-section">
-
-  <article class="project-case">
-    <h2>1. Overview</h2>
-    <p>
-      This project focuses on building practical experience with a Security Information
-      and Event Management (SIEM) platform. The goal is to move from raw log data to
-      meaningful alerts and investigations, using a structured, risk-aware approach
-      that mirrors how SOC and security teams operate in practice.
-    </p>
-  </article>
-
-  <article class="project-case">
-    <h2>2. Scope &amp; Assumptions</h2>
-    <ul>
-      <li>Small set of systems — one Windows host and one Linux host running as lab virtual machines.</li>
-      <li>Focus on authentication events, system activity and core security log sources.</li>
-      <li>Objective is understanding the full flow: log &rarr; event &rarr; alert &rarr; investigation.</li>
-      <li>Assumes a hosted or lab SIEM platform (Splunk) is available for testing and configuration.</li>
-    </ul>
-  </article>
-
-  <article class="project-case">
-    <h2>3. Log Sources &amp; Onboarding</h2>
-    <p>
-      I began by selecting which log sources would add the most value for a small
-      environment, then onboarded them into the SIEM:
-    </p>
-    <ul>
-      <li>Authentication logs — logon success and failure events, account lockouts.</li>
-      <li>System logs covering key services and security-relevant activity.</li>
-      <li>Sysmon telemetry for process creation, command-line and network events.</li>
-    </ul>
-    <p>
-      The aim was to ensure that any investigation into suspicious activity would have
-      sufficient supporting detail to be meaningful and traceable.
-    </p>
-  </article>
-
-  <article class="project-case">
-    <h2>4. Detections &amp; Use Cases</h2>
-    <p>
-      I defined a set of practical detection use cases that reflect common attack patterns:
-    </p>
-    <ul>
-      <li>Multiple failed logins followed by a successful login from the same source (brute force).</li>
-      <li>Authentication events occurring outside expected working hours.</li>
-      <li>New local user creation on a server or critical host.</li>
-      <li>Suspicious PowerShell execution using encoded commands.</li>
-    </ul>
-    <p>
-      For each use case, I created detection rules or SPL queries in Splunk and validated
-      that they would trigger correctly under the expected conditions.
-    </p>
-  </article>
-
-  <article class="project-case">
-    <h2>5. Dashboards, Triage &amp; Investigation</h2>
-    <p>
-      To support ongoing monitoring and incident handling, I:
-    </p>
-    <ul>
-      <li>Built dashboards to surface failed logins, account lockouts and key security events.</li>
-      <li>Configured alert views to support rapid triage and prioritisation.</li>
-      <li>Performed test investigations using simulated suspicious activity.</li>
-      <li>Documented the steps from initial alert through to basic root cause analysis.</li>
-    </ul>
-    <p>
-      This process helped connect the technical view — logs and alerts — with the
-      operational view of what an event means for the organisation.
-    </p>
-  </article>
-
-  <article class="project-case">
-    <h2>6. Incident Workflow &amp; Lessons Learned</h2>
-    <p>
-      I outlined a lightweight incident handling workflow covering:
-    </p>
-    <ul>
-      <li>Alert review and initial triage against defined severity thresholds.</li>
-      <li>Enrichment and gathering of additional context to support decisions.</li>
-      <li>Escalation criteria and potential containment steps.</li>
-      <li>Documentation of findings and recommendations for improvement.</li>
-    </ul>
-    <p>
-      I also captured lessons learned around noise reduction, alert tuning and the importance
-      of understanding normal system behaviour before defining what constitutes a suspicious event.
-    </p>
-  </article>
-
-  <article class="project-case">
-    <h2>7. Next Steps</h2>
-    <p>
-      Future enhancements to this lab could include:
-    </p>
-    <ul>
-      <li>Integrating additional log sources such as cloud platforms or SaaS applications.</li>
-      <li>Building more advanced correlation rules across multiple systems and event types.</li>
-      <li>Linking detections to a formal playbook or SOAR-style automation workflow.</li>
-      <li>Mapping detections to MITRE ATT&amp;CK for structured coverage analysis.</li>
-    </ul>
-    <p>
-      Overall, this project demonstrates how I approach visibility, detection and incident
-      handling using a structured and risk-based perspective, rather than focusing purely on tooling.
-    </p>
-  </article>
-
+<main class="wrap">
+  <div class="grid">
+    <section class="section">
+      <div class="section-head"><h2>1. Overview</h2><p>Project context and goals.</p></div>
+      <div class="cards">
+        <article class="card full">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag accent">Lab project</span><span class="tag accent">Splunk</span></div>
+            <h3>Project Overview</h3>
+            <p>This project focuses on building practical SIEM experience using Splunk. The goal is to move from raw log data to meaningful alerts and investigations using a structured, risk-aware approach that mirrors how SOC and security teams operate in practice.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>2. Scope &amp; Assumptions</h2><p>Environment and constraints.</p></div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag warn">Scope</span></div>
+            <h3>Lab Environment</h3>
+            <ul>
+              <li>Windows host and Linux host running as lab virtual machines.</li>
+              <li>Focus on authentication events, system activity and core security logs.</li>
+              <li>Full flow objective: log → event → alert → investigation.</li>
+              <li>Splunk deployed as the SIEM platform for testing and configuration.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>3. Log Sources &amp; Onboarding</h2><p>Which sources were selected and why.</p></div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Onboarded</span><span class="tag">Windows Security</span></div>
+            <h3>Authentication &amp; System Logs</h3>
+            <ul>
+              <li>Logon success and failure events, account lockouts.</li>
+              <li>System logs covering key services and security-relevant activity.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Onboarded</span><span class="tag">Sysmon</span></div>
+            <h3>Sysmon Telemetry</h3>
+            <ul>
+              <li>Process creation events with command-line arguments.</li>
+              <li>Network connection events for lateral movement detection.</li>
+              <li>Enriched endpoint visibility beyond native Windows logs.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>4. Detections &amp; Use Cases</h2><p>Detection rules built and attack patterns covered.</p></div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag bad">Risk</span><span class="tag">Brute force</span></div>
+            <h3>Credential Abuse</h3>
+            <p>Multiple failed logins followed by success from the same source — brute force or credential stuffing indicator.</p>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag bad">Risk</span><span class="tag">Execution</span></div>
+            <h3>Suspicious PowerShell</h3>
+            <p>PowerShell launched with encoded command arguments — common obfuscation technique used to bypass defences.</p>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag bad">Risk</span><span class="tag">Persistence</span></div>
+            <h3>Privilege Escalation</h3>
+            <p>New local account creation or addition to admin group — indicators of persistence or privilege escalation activity.</p>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag warn">Detection</span><span class="tag">After-hours</span></div>
+            <h3>Off-Hours Authentication</h3>
+            <p>Authentication events outside expected working hours — potential indicator of unauthorised access or account compromise.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>5. Dashboards, Triage &amp; Investigation</h2><p>Visibility tools and investigation workflow.</p></div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Built</span><span class="tag">Dashboard</span></div>
+            <h3>Security Dashboard</h3>
+            <ul>
+              <li>Failed logins, account lockouts and key security events surfaced.</li>
+              <li>Alert views configured for rapid triage and prioritisation.</li>
+              <li>Single-pane visibility linking technical events to operational context.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag ok">Documented</span><span class="tag">Workflow</span></div>
+            <h3>Incident Handling Workflow</h3>
+            <ul>
+              <li>Alert review and triage against defined severity thresholds.</li>
+              <li>Enrichment and context gathering to support decisions.</li>
+              <li>Escalation criteria and potential containment steps.</li>
+              <li>Documentation of findings and improvement recommendations.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2>6. Lessons Learned &amp; Next Steps</h2><p>What I took from the project and what comes next.</p></div>
+      <div class="cards">
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag warn">Lessons</span></div>
+            <h3>Key Learnings</h3>
+            <ul>
+              <li>Noise reduction and alert tuning are critical before go-live.</li>
+              <li>Understanding normal behaviour is a prerequisite for defining suspicious.</li>
+              <li>Detection coverage should be mapped, not assumed.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag accent">Future</span></div>
+            <h3>Planned Enhancements</h3>
+            <ul>
+              <li>Additional log sources: cloud platforms and SaaS applications.</li>
+              <li>Advanced correlation rules across multiple systems.</li>
+              <li>Formal playbook or SOAR-style automation workflow.</li>
+              <li>MITRE ATT&amp;CK coverage mapping and gap analysis.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+  <div class="outcome">
+    <b>Outcome:</b> A structured SIEM build demonstrating log onboarding, detection engineering, dashboards, alert configuration and automation — approached from a risk-based perspective rather than purely as a tooling exercise.
+  </div>
 </main>
-
 <footer class="site-footer">
   <div class="footer-accent"></div>
   <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
 </footer>
-
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <img id="lightboxImg" alt="Expanded screenshot"/>
+</div>
+<script>
+  const lb=document.getElementById('lightbox');
+  const lbImg=document.getElementById('lightboxImg');
+  document.querySelectorAll('img.shot').forEach(img=>{
+    img.addEventListener('click',()=>{
+      lbImg.src=img.getAttribute('data-full')||img.src;
+      lb.classList.add('open');lb.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    });
+  });
+  lb.addEventListener('click',()=>{
+    lb.classList.remove('open');lb.setAttribute('aria-hidden','true');
+    lbImg.src='';document.body.style.overflow='';
+  });
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&lb.classList.contains('open'))lb.click();});
+</script>
 </body>
 </html>
