@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Governance Risk Dashboard | Kevin Wadsworth</title>
+<meta name="description" content="Interactive risk dashboard for NovaTel UK's AI-driven churn prediction engine — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── Dashboard-specific additions (reuses tokens from style.css) ── */
+  .dash-intro {
+    color: var(--muted);
+    max-width: 72ch;
+    line-height: 1.72;
+    margin: 0 0 36px;
+  }
+
+  .dash-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    margin-bottom: 28px;
+    background: var(--bg-card);
+  }
+
+  .dash-toggle button {
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .dash-toggle button.active {
+    background: var(--accent);
+    color: #020617;
+  }
+
+  .heatmap-wrap {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    max-width: 560px;
+    margin-bottom: 12px;
+  }
+
+  .heatmap-yaxis {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: right;
+    padding-right: 4px;
+  }
+
+  .heatmap-yaxis span, .heatmap-xaxis span { line-height: 1; }
+
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .heat-cell {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+    background: var(--bg-card);
+  }
+
+  .heat-cell:hover { transform: translateY(-2px); }
+  .heat-cell.selected { border-color: var(--text); border-width: 2px; }
+
+  .heat-cell .count {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #020617;
+  }
+
+  .heat-cell .label {
+    font-size: 0.68rem;
+    color: rgba(2, 6, 23, 0.7);
+    margin-top: 2px;
+  }
+
+  .heat-cell.empty .count,
+  .heat-cell.empty .label { color: var(--muted); }
+  .heat-cell.empty { background: var(--bg-card); }
+
+  .heat-low    { background: #34d399; }
+  .heat-medium { background: #fbbf24; }
+  .heat-high   { background: #f87171; }
+
+  .heatmap-xaxis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--muted);
+    padding-left: 4px;
+    margin-top: 2px;
+    grid-column: 2;
+  }
+
+  .heatmap-axis-title {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .legend { display: flex; gap: 18px; margin: 18px 0 44px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.82rem; color: var(--muted); }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .filters select,
+  .filters input {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 0.86rem;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+  }
+
+  .filters input { flex: 1 1 200px; }
+  .filters select { cursor: pointer; }
+
+  .clear-filters {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: var(--font);
+    font-size: 0.86rem;
+    font-weight: 500;
+    padding: 9px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  .result-count { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+
+  table.risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 1050px;
+  }
+
+  .risk-table th {
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--bg-alt);
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .risk-table th:hover { color: var(--accent); }
+  .risk-table th .arrow { opacity: 0.5; margin-left: 3px; font-size: 0.75em; }
+
+  .risk-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: top;
+  }
+
+  .risk-table td.id { font-family: var(--font-mono); color: var(--accent); white-space: nowrap; }
+  .risk-table td.risk-name { color: var(--text); max-width: 220px; }
+  .risk-table tr:last-child td { border-bottom: none; }
+  .risk-table tr:hover td { background: rgba(56, 189, 248, 0.04); }
+
+  .score-pill {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 2px 9px;
+    border-radius: 999px;
+    color: #020617;
+  }
+
+  .status-badge {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .status-open       { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
+  .status-mitigating { color: var(--accent); border-color: rgba(56,189,248,0.4); }
+  .status-closed     { color: #34d399; border-color: rgba(52,211,153,0.4); }
+  .status-accepted   { color: var(--muted); border-color: var(--border); }
+
+  .trend { font-family: var(--font-mono); }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 640px) {
+    .heatmap-wrap { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Kevin Wadsworth</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<section class="hero hero--small">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>AI Governance Risk Dashboard</h1>
+    <p>Live view of the NovaTel UK churn-prediction engine's risk register — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
+  </div>
+</section>
+
+<div class="case-nav">
+  <a href="ai-governance.html">&larr; Back to Case Study</a>
+  <a href="ai-governance-evidence.html">View evidence pack &rarr;</a>
+</div>
+
+<main class="main-section">
+
+  <p class="dash-intro">This dashboard reads directly from the AI risk register for NovaTel's Customer Churn Prediction &amp; Retention Engine. Select a heat map cell to filter the register below, or use the filters directly. Toggle between inherent risk (before controls) and residual risk (after controls) to see how mitigation actually moves the needle.</p>
+
+  <div class="dash-toggle" role="group" aria-label="Score view">
+    <button id="btn-inherent" onclick="setScoreView('inherent')">Inherent risk</button>
+    <button id="btn-residual" onclick="setScoreView('residual')" class="active">Residual risk</button>
+  </div>
+
+  <h2 style="font-size:1.05rem;font-weight:600;margin:0 0 14px;">Likelihood &times; Impact heat map</h2>
+
+  <div class="heatmap-wrap">
+    <div class="heatmap-yaxis">
+      <span>Low</span><span>Medium</span><span>High</span>
+    </div>
+    <div class="heatmap-grid" id="heatmap"></div>
+    <div></div>
+    <div class="heatmap-xaxis"><span>Low</span><span>Medium</span><span>High</span></div>
+  </div>
+  <p class="heatmap-axis-title">Impact (horizontal) &nbsp;&middot;&nbsp; Likelihood (vertical, bottom to top)</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch heat-low"></span>Low (1&ndash;2)</div>
+    <div class="legend-item"><span class="legend-swatch heat-medium"></span>Medium (3&ndash;5)</div>
+    <div class="legend-item"><span class="legend-swatch heat-high"></span>High (6&ndash;9)</div>
+  </div>
+
+  <h2 style="font-size:1.05rem;font-weight:600;margin:0 0 14px;">Risk register</h2>
+
+  <div class="filters">
+    <input type="text" id="search" placeholder="Search risk or ID&hellip;" oninput="render()">
+    <select id="f-category" onchange="render()"><option value="">All categories</option></select>
+    <select id="f-status" onchange="render()"><option value="">All statuses</option></select>
+    <select id="f-owner" onchange="render()"><option value="">All owners</option></select>
+    <select id="f-nature" onchange="render()"><option value="">All natures</option></select>
+    <button class="clear-filters" onclick="clearFilters()">Clear filters</button>
+  </div>
+
+  <p class="result-count" id="result-count"></p>
+
+  <div class="table-scroll">
+    <table class="risk-table">
+      <thead>
+        <tr id="table-head"></tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-accent"></div>
+  &copy; 2026 Kevin Wadsworth &middot; Cybersecurity &amp; GRC Portfolio
+</footer>
+
+<script>
+const risks = [
+  {id:"AI-001", risk:"Model under-scores churn risk for a protected segment", category:"Bias/Fairness", nature:"Recurring", likelihood:2, impact:3, inherent:6, residual:3, framework:"EU AI Act Art.10, GDPR Art.22, ISO 42001", response:"Reduce", control:"Quarterly disparate-impact testing across demographic segments; remediation plan if variance exceeds threshold", kri:"Segment variance >10%", owner:"Head of Data Science", status:"Mitigating", dateId:"2026-01-15", lastReview:"2026-09-01", nextReview:"2026-12-01", trend:"→"},
+  {id:"AI-002", risk:"High-value offer issued without human review", category:"Human Oversight", nature:"One-off", likelihood:1, impact:3, inherent:3, residual:1, framework:"EU AI Act Art.14", response:"Avoid", control:"£50/month auto-approval threshold; hard system block above it, routed to CX queue", kri:"Any auto-approval attempt above threshold", owner:"CX Lead", status:"Closed", dateId:"2026-01-15", lastReview:"2026-09-01", nextReview:"2027-03-01", trend:"↓"},
+  {id:"AI-003", risk:"Training data drift degrades score accuracy", category:"Model Drift", nature:"Recurring", likelihood:3, impact:2, inherent:6, residual:4, framework:"NIST AI RMF (Measure)", response:"Reduce", control:"Monthly performance monitoring dashboard; retrain triggered on accuracy drop >5%", kri:"Accuracy drop >5% MoM", owner:"ML Engineering Lead", status:"Mitigating", dateId:"2026-01-15", lastReview:"2026-09-10", nextReview:"2026-10-10", trend:"↑"},
+  {id:"AI-004", risk:"Customer cannot obtain explanation for a negative outcome", category:"Transparency", nature:"Recurring", likelihood:2, impact:2, inherent:4, residual:2, framework:"EU AI Act Art.13, GDPR Art.22", response:"Reduce", control:"Model card + plain-language decision rationale generated per decision", kri:"Explanation requests unresolved >48h", owner:"Data Protection Officer", status:"Mitigating", dateId:"2026-02-01", lastReview:"2026-08-15", nextReview:"2027-02-01", trend:"→"},
+  {id:"AI-005", risk:"Payment metadata inadvertently expands PCI scope", category:"Data Governance", nature:"One-off", likelihood:1, impact:3, inherent:3, residual:1, framework:"PCI DSS, PII classification scheme", response:"Avoid", control:"Field-level data flow mapping; tokenisation validated at ingestion; no raw PAN in pipeline", kri:"Any raw PAN detected in pipeline", owner:"Information Security Manager", status:"Closed", dateId:"2026-01-20", lastReview:"2026-07-01", nextReview:"2027-07-01", trend:"→"},
+  {id:"AI-006", risk:"Model reused for a new purpose without re-assessment", category:"Governance Drift", nature:"Event-triggered", likelihood:2, impact:2, inherent:4, residual:2, framework:"ISO 42001, EU AI Act", response:"Avoid", control:"Change-control gate — new AI Impact Assessment mandatory before repurposing", kri:"Any repurposing request without AIA on file", owner:"AI Governance Committee", status:"Open", dateId:"2026-03-01", lastReview:"2026-09-01", nextReview:"Triggered", trend:"—"},
+  {id:"AI-007", risk:"Third-party enrichment source introduces unvetted PII", category:"Third-Party Risk", nature:"Recurring", likelihood:2, impact:3, inherent:6, residual:3, framework:"GDPR, ISO 42001", response:"Transfer/Reduce", control:"Signed DPA + AI risk questionnaire before onboarding; annual vendor re-assessment", kri:"Vendor assessment overdue >30 days", owner:"Procurement + DPO", status:"Mitigating", dateId:"2026-02-10", lastReview:"2026-08-20", nextReview:"2027-02-10", trend:"→"},
+  {id:"AI-008", risk:"Model occasionally misjudges edge-case customers", category:"Model Performance", nature:"Recurring", likelihood:2, impact:1, inherent:3, residual:2, framework:"NIST AI RMF (Manage)", response:"Accept", control:"Documented accepted risk; monitored via complaint/appeal volume as leading indicator", kri:"Appeal volume >baseline +20%", owner:"AI Governance Committee", status:"Accepted", dateId:"2026-01-15", lastReview:"2026-09-01", nextReview:"2026-12-01", trend:"→"}
+];
+
+let scoreView = "residual";
+let selectedCell = null;
+let sortKey = "id";
+let sortDir = 1;
+
+function scoreOf(r) { return scoreView === "inherent" ? r.inherent : r.residual; }
+function tier(score) { return score >= 6 ? "high" : score >= 3 ? "medium" : "low"; }
+
+function setScoreView(v) {
+  scoreView = v;
+  document.getElementById("btn-inherent").classList.toggle("active", v === "inherent");
+  document.getElementById("btn-residual").classList.toggle("active", v === "residual");
+  selectedCell = null;
+  render();
+}
+
+function populateFilterOptions() {
+  const fields = { "f-category": "category", "f-status": "status", "f-owner": "owner", "f-nature": "nature" };
+  Object.entries(fields).forEach(([selId, key]) => {
+    const sel = document.getElementById(selId);
+    const values = [...new Set(risks.map(r => r[key]))].sort();
+    values.forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v; opt.textContent = v;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+function clearFilters() {
+  document.getElementById("search").value = "";
+  ["f-category","f-status","f-owner","f-nature"].forEach(id => document.getElementById(id).value = "");
+  selectedCell = null;
+  render();
+}
+
+function renderHeatmap(filtered) {
+  const grid = document.getElementById("heatmap");
+  grid.innerHTML = "";
+  // rows: likelihood 3 (top) -> 1 (bottom); cols: impact 1 -> 3
+  for (let l = 3; l >= 1; l--) {
+    for (let i = 1; i <= 3; i++) {
+      const cellRisks = risks.filter(r => r.likelihood === l && r.impact === i);
+      const count = cellRisks.length;
+      const score = l * i;
+      const cell = document.createElement("div");
+      cell.className = "heat-cell " + (count === 0 ? "empty" : "heat-" + tier(score));
+      if (selectedCell && selectedCell.l === l && selectedCell.i === i) cell.classList.add("selected");
+      cell.innerHTML = `<span class="count">${count}</span><span class="label">score ${score}</span>`;
+      cell.onclick = () => {
+        if (selectedCell && selectedCell.l === l && selectedCell.i === i) { selectedCell = null; }
+        else { selectedCell = { l, i }; }
+        render();
+      };
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function getFiltered() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const category = document.getElementById("f-category").value;
+  const status = document.getElementById("f-status").value;
+  const owner = document.getElementById("f-owner").value;
+  const nature = document.getElementById("f-nature").value;
+
+  return risks.filter(r => {
+    if (selectedCell && !(r.likelihood === selectedCell.l && r.impact === selectedCell.i)) return false;
+    if (category && r.category !== category) return false;
+    if (status && r.status !== status) return false;
+    if (owner && r.owner !== owner) return false;
+    if (nature && r.nature !== nature) return false;
+    if (search && !(r.risk.toLowerCase().includes(search) || r.id.toLowerCase().includes(search))) return false;
+    return true;
+  }).sort((a, b) => {
+    let av = sortKey === "score" ? scoreOf(a) : a[sortKey];
+    let bv = sortKey === "score" ? scoreOf(b) : b[sortKey];
+    if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if (av < bv) return -1 * sortDir;
+    if (av > bv) return 1 * sortDir;
+    return 0;
+  });
+}
+
+const columns = [
+  { key: "id", label: "ID" },
+  { key: "risk", label: "Risk" },
+  { key: "category", label: "Category" },
+  { key: "nature", label: "Nature" },
+  { key: "score", label: scoreView === "inherent" ? "Inherent" : "Residual" },
+  { key: "response", label: "Response" },
+  { key: "owner", label: "Owner" },
+  { key: "status", label: "Status" },
+  { key: "nextReview", label: "Next Review" },
+  { key: "trend", label: "Trend" }
+];
+
+function renderTableHead() {
+  const head = document.getElementById("table-head");
+  head.innerHTML = "";
+  columns.forEach(col => {
+    const th = document.createElement("th");
+    const label = col.key === "score" ? (scoreView === "inherent" ? "Inherent" : "Residual") : col.label;
+    const arrow = sortKey === col.key ? (sortDir === 1 ? "↑" : "↓") : "";
+    th.innerHTML = `${label} <span class="arrow">${arrow}</span>`;
+    th.onclick = () => {
+      if (sortKey === col.key) sortDir *= -1; else { sortKey = col.key; sortDir = 1; }
+      render();
+    };
+    head.appendChild(th);
+  });
+}
+
+function statusClass(s) {
+  return "status-" + s.toLowerCase().split(" ")[0].replace(/[()]/g, "");
+}
+
+function renderTableBody(filtered) {
+  const body = document.getElementById("table-body");
+  body.innerHTML = "";
+  if (filtered.length === 0) {
+    body.innerHTML = `<tr><td colspan="${columns.length}"><div class="empty-state">No risks match the current filters.</div></td></tr>`;
+    return;
+  }
+  filtered.forEach(r => {
+    const score = scoreOf(r);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="id">${r.id}</td>
+      <td class="risk-name" title="${r.control}">${r.risk}</td>
+      <td>${r.category}</td>
+      <td>${r.nature}</td>
+      <td><span class="score-pill heat-${tier(score)}">${score}</span></td>
+      <td>${r.response}</td>
+      <td>${r.owner}</td>
+      <td><span class="status-badge ${statusClass(r.status)}">${r.status}</span></td>
+      <td>${r.nextReview}</td>
+      <td class="trend">${r.trend}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function render() {
+  const filtered = getFiltered();
+  renderHeatmap(filtered);
+  renderTableHead();
+  renderTableBody(filtered);
+  document.getElementById("result-count").textContent =
+    `Showing ${filtered.length} of ${risks.length} risks` + (selectedCell ? ` — filtered by heat map cell (likelihood ${selectedCell.l}, impact ${selectedCell.i})` : "");
+}
+
+populateFilterOptions();
+render();
+</script>
+
+</body>
+</html>
