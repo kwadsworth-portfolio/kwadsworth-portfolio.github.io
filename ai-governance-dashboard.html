@@ -7,7 +7,6 @@
 <meta name="description" content="Interactive risk dashboard for NovaTel UK's AI-driven churn prediction engine — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.">
 <link rel="stylesheet" href="style.css">
 <style>
-  /* ── Dashboard-specific additions (reuses tokens from style.css) ── */
   .dash-intro {
     color: var(--muted);
     max-width: 72ch;
@@ -79,7 +78,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s;
+    transition: transform 0.15s, border-color 0.15s, background 0.25s;
     background: var(--bg-card);
   }
 
@@ -225,10 +224,20 @@
 
   .trend { font-family: var(--font-mono); }
 
-  .empty-state {
+  .empty-state, .load-state {
     text-align: center;
     padding: 48px 20px;
     color: var(--muted);
+  }
+
+  .load-error {
+    text-align: center;
+    padding: 24px 20px;
+    color: #f87171;
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: var(--radius-sm);
+    background: rgba(248,113,113,0.06);
+    margin-bottom: 20px;
   }
 
   @media (max-width: 640px) {
@@ -256,13 +265,15 @@
 </section>
 
 <div class="case-nav">
-  <a href="ai-governance.html">&larr; Back to Case Study</a>
-  <a href="ai-governance-evidence.html">View evidence pack &rarr;</a>
+  <a href="projects.html">&larr; Back to Projects</a>
+  <a href="projects.html">View more projects &rarr;</a>
 </div>
 
 <main class="main-section">
 
-  <p class="dash-intro">This dashboard reads directly from the AI risk register for NovaTel's Customer Churn Prediction &amp; Retention Engine. Select a heat map cell to filter the register below, or use the filters directly. Toggle between inherent risk (before controls) and residual risk (after controls) to see how mitigation actually moves the needle.</p>
+  <p class="dash-intro">This dashboard reads directly from a separate risk register file (risk-register.json) for NovaTel's Customer Churn Prediction &amp; Retention Engine — update that file and the dashboard reflects it automatically. Select a heat map cell to filter the register below, or use the filters directly. Toggle between inherent risk (before controls) and residual risk (after controls) to see how mitigation actually moves the needle.</p>
+
+  <div id="load-status"></div>
 
   <div class="dash-toggle" role="group" aria-label="Score view">
     <button id="btn-inherent" onclick="setScoreView('inherent')">Inherent risk</button>
@@ -270,6 +281,7 @@
   </div>
 
   <h2 style="font-size:1.05rem;font-weight:600;margin:0 0 14px;">Likelihood &times; Impact heat map</h2>
+  <p class="heatmap-axis-title" style="margin:0 0 14px;">Cells are positioned by each risk's likelihood and impact. Colour reflects the average score of risks in that cell for the selected view — this is what changes when you toggle inherent/residual.</p>
 
   <div class="heatmap-wrap">
     <div class="heatmap-yaxis">
@@ -305,7 +317,7 @@
       <thead>
         <tr id="table-head"></tr>
       </thead>
-      <tbody id="table-body"></tbody>
+      <tbody id="table-body"><tr><td class="load-state">Loading risk register&hellip;</td></tr></tbody>
     </table>
   </div>
 
@@ -317,17 +329,7 @@
 </footer>
 
 <script>
-const risks = [
-  {id:"AI-001", risk:"Model under-scores churn risk for a protected segment", category:"Bias/Fairness", nature:"Recurring", likelihood:2, impact:3, inherent:6, residual:3, framework:"EU AI Act Art.10, GDPR Art.22, ISO 42001", response:"Reduce", control:"Quarterly disparate-impact testing across demographic segments; remediation plan if variance exceeds threshold", kri:"Segment variance >10%", owner:"Head of Data Science", status:"Mitigating", dateId:"2026-01-15", lastReview:"2026-09-01", nextReview:"2026-12-01", trend:"→"},
-  {id:"AI-002", risk:"High-value offer issued without human review", category:"Human Oversight", nature:"One-off", likelihood:1, impact:3, inherent:3, residual:1, framework:"EU AI Act Art.14", response:"Avoid", control:"£50/month auto-approval threshold; hard system block above it, routed to CX queue", kri:"Any auto-approval attempt above threshold", owner:"CX Lead", status:"Closed", dateId:"2026-01-15", lastReview:"2026-09-01", nextReview:"2027-03-01", trend:"↓"},
-  {id:"AI-003", risk:"Training data drift degrades score accuracy", category:"Model Drift", nature:"Recurring", likelihood:3, impact:2, inherent:6, residual:4, framework:"NIST AI RMF (Measure)", response:"Reduce", control:"Monthly performance monitoring dashboard; retrain triggered on accuracy drop >5%", kri:"Accuracy drop >5% MoM", owner:"ML Engineering Lead", status:"Mitigating", dateId:"2026-01-15", lastReview:"2026-09-10", nextReview:"2026-10-10", trend:"↑"},
-  {id:"AI-004", risk:"Customer cannot obtain explanation for a negative outcome", category:"Transparency", nature:"Recurring", likelihood:2, impact:2, inherent:4, residual:2, framework:"EU AI Act Art.13, GDPR Art.22", response:"Reduce", control:"Model card + plain-language decision rationale generated per decision", kri:"Explanation requests unresolved >48h", owner:"Data Protection Officer", status:"Mitigating", dateId:"2026-02-01", lastReview:"2026-08-15", nextReview:"2027-02-01", trend:"→"},
-  {id:"AI-005", risk:"Payment metadata inadvertently expands PCI scope", category:"Data Governance", nature:"One-off", likelihood:1, impact:3, inherent:3, residual:1, framework:"PCI DSS, PII classification scheme", response:"Avoid", control:"Field-level data flow mapping; tokenisation validated at ingestion; no raw PAN in pipeline", kri:"Any raw PAN detected in pipeline", owner:"Information Security Manager", status:"Closed", dateId:"2026-01-20", lastReview:"2026-07-01", nextReview:"2027-07-01", trend:"→"},
-  {id:"AI-006", risk:"Model reused for a new purpose without re-assessment", category:"Governance Drift", nature:"Event-triggered", likelihood:2, impact:2, inherent:4, residual:2, framework:"ISO 42001, EU AI Act", response:"Avoid", control:"Change-control gate — new AI Impact Assessment mandatory before repurposing", kri:"Any repurposing request without AIA on file", owner:"AI Governance Committee", status:"Open", dateId:"2026-03-01", lastReview:"2026-09-01", nextReview:"Triggered", trend:"—"},
-  {id:"AI-007", risk:"Third-party enrichment source introduces unvetted PII", category:"Third-Party Risk", nature:"Recurring", likelihood:2, impact:3, inherent:6, residual:3, framework:"GDPR, ISO 42001", response:"Transfer/Reduce", control:"Signed DPA + AI risk questionnaire before onboarding; annual vendor re-assessment", kri:"Vendor assessment overdue >30 days", owner:"Procurement + DPO", status:"Mitigating", dateId:"2026-02-10", lastReview:"2026-08-20", nextReview:"2027-02-10", trend:"→"},
-  {id:"AI-008", risk:"Model occasionally misjudges edge-case customers", category:"Model Performance", nature:"Recurring", likelihood:2, impact:1, inherent:3, residual:2, framework:"NIST AI RMF (Manage)", response:"Accept", control:"Documented accepted risk; monitored via complaint/appeal volume as leading indicator", kri:"Appeal volume >baseline +20%", owner:"AI Governance Committee", status:"Accepted", dateId:"2026-01-15", lastReview:"2026-09-01", nextReview:"2026-12-01", trend:"→"}
-];
-
+let risks = [];
 let scoreView = "residual";
 let selectedCell = null;
 let sortKey = "id";
@@ -340,7 +342,6 @@ function setScoreView(v) {
   scoreView = v;
   document.getElementById("btn-inherent").classList.toggle("active", v === "inherent");
   document.getElementById("btn-residual").classList.toggle("active", v === "residual");
-  selectedCell = null;
   render();
 }
 
@@ -348,6 +349,7 @@ function populateFilterOptions() {
   const fields = { "f-category": "category", "f-status": "status", "f-owner": "owner", "f-nature": "nature" };
   Object.entries(fields).forEach(([selId, key]) => {
     const sel = document.getElementById(selId);
+    sel.querySelectorAll("option:not(:first-child)").forEach(o => o.remove());
     const values = [...new Set(risks.map(r => r[key]))].sort();
     values.forEach(v => {
       const opt = document.createElement("option");
@@ -364,19 +366,26 @@ function clearFilters() {
   render();
 }
 
-function renderHeatmap(filtered) {
+function renderHeatmap() {
   const grid = document.getElementById("heatmap");
   grid.innerHTML = "";
-  // rows: likelihood 3 (top) -> 1 (bottom); cols: impact 1 -> 3
   for (let l = 3; l >= 1; l--) {
     for (let i = 1; i <= 3; i++) {
       const cellRisks = risks.filter(r => r.likelihood === l && r.impact === i);
       const count = cellRisks.length;
-      const score = l * i;
       const cell = document.createElement("div");
-      cell.className = "heat-cell " + (count === 0 ? "empty" : "heat-" + tier(score));
+
+      if (count === 0) {
+        cell.className = "heat-cell empty";
+        cell.innerHTML = `<span class="count">0</span><span class="label">no risks</span>`;
+      } else {
+        const avg = cellRisks.reduce((sum, r) => sum + scoreOf(r), 0) / count;
+        const avgRounded = Math.round(avg * 10) / 10;
+        cell.className = "heat-cell heat-" + tier(avg);
+        cell.innerHTML = `<span class="count">${count}</span><span class="label">avg score ${avgRounded}</span>`;
+      }
+
       if (selectedCell && selectedCell.l === l && selectedCell.i === i) cell.classList.add("selected");
-      cell.innerHTML = `<span class="count">${count}</span><span class="label">score ${score}</span>`;
       cell.onclick = () => {
         if (selectedCell && selectedCell.l === l && selectedCell.i === i) { selectedCell = null; }
         else { selectedCell = { l, i }; }
@@ -417,7 +426,7 @@ const columns = [
   { key: "risk", label: "Risk" },
   { key: "category", label: "Category" },
   { key: "nature", label: "Nature" },
-  { key: "score", label: scoreView === "inherent" ? "Inherent" : "Residual" },
+  { key: "score", label: "Score" },
   { key: "response", label: "Response" },
   { key: "owner", label: "Owner" },
   { key: "status", label: "Status" },
@@ -472,16 +481,31 @@ function renderTableBody(filtered) {
 }
 
 function render() {
+  if (!risks.length) return;
   const filtered = getFiltered();
-  renderHeatmap(filtered);
+  renderHeatmap();
   renderTableHead();
   renderTableBody(filtered);
   document.getElementById("result-count").textContent =
     `Showing ${filtered.length} of ${risks.length} risks` + (selectedCell ? ` — filtered by heat map cell (likelihood ${selectedCell.l}, impact ${selectedCell.i})` : "");
 }
 
-populateFilterOptions();
-render();
+fetch("risk-register.json")
+  .then(res => {
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return res.json();
+  })
+  .then(data => {
+    risks = data;
+    populateFilterOptions();
+    render();
+  })
+  .catch(err => {
+    document.getElementById("load-status").innerHTML =
+      `<div class="load-error">Could not load risk-register.json (${err.message}). Make sure that file is uploaded in the same folder as this page.</div>`;
+    document.getElementById("table-body").innerHTML =
+      `<tr><td colspan="${columns.length}"><div class="empty-state">Risk data unavailable.</div></td></tr>`;
+  });
 </script>
 
 </body>
