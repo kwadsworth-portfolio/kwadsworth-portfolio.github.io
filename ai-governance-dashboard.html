@@ -1,331 +1,273 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI Governance Risk Dashboard | Kevin Wadsworth</title>
-<meta name="description" content="Interactive risk dashboard for NovaTel UK's AI-driven churn prediction engine — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.">
-<link rel="stylesheet" href="style.css">
-<style>
-  .dash-intro {
-    color: var(--muted);
-    max-width: 72ch;
-    line-height: 1.72;
-    margin: 0 0 36px;
-  }
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AI Governance Risk Dashboard | Kevin Wadsworth</title>
+  <meta name="description" content="Interactive risk dashboard for NovaTel UK's AI-driven churn prediction engine — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS."/>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --line:rgba(255,255,255,.10);
+      --accent:#67e8f9;
+      --ok:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --radius:18px;
+      --max:1120px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:radial-gradient(1200px 600px at 20% -10%,rgba(103,232,249,.18),transparent 55%),
+                 radial-gradient(900px 500px at 85% 10%,rgba(167,139,250,.18),transparent 55%),
+                 var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(to bottom,rgba(11,18,32,.92),rgba(11,18,32,.65));
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max);margin:0 auto;padding:14px 18px;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand strong{font-size:15px;letter-spacing:.2px}
+    .brand span{font-size:12px;color:var(--muted)}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:13px}
+    .pill{
+      padding:8px 12px;border:1px solid var(--line);border-radius:999px;
+      background:rgba(255,255,255,.03);color:var(--accent);
+    }
+    .pill:hover{border-color:rgba(103,232,249,.45);text-decoration:none}
+    .pill.active{background:rgba(103,232,249,.12);border-color:rgba(103,232,249,.4)}
+    .banner-hero{
+      position:relative;height:34vh;min-height:240px;
+      background-image:url("assets/banner-01.jpg");
+      background-size:cover;background-position:center;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
+    .banner-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(to bottom right,rgba(11,18,32,.88),rgba(8,47,73,.78));
+    }
+    .banner-content{position:relative;max-width:900px;padding:24px 32px;text-align:center}
+    .banner-content h1{font-size:clamp(1.7rem,3vw,2.6rem);font-weight:700;margin:0 0 12px}
+    .banner-content p{color:var(--muted);margin:0;font-size:1rem;line-height:1.55;max-width:68ch;margin-left:auto;margin-right:auto}
+    .page-nav{
+      max-width:var(--max);margin:24px auto 36px;padding:0 18px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    }
+    .page-nav a{color:var(--accent);font-weight:500;font-size:.9rem}
+    .page-nav a:hover{opacity:.75;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 64px}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    .section{
+      background:rgba(255,255,255,.02);border:1px solid var(--line);
+      border-radius:var(--radius);overflow:hidden;
+    }
+    .section-head{
+      padding:16px 16px 12px;
+      background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .section-head h2{margin:0;font-size:18px}
+    .section-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .cards{padding:14px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .card{
+      grid-column:span 12;
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      border:1px solid var(--line);border-radius:16px;overflow:hidden;
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+    }
+    .card-inner{padding:16px}
+    .kicker{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+    .tag{
+      font-size:12px;padding:4px 10px;border-radius:999px;
+      border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);
+    }
+    .tag.ok{color:var(--ok);border-color:rgba(52,211,153,.35)}
+    .tag.warn{color:var(--warn);border-color:rgba(251,191,36,.35)}
+    .tag.bad{color:var(--bad);border-color:rgba(251,113,133,.35)}
+    .tag.accent{color:var(--accent);border-color:rgba(103,232,249,.35)}
+    .card h3{margin:0 0 8px;font-size:16px;color:var(--text)}
+    .card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .site-footer{
+      text-align:center;padding:20px 16px;font-size:.83rem;
+      color:var(--muted);border-top:1px solid var(--line);background:rgba(11,18,32,.6);
+    }
+    .footer-accent{width:40px;height:2px;background:var(--accent);opacity:.45;margin:0 auto 14px;border-radius:2px}
 
-  .dash-toggle {
-    display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px;
-    margin-bottom: 28px;
-    background: var(--bg-card);
-  }
-
-  .dash-toggle button {
-    border: none;
-    background: none;
-    color: var(--muted);
-    font-family: var(--font);
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .dash-toggle button.active {
-    background: var(--accent);
-    color: #020617;
-  }
-
-  .heatmap-wrap {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 10px;
-    max-width: 560px;
-    margin-bottom: 12px;
-  }
-
-  .heatmap-yaxis {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    text-align: right;
-    padding-right: 4px;
-  }
-
-  .heatmap-yaxis span, .heatmap-xaxis span { line-height: 1; }
-
-  .heatmap-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .heat-cell {
-    aspect-ratio: 1;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s, background 0.25s;
-    background: var(--bg-card);
-  }
-
-  .heat-cell:hover { transform: translateY(-2px); }
-  .heat-cell.selected { border-color: var(--text); border-width: 2px; }
-
-  .heat-cell .count {
-    font-family: var(--font-mono);
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: #020617;
-  }
-
-  .heat-cell .label {
-    font-size: 0.68rem;
-    color: rgba(2, 6, 23, 0.7);
-    margin-top: 2px;
-  }
-
-  .heat-cell.empty .count,
-  .heat-cell.empty .label { color: var(--muted); }
-  .heat-cell.empty { background: var(--bg-card); }
-
-  .heat-low    { background: #34d399; }
-  .heat-medium { background: #fbbf24; }
-  .heat-high   { background: #f87171; }
-
-  .heatmap-xaxis {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.78rem;
-    color: var(--muted);
-    padding-left: 4px;
-    margin-top: 2px;
-    grid-column: 2;
-  }
-
-  .heatmap-axis-title {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 6px;
-  }
-
-  .legend { display: flex; gap: 18px; margin: 18px 0 44px; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.82rem; color: var(--muted); }
-  .legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
-
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 22px;
-  }
-
-  .filters select,
-  .filters input {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 0.86rem;
-    padding: 9px 14px;
-    border-radius: var(--radius-sm);
-  }
-
-  .filters input { flex: 1 1 200px; }
-  .filters select { cursor: pointer; }
-
-  .clear-filters {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--accent);
-    font-family: var(--font);
-    font-size: 0.86rem;
-    font-weight: 500;
-    padding: 9px 16px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-  }
-
-  .result-count { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
-
-  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
-
-  table.risk-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-    min-width: 1050px;
-  }
-
-  .risk-table th {
-    text-align: left;
-    padding: 12px 14px;
-    background: var(--bg-alt);
-    color: var(--text);
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .risk-table th:hover { color: var(--accent); }
-  .risk-table th .arrow { opacity: 0.5; margin-left: 3px; font-size: 0.75em; }
-
-  .risk-table td {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-    color: var(--muted);
-    vertical-align: top;
-  }
-
-  .risk-table td.id { font-family: var(--font-mono); color: var(--accent); white-space: nowrap; }
-  .risk-table td.risk-name { color: var(--text); max-width: 220px; }
-  .risk-table tr:last-child td { border-bottom: none; }
-  .risk-table tr:hover td { background: rgba(56, 189, 248, 0.04); }
-
-  .score-pill {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: 0.8rem;
-    padding: 2px 9px;
-    border-radius: 999px;
-    color: #020617;
-  }
-
-  .status-badge {
-    display: inline-block;
-    font-size: 0.76rem;
-    font-weight: 500;
-    padding: 3px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  .status-open       { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
-  .status-mitigating { color: var(--accent); border-color: rgba(56,189,248,0.4); }
-  .status-closed     { color: #34d399; border-color: rgba(52,211,153,0.4); }
-  .status-accepted   { color: var(--muted); border-color: var(--border); }
-
-  .trend { font-family: var(--font-mono); }
-
-  .empty-state, .load-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--muted);
-  }
-
-  .load-error {
-    text-align: center;
-    padding: 24px 20px;
-    color: #f87171;
-    border: 1px solid rgba(248,113,113,0.3);
-    border-radius: var(--radius-sm);
-    background: rgba(248,113,113,0.06);
-    margin-bottom: 20px;
-  }
-
-  @media (max-width: 640px) {
-    .heatmap-wrap { max-width: 100%; }
-  }
-</style>
+    /* ── Dashboard-specific ── */
+    .dash-intro{color:var(--muted);max-width:75ch;line-height:1.72;margin:0 0 20px;font-size:13px}
+    .dash-toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;margin-bottom:22px;background:rgba(255,255,255,.03)}
+    .dash-toggle button{border:none;background:none;color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:600;padding:8px 16px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+    .dash-toggle button.active{background:var(--accent);color:#0b1220}
+    .heatmap-note{font-size:12px;color:var(--muted);margin:0 0 14px}
+    .heatmap-wrap{display:grid;grid-template-columns:auto 1fr;gap:10px;max-width:520px;margin-bottom:10px}
+    .heatmap-yaxis{display:flex;flex-direction:column-reverse;justify-content:space-between;gap:8px;font-size:.72rem;color:var(--muted);text-align:right;padding-right:4px}
+    .heatmap-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:8px}
+    .heat-cell{aspect-ratio:1;border-radius:14px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,border-color .15s,background .25s;background:rgba(255,255,255,.03)}
+    .heat-cell:hover{transform:translateY(-2px)}
+    .heat-cell.selected{border-color:var(--text);border-width:2px}
+    .heat-cell .count{font-family:ui-monospace,"JetBrains Mono",Consolas,monospace;font-size:1.4rem;font-weight:600;color:#0b1220}
+    .heat-cell .label{font-size:.64rem;color:rgba(11,18,32,.7);margin-top:2px}
+    .heat-cell.empty .count,.heat-cell.empty .label{color:var(--muted)}
+    .heat-cell.empty{background:rgba(255,255,255,.03)}
+    .heat-cell.heat-low{background:var(--ok)}
+    .heat-cell.heat-medium{background:var(--warn)}
+    .heat-cell.heat-high{background:var(--bad)}
+    .heatmap-xaxis{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);padding-left:4px;margin-top:2px;grid-column:2}
+    .legend{display:flex;gap:18px;margin:14px 0 6px;flex-wrap:wrap}
+    .legend-item{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--muted)}
+    .legend-swatch{width:11px;height:11px;border-radius:3px}
+    .legend-swatch.low{background:var(--ok)}
+    .legend-swatch.medium{background:var(--warn)}
+    .legend-swatch.high{background:var(--bad)}
+    .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+    .filters select,.filters input{
+      background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--text);
+      font-family:inherit;font-size:.82rem;padding:8px 12px;border-radius:10px;
+    }
+    .filters input{flex:1 1 200px}
+    .filters select{cursor:pointer}
+    .clear-filters{background:none;border:1px solid var(--line);color:var(--accent);font-family:inherit;font-size:.82rem;font-weight:500;padding:8px 14px;border-radius:10px;cursor:pointer}
+    .result-count{color:var(--muted);font-size:.8rem;margin:0 0 12px}
+    .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+    table.risk-table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:1000px}
+    .risk-table th{text-align:left;padding:11px 13px;background:rgba(255,255,255,.04);color:var(--text);font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+    .risk-table th:hover{color:var(--accent)}
+    .risk-table th .arrow{opacity:.5;margin-left:3px;font-size:.75em}
+    .risk-table td{padding:11px 13px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+    .risk-table td.id{font-family:ui-monospace,"JetBrains Mono",Consolas,monospace;color:var(--accent);white-space:nowrap}
+    .risk-table td.risk-name{color:var(--text);max-width:220px}
+    .risk-table tr:last-child td{border-bottom:none}
+    .risk-table tr:hover td{background:rgba(103,232,249,.04)}
+    .score-pill{display:inline-block;font-family:ui-monospace,"JetBrains Mono",Consolas,monospace;font-weight:700;font-size:.76rem;padding:2px 9px;border-radius:999px;color:#0b1220}
+    .score-pill.heat-low{background:var(--ok)}
+    .score-pill.heat-medium{background:var(--warn)}
+    .score-pill.heat-high{background:var(--bad)}
+    .status-badge{display:inline-block;font-size:.72rem;font-weight:500;padding:3px 10px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+    .status-open{color:var(--warn);border-color:rgba(251,191,36,.35)}
+    .status-mitigating{color:var(--accent);border-color:rgba(103,232,249,.35)}
+    .status-closed{color:var(--ok);border-color:rgba(52,211,153,.35)}
+    .status-accepted{color:var(--muted);border-color:var(--line)}
+    .trend{font-family:ui-monospace,"JetBrains Mono",Consolas,monospace}
+    .empty-state,.load-state{text-align:center;padding:40px 16px;color:var(--muted)}
+    .load-error{text-align:center;padding:18px 16px;color:var(--bad);border:1px solid rgba(251,113,133,.3);border-radius:12px;background:rgba(251,113,133,.06);margin-bottom:16px}
+    @media(max-width:640px){.heatmap-wrap{max-width:100%}}
+  </style>
 </head>
 <body>
-
-<header class="site-header">
-  <div class="logo">Kevin Wadsworth</div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="projects.html">Projects</a>
-    <a href="about.html">About</a>
-  </nav>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>Kevin Wadsworth</strong>
+      <span>Cybersecurity &amp; GRC Portfolio</span>
+    </div>
+    <nav class="nav">
+      <a class="pill" href="index.html">Home</a>
+      <a class="pill" href="projects.html">Projects</a>
+      <a class="pill" href="about.html">About</a>
+    </nav>
+  </div>
 </header>
 
-<section class="hero hero--small">
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
+<section class="banner-hero">
+  <div class="banner-overlay"></div>
+  <div class="banner-content">
     <h1>AI Governance Risk Dashboard</h1>
     <p>Live view of the NovaTel UK churn-prediction engine's risk register — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
   </div>
 </section>
 
-<div class="case-nav">
-  <a href="projects.html">&larr; Back to Projects</a>
-  <a href="projects.html">View more projects &rarr;</a>
+<div class="page-nav">
+  <a href="ai-governance.html">&larr; Back to Case Study</a>
+  <a href="ai-governance-evidence.html">View evidence pack &rarr;</a>
 </div>
 
-<main class="main-section">
+<main class="wrap">
+  <div class="grid">
+    <section class="section">
+      <div class="section-head">
+        <h2>Likelihood &times; Impact Heat Map</h2>
+        <p>Reads live from risk-register.json — toggle inherent/residual to see how controls move the picture.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-inner">
+            <p class="dash-intro">This dashboard reads directly from a separate risk register file (risk-register.json) for NovaTel's Customer Churn Prediction &amp; Retention Engine — update that file and the dashboard reflects it automatically. Select a heat map cell to filter the register below, or use the filters directly.</p>
 
-  <p class="dash-intro">This dashboard reads directly from a separate risk register file (risk-register.json) for NovaTel's Customer Churn Prediction &amp; Retention Engine — update that file and the dashboard reflects it automatically. Select a heat map cell to filter the register below, or use the filters directly. Toggle between inherent risk (before controls) and residual risk (after controls) to see how mitigation actually moves the needle.</p>
+            <div id="load-status"></div>
 
-  <div id="load-status"></div>
+            <div class="dash-toggle" role="group" aria-label="Score view">
+              <button id="btn-inherent" onclick="setScoreView('inherent')">Inherent risk</button>
+              <button id="btn-residual" onclick="setScoreView('residual')" class="active">Residual risk</button>
+            </div>
 
-  <div class="dash-toggle" role="group" aria-label="Score view">
-    <button id="btn-inherent" onclick="setScoreView('inherent')">Inherent risk</button>
-    <button id="btn-residual" onclick="setScoreView('residual')" class="active">Residual risk</button>
+            <p class="heatmap-note">Cells are positioned by each risk's likelihood and impact. Colour reflects the average score of risks in that cell for the selected view.</p>
+
+            <div class="heatmap-wrap">
+              <div class="heatmap-yaxis"><span>Low</span><span>Medium</span><span>High</span></div>
+              <div class="heatmap-grid" id="heatmap"></div>
+              <div></div>
+              <div class="heatmap-xaxis"><span>Low</span><span>Medium</span><span>High</span></div>
+            </div>
+            <p class="heatmap-note">Impact (horizontal) &middot; Likelihood (vertical, bottom to top)</p>
+
+            <div class="legend">
+              <div class="legend-item"><span class="legend-swatch low"></span>Low (1&ndash;2)</div>
+              <div class="legend-item"><span class="legend-swatch medium"></span>Medium (3&ndash;5)</div>
+              <div class="legend-item"><span class="legend-swatch high"></span>High (6&ndash;9)</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Risk Register</h2>
+        <p>Filterable, sortable view of every tracked risk.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-inner">
+            <div class="filters">
+              <input type="text" id="search" placeholder="Search risk or ID&hellip;" oninput="render()">
+              <select id="f-category" onchange="render()"><option value="">All categories</option></select>
+              <select id="f-status" onchange="render()"><option value="">All statuses</option></select>
+              <select id="f-owner" onchange="render()"><option value="">All owners</option></select>
+              <select id="f-nature" onchange="render()"><option value="">All natures</option></select>
+              <button class="clear-filters" onclick="clearFilters()">Clear filters</button>
+            </div>
+            <p class="result-count" id="result-count"></p>
+            <div class="table-scroll">
+              <table class="risk-table">
+                <thead><tr id="table-head"></tr></thead>
+                <tbody id="table-body"><tr><td class="load-state">Loading risk register&hellip;</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
   </div>
-
-  <h2 style="font-size:1.05rem;font-weight:600;margin:0 0 14px;">Likelihood &times; Impact heat map</h2>
-  <p class="heatmap-axis-title" style="margin:0 0 14px;">Cells are positioned by each risk's likelihood and impact. Colour reflects the average score of risks in that cell for the selected view — this is what changes when you toggle inherent/residual.</p>
-
-  <div class="heatmap-wrap">
-    <div class="heatmap-yaxis">
-      <span>Low</span><span>Medium</span><span>High</span>
-    </div>
-    <div class="heatmap-grid" id="heatmap"></div>
-    <div></div>
-    <div class="heatmap-xaxis"><span>Low</span><span>Medium</span><span>High</span></div>
-  </div>
-  <p class="heatmap-axis-title">Impact (horizontal) &nbsp;&middot;&nbsp; Likelihood (vertical, bottom to top)</p>
-
-  <div class="legend">
-    <div class="legend-item"><span class="legend-swatch heat-low"></span>Low (1&ndash;2)</div>
-    <div class="legend-item"><span class="legend-swatch heat-medium"></span>Medium (3&ndash;5)</div>
-    <div class="legend-item"><span class="legend-swatch heat-high"></span>High (6&ndash;9)</div>
-  </div>
-
-  <h2 style="font-size:1.05rem;font-weight:600;margin:0 0 14px;">Risk register</h2>
-
-  <div class="filters">
-    <input type="text" id="search" placeholder="Search risk or ID&hellip;" oninput="render()">
-    <select id="f-category" onchange="render()"><option value="">All categories</option></select>
-    <select id="f-status" onchange="render()"><option value="">All statuses</option></select>
-    <select id="f-owner" onchange="render()"><option value="">All owners</option></select>
-    <select id="f-nature" onchange="render()"><option value="">All natures</option></select>
-    <button class="clear-filters" onclick="clearFilters()">Clear filters</button>
-  </div>
-
-  <p class="result-count" id="result-count"></p>
-
-  <div class="table-scroll">
-    <table class="risk-table">
-      <thead>
-        <tr id="table-head"></tr>
-      </thead>
-      <tbody id="table-body"><tr><td class="load-state">Loading risk register&hellip;</td></tr></tbody>
-    </table>
-  </div>
-
 </main>
 
 <footer class="site-footer">
   <div class="footer-accent"></div>
-  &copy; 2026 Kevin Wadsworth &middot; Cybersecurity &amp; GRC Portfolio
+  <p>&copy; 2026 Kevin Wadsworth &middot; Cybersecurity &amp; GRC Portfolio</p>
 </footer>
 
 <script>
@@ -335,23 +277,22 @@ let selectedCell = null;
 let sortKey = "id";
 let sortDir = 1;
 
-function scoreOf(r) { return scoreView === "inherent" ? r.inherent : r.residual; }
-function tier(score) { return score >= 6 ? "high" : score >= 3 ? "medium" : "low"; }
+function scoreOf(r){ return scoreView === "inherent" ? r.inherent : r.residual; }
+function tier(score){ return score >= 6 ? "high" : score >= 3 ? "medium" : "low"; }
 
-function setScoreView(v) {
+function setScoreView(v){
   scoreView = v;
   document.getElementById("btn-inherent").classList.toggle("active", v === "inherent");
   document.getElementById("btn-residual").classList.toggle("active", v === "residual");
   render();
 }
 
-function populateFilterOptions() {
-  const fields = { "f-category": "category", "f-status": "status", "f-owner": "owner", "f-nature": "nature" };
-  Object.entries(fields).forEach(([selId, key]) => {
+function populateFilterOptions(){
+  const fields = { "f-category":"category","f-status":"status","f-owner":"owner","f-nature":"nature" };
+  Object.entries(fields).forEach(([selId,key]) => {
     const sel = document.getElementById(selId);
     sel.querySelectorAll("option:not(:first-child)").forEach(o => o.remove());
-    const values = [...new Set(risks.map(r => r[key]))].sort();
-    values.forEach(v => {
+    [...new Set(risks.map(r => r[key]))].sort().forEach(v => {
       const opt = document.createElement("option");
       opt.value = v; opt.textContent = v;
       sel.appendChild(opt);
@@ -359,36 +300,33 @@ function populateFilterOptions() {
   });
 }
 
-function clearFilters() {
+function clearFilters(){
   document.getElementById("search").value = "";
   ["f-category","f-status","f-owner","f-nature"].forEach(id => document.getElementById(id).value = "");
   selectedCell = null;
   render();
 }
 
-function renderHeatmap() {
+function renderHeatmap(){
   const grid = document.getElementById("heatmap");
   grid.innerHTML = "";
-  for (let l = 3; l >= 1; l--) {
-    for (let i = 1; i <= 3; i++) {
+  for (let l = 3; l >= 1; l--){
+    for (let i = 1; i <= 3; i++){
       const cellRisks = risks.filter(r => r.likelihood === l && r.impact === i);
       const count = cellRisks.length;
       const cell = document.createElement("div");
-
-      if (count === 0) {
+      if (count === 0){
         cell.className = "heat-cell empty";
         cell.innerHTML = `<span class="count">0</span><span class="label">no risks</span>`;
       } else {
-        const avg = cellRisks.reduce((sum, r) => sum + scoreOf(r), 0) / count;
+        const avg = cellRisks.reduce((s,r) => s + scoreOf(r), 0) / count;
         const avgRounded = Math.round(avg * 10) / 10;
         cell.className = "heat-cell heat-" + tier(avg);
-        cell.innerHTML = `<span class="count">${count}</span><span class="label">avg score ${avgRounded}</span>`;
+        cell.innerHTML = `<span class="count">${count}</span><span class="label">avg ${avgRounded}</span>`;
       }
-
       if (selectedCell && selectedCell.l === l && selectedCell.i === i) cell.classList.add("selected");
       cell.onclick = () => {
-        if (selectedCell && selectedCell.l === l && selectedCell.i === i) { selectedCell = null; }
-        else { selectedCell = { l, i }; }
+        selectedCell = (selectedCell && selectedCell.l === l && selectedCell.i === i) ? null : { l, i };
         render();
       };
       grid.appendChild(cell);
@@ -396,13 +334,12 @@ function renderHeatmap() {
   }
 }
 
-function getFiltered() {
+function getFiltered(){
   const search = document.getElementById("search").value.toLowerCase();
   const category = document.getElementById("f-category").value;
   const status = document.getElementById("f-status").value;
   const owner = document.getElementById("f-owner").value;
   const nature = document.getElementById("f-nature").value;
-
   return risks.filter(r => {
     if (selectedCell && !(r.likelihood === selectedCell.l && r.impact === selectedCell.i)) return false;
     if (category && r.category !== category) return false;
@@ -411,10 +348,10 @@ function getFiltered() {
     if (nature && r.nature !== nature) return false;
     if (search && !(r.risk.toLowerCase().includes(search) || r.id.toLowerCase().includes(search))) return false;
     return true;
-  }).sort((a, b) => {
+  }).sort((a,b) => {
     let av = sortKey === "score" ? scoreOf(a) : a[sortKey];
     let bv = sortKey === "score" ? scoreOf(b) : b[sortKey];
-    if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if (typeof av === "string"){ av = av.toLowerCase(); bv = bv.toLowerCase(); }
     if (av < bv) return -1 * sortDir;
     if (av > bv) return 1 * sortDir;
     return 0;
@@ -422,19 +359,13 @@ function getFiltered() {
 }
 
 const columns = [
-  { key: "id", label: "ID" },
-  { key: "risk", label: "Risk" },
-  { key: "category", label: "Category" },
-  { key: "nature", label: "Nature" },
-  { key: "score", label: "Score" },
-  { key: "response", label: "Response" },
-  { key: "owner", label: "Owner" },
-  { key: "status", label: "Status" },
-  { key: "nextReview", label: "Next Review" },
-  { key: "trend", label: "Trend" }
+  { key:"id", label:"ID" }, { key:"risk", label:"Risk" }, { key:"category", label:"Category" },
+  { key:"nature", label:"Nature" }, { key:"score", label:"Score" }, { key:"response", label:"Response" },
+  { key:"owner", label:"Owner" }, { key:"status", label:"Status" }, { key:"nextReview", label:"Next Review" },
+  { key:"trend", label:"Trend" }
 ];
 
-function renderTableHead() {
+function renderTableHead(){
   const head = document.getElementById("table-head");
   head.innerHTML = "";
   columns.forEach(col => {
@@ -442,22 +373,17 @@ function renderTableHead() {
     const label = col.key === "score" ? (scoreView === "inherent" ? "Inherent" : "Residual") : col.label;
     const arrow = sortKey === col.key ? (sortDir === 1 ? "↑" : "↓") : "";
     th.innerHTML = `${label} <span class="arrow">${arrow}</span>`;
-    th.onclick = () => {
-      if (sortKey === col.key) sortDir *= -1; else { sortKey = col.key; sortDir = 1; }
-      render();
-    };
+    th.onclick = () => { if (sortKey === col.key) sortDir *= -1; else { sortKey = col.key; sortDir = 1; } render(); };
     head.appendChild(th);
   });
 }
 
-function statusClass(s) {
-  return "status-" + s.toLowerCase().split(" ")[0].replace(/[()]/g, "");
-}
+function statusClass(s){ return "status-" + s.toLowerCase().split(" ")[0].replace(/[()]/g,""); }
 
-function renderTableBody(filtered) {
+function renderTableBody(filtered){
   const body = document.getElementById("table-body");
   body.innerHTML = "";
-  if (filtered.length === 0) {
+  if (filtered.length === 0){
     body.innerHTML = `<tr><td colspan="${columns.length}"><div class="empty-state">No risks match the current filters.</div></td></tr>`;
     return;
   }
@@ -474,13 +400,12 @@ function renderTableBody(filtered) {
       <td>${r.owner}</td>
       <td><span class="status-badge ${statusClass(r.status)}">${r.status}</span></td>
       <td>${r.nextReview}</td>
-      <td class="trend">${r.trend}</td>
-    `;
+      <td class="trend">${r.trend}</td>`;
     body.appendChild(tr);
   });
 }
 
-function render() {
+function render(){
   if (!risks.length) return;
   const filtered = getFiltered();
   renderHeatmap();
@@ -491,15 +416,8 @@ function render() {
 }
 
 fetch("risk-register.json")
-  .then(res => {
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    return res.json();
-  })
-  .then(data => {
-    risks = data;
-    populateFilterOptions();
-    render();
-  })
+  .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+  .then(data => { risks = data; populateFilterOptions(); render(); })
   .catch(err => {
     document.getElementById("load-status").innerHTML =
       `<div class="load-error">Could not load risk-register.json (${err.message}). Make sure that file is uploaded in the same folder as this page.</div>`;
@@ -507,6 +425,5 @@ fetch("risk-register.json")
       `<tr><td colspan="${columns.length}"><div class="empty-state">Risk data unavailable.</div></td></tr>`;
   });
 </script>
-
 </body>
 </html>
