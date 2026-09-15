@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>AI Governance Risk Dashboard | Kevin Wadsworth</title>
-  <meta name="description" content="Interactive risk dashboard for NovaTel UK's AI-driven churn prediction engine — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS."/>
+  <meta name="description" content="Interactive risk dashboard for NovaTel UK's AI-driven churn prediction engine: EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS."/>
   <style>
     :root{
       --bg:#0b1220;
@@ -187,7 +187,7 @@
   <div class="banner-overlay"></div>
   <div class="banner-content">
     <h1>AI Governance Risk Dashboard</h1>
-    <p>Live view of the NovaTel UK churn-prediction engine's risk register — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
+    <p>Live view of the NovaTel UK churn-prediction engine's risk register: EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
   </div>
 </section>
 
@@ -201,12 +201,12 @@
     <section class="section">
       <div class="section-head">
         <h2>Likelihood &times; Impact Heat Map</h2>
-        <p>Reads live from risk-register.json — toggle inherent/residual to see how controls move the picture.</p>
+        <p>Reads live from risk-register.json; toggle inherent/residual to see how controls move the picture.</p>
       </div>
       <div class="cards">
         <article class="card">
           <div class="card-inner">
-            <p class="dash-intro">This dashboard reads directly from a separate risk register file (risk-register.json) for NovaTel's Customer Churn Prediction &amp; Retention Engine — update that file and the dashboard reflects it automatically. Select a heat map cell to filter the register below, or use the filters directly.</p>
+            <p class="dash-intro">This dashboard reads directly from a separate risk register file (risk-register.json) for NovaTel's Customer Churn Prediction &amp; Retention Engine. Update that file and the dashboard reflects it automatically. Select a heat map cell to filter the register below, or use the filters directly.</p>
 
             <div id="load-status"></div>
 
@@ -412,7 +412,7 @@ function render(){
   renderTableHead();
   renderTableBody(filtered);
   document.getElementById("result-count").textContent =
-    `Showing ${filtered.length} of ${risks.length} risks` + (selectedCell ? ` — filtered by heat map cell (likelihood ${selectedCell.l}, impact ${selectedCell.i})` : "");
+    `Showing ${filtered.length} of ${risks.length} risks` + (selectedCell ? ` (filtered by heat map cell: likelihood ${selectedCell.l}, impact ${selectedCell.i})` : "");
 }
 
 fetch("risk-register.json")

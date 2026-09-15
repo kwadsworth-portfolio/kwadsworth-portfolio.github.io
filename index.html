@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Kevin Wadsworth | Cybersecurity &amp; GRC Portfolio</title>
-  <meta name="description" content="Cybersecurity, cloud security and GRC portfolio by Kevin Wadsworth — AWS, Azure, SIEM, ISO 27001 and Python automation."/>
+  <meta name="description" content="Cybersecurity, cloud security and GRC portfolio by Kevin Wadsworth: AWS, Azure, SIEM, ISO 27001, AI governance and Python automation."/>
   <style>
     :root{
       --bg:#0b1220;
@@ -31,7 +31,6 @@
     }
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
-    /* Header */
     header{
       position:sticky;top:0;z-index:50;
       background:linear-gradient(to bottom,rgba(11,18,32,.92),rgba(11,18,32,.65));
@@ -52,7 +51,6 @@
     }
     .pill:hover{border-color:rgba(103,232,249,.45);text-decoration:none}
     .pill.active{background:rgba(103,232,249,.12);border-color:rgba(103,232,249,.4)}
-    /* Banner */
     .banner-hero{
       position:relative;height:34vh;min-height:240px;
       background-image:url("assets/banner-01.jpg");
@@ -69,23 +67,19 @@
     }
     .banner-content h1{font-size:clamp(1.7rem,3vw,2.6rem);font-weight:700;margin:0 0 12px}
     .banner-content p{color:var(--muted);margin:0 0 20px;font-size:1rem;line-height:1.55;max-width:68ch}
-    /* CTA button */
     .btn{
       display:inline-block;padding:10px 24px;border-radius:999px;
       border:1.5px solid var(--accent);color:var(--accent);
       font-weight:600;font-size:.92rem;transition:background .2s,color .2s;
     }
     .btn:hover{background:var(--accent);color:#0b1220;text-decoration:none}
-    /* Page nav row */
     .page-nav{
       max-width:var(--max);margin:24px auto 36px;padding:0 18px;
       display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
     }
     .page-nav a{color:var(--accent);font-weight:500;font-size:.9rem}
     .page-nav a:hover{opacity:.75;text-decoration:none}
-    /* Wrap */
     .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 64px}
-    /* Hero card (homepage) */
     .hero-card{
       margin-top:22px;
       background:linear-gradient(135deg,rgba(103,232,249,.10),rgba(167,139,250,.10));
@@ -94,7 +88,6 @@
     }
     .hero-card h2{margin:0 0 8px;font-size:20px}
     .hero-card p{margin:0;color:var(--muted);max-width:75ch}
-    /* Sections */
     .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
     .section{
       background:rgba(255,255,255,.02);border:1px solid var(--line);
@@ -107,7 +100,6 @@
     }
     .section-head h2{margin:0;font-size:18px}
     .section-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
-    /* Cards */
     .cards{padding:14px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
     .card{
       grid-column:span 12;
@@ -138,13 +130,11 @@
     }
     .box b{display:block;font-size:12px;color:var(--text);margin-bottom:2px}
     .box span{font-size:12px;color:var(--muted)}
-    /* Card link arrow */
     .card-link{
       display:inline-flex;align-items:center;gap:6px;
       margin-top:14px;color:var(--accent);font-size:.88rem;font-weight:500;
     }
     .card-link:hover{gap:10px;text-decoration:none}
-    /* Code blocks */
     .code-block{
       margin:0;padding:14px 16px;background:rgba(0,0,0,.35);
       border-top:1px solid var(--line);overflow-x:auto;
@@ -153,7 +143,6 @@
       font-family:ui-monospace,"JetBrains Mono","Fira Code",Consolas,monospace;
       font-size:12px;color:#a5f3fc;white-space:pre;
     }
-    /* Screenshot + caption */
     figure{margin:0}
     .shot{
       width:100%;display:block;background:#050a14;
@@ -163,14 +152,12 @@
       padding:10px 14px 14px;border-top:1px solid var(--line);
       color:var(--muted);font-size:12px;background:rgba(0,0,0,.12);
     }
-    /* Footer outcome block */
     .outcome{
       margin-top:18px;padding:16px;border:1px solid var(--line);
       border-radius:var(--radius);color:var(--muted);font-size:13px;
       background:rgba(255,255,255,.02);
     }
     .outcome b{color:var(--text)}
-    /* Site footer */
     .site-footer{
       text-align:center;padding:20px 16px;font-size:.83rem;
       color:var(--muted);border-top:1px solid var(--line);background:rgba(11,18,32,.6);
@@ -179,7 +166,6 @@
       width:40px;height:2px;background:var(--accent);
       opacity:.45;margin:0 auto 14px;border-radius:2px;
     }
-    /* Lightbox */
     .lightbox{
       position:fixed;inset:0;display:none;
       align-items:center;justify-content:center;
@@ -191,7 +177,6 @@
       border:1px solid rgba(255,255,255,.18);box-shadow:0 22px 80px rgba(0,0,0,.55);
       background:#050a14;cursor:zoom-out;
     }
-    /* Responsive */
     @media(min-width:880px){
       .card.half{grid-column:span 6}
       .meta .box{grid-column:span 6}
@@ -227,7 +212,7 @@
   <div class="banner-overlay"></div>
   <div class="banner-content">
     <h1>Cybersecurity, Cloud Security &amp; GRC</h1>
-    <p>Practical security solutions across cloud infrastructure, SIEM, governance, risk &amp; compliance, and Python automation.</p>
+    <p>Practical security solutions across cloud infrastructure, SIEM, governance, risk &amp; compliance, AI governance, and Python automation.</p>
     <a class="btn" href="projects.html">View My Projects</a>
   </div>
 </section>
@@ -262,6 +247,14 @@
             <h3>SIEM &amp; Detection</h3>
             <p>Detection engineering, incident response workflows and Python tooling.</p>
             <a class="card-link" href="siem-detection.html">View SIEM project →</a>
+          </div>
+        </article>
+        <article class="card half">
+          <div class="card-inner">
+            <div class="kicker"><span class="tag accent">EU AI Act</span></div>
+            <h3>AI Governance &amp; Risk</h3>
+            <p>Live AI risk register, EU AI Act classification, and ISO 42001 / NIST AI RMF control mapping.</p>
+            <a class="card-link" href="ai-governance.html">View AI Governance project →</a>
           </div>
         </article>
         <article class="card half">
@@ -327,7 +320,7 @@
 
 <footer class="site-footer">
   <div class="footer-accent"></div>
-  <p>© 2025 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
+  <p>© 2026 Kevin Wadsworth · Cybersecurity &amp; GRC Portfolio</p>
 </footer>
 
 <script type="text/javascript" async src="https://cdn.credly.com/assets/utilities/embed.js"></script>

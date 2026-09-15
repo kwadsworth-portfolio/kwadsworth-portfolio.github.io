@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>AI Governance &amp; Risk Management Case Study | Kevin Wadsworth</title>
-  <meta name="description" content="AI governance case study for NovaTel UK's churn-prediction engine — EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS."/>
+  <meta name="description" content="AI governance case study for NovaTel UK's churn-prediction engine: EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS."/>
   <style>
     :root{
       --bg:#0b1220;
@@ -103,7 +103,7 @@
   <div class="banner-overlay"></div>
   <div class="banner-content">
     <h1>AI Governance &amp; Risk Management</h1>
-    <p>A practical AI governance case study — NovaTel UK's customer churn prediction and retention engine, governed across EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
+    <p>A practical AI governance case study using NovaTel UK's customer churn prediction and retention engine, governed across EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
   </div>
 </section>
 
@@ -116,13 +116,13 @@
   <div class="grid">
 
     <section class="section">
-      <div class="section-head"><h2>1. Overview</h2><p>Project context — NovaTel UK simulated organisation.</p></div>
+      <div class="section-head"><h2>1. Overview</h2><p>Project context: the NovaTel UK simulated organisation.</p></div>
       <div class="cards">
         <article class="card full">
           <div class="card-inner">
             <div class="kicker"><span class="tag accent">AI Governance</span><span class="tag accent">EU AI Act</span><span class="tag accent">ISO 42001</span></div>
             <h3>Project Overview</h3>
-            <p>This project demonstrates how AI governance principles can be applied to a real-world, high-risk AI system rather than treated as an abstract compliance exercise. It extends NovaTel UK — the simulated telecom used elsewhere in this portfolio — with an AI-driven customer churn prediction and retention engine, governed end-to-end across five overlapping frameworks: the EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
+            <p>This project demonstrates how AI governance principles can be applied to a real-world, high-risk AI system rather than treated as an abstract compliance exercise. It extends NovaTel UK (the simulated telecom used elsewhere in this portfolio) with an AI-driven customer churn prediction and retention engine, governed end-to-end across five overlapping frameworks: the EU AI Act, ISO 42001, NIST AI RMF, GDPR and PCI DSS.</p>
           </div>
         </article>
       </div>
@@ -166,7 +166,7 @@
             <div class="kicker"><span class="tag bad">EU AI Act</span><span class="tag">High-risk</span></div>
             <h3>Classification Rationale</h3>
             <ul>
-              <li>Falls under Annex III — profiling with material effect on contract terms and access to services.</li>
+              <li>Falls under Annex III, which covers profiling with a material effect on contract terms and access to services.</li>
               <li>Automated scoring can affect pricing, retention offers and account treatment.</li>
               <li>Human oversight is mandatory above a defined value threshold (Art. 14).</li>
             </ul>
@@ -194,7 +194,7 @@
             <div class="kicker"><span class="tag ok">Implemented</span><span class="tag">PCI DSS Scope</span></div>
             <h3>Payment Data Boundary</h3>
             <ul>
-              <li>The model processes tokenised billing metadata only — no raw cardholder data (PAN) ever enters the pipeline.</li>
+              <li>The model processes tokenised billing metadata only; no raw cardholder data (PAN) ever enters the pipeline.</li>
               <li>Field-level data flow mapping validates this boundary at ingestion.</li>
               <li>Keeps the model out of full PCI cardholder-data-environment scope by design, not by assumption.</li>
             </ul>
@@ -210,7 +210,7 @@
           <div class="card-inner">
             <div class="kicker"><span class="tag warn">8 tracked risks</span><span class="tag accent">Inherent &amp; residual scoring</span></div>
             <h3>Live Risk Register</h3>
-            <p>Every risk is tracked with a unique ID, category, likelihood, impact, inherent and residual score, response strategy (Reduce/Avoid/Transfer/Accept), a named owner, a key risk indicator, and a review cadence. Risks are also tagged by nature — Recurring, One-off or Event-triggered — to distinguish ongoing operational risk from risks that close out once a control lands.</p>
+            <p>Every risk is tracked with a unique ID, category, likelihood, impact, inherent and residual score, response strategy (Reduce/Avoid/Transfer/Accept), a named owner, a key risk indicator, and a review cadence. Risks are also tagged by nature (Recurring, One-off or Event-triggered) to distinguish ongoing operational risk from risks that close out once a control lands.</p>
             <a class="card-link" href="ai-governance-dashboard.html">Open the live, filterable dashboard &rarr;</a>
           </div>
         </article>
@@ -224,8 +224,8 @@
           <div class="card-inner">
             <div class="kicker"><span class="tag bad">Issue</span><span class="tag">Framework overlap</span></div>
             <h3>Conflicting Obligations</h3>
-            <p>GDPR's Art. 22 automated-decision-making rules and the EU AI Act's Art. 14 human-oversight requirement overlap but aren't identical — GDPR focuses on the individual's right to contest, the AI Act on systemic oversight design.</p>
-            <p><b style="color:var(--text)">Resolution:</b> the £50/month threshold satisfies both — it guarantees human review before high-impact decisions (AI Act) and gives customers a person to appeal to for any automated outcome (GDPR).</p>
+            <p>GDPR's Art. 22 automated-decision-making rules and the EU AI Act's Art. 14 human-oversight requirement overlap but aren't identical: GDPR focuses on the individual's right to contest, while the AI Act focuses on systemic oversight design.</p>
+            <p><b style="color:var(--text)">Resolution:</b> the £50/month threshold satisfies both. It guarantees human review before high-impact decisions (AI Act) and gives customers a person to appeal to for any automated outcome (GDPR).</p>
           </div>
         </article>
         <article class="card half">
@@ -247,9 +247,9 @@
             <div class="kicker"><span class="tag accent">EU AI Act / ISO 42001</span></div>
             <h3>Governance &amp; Risk Management</h3>
             <ul>
-              <li>Art. 9 — risk management system via the live risk register.</li>
-              <li>Art. 10 — data governance via the PII classification scheme.</li>
-              <li>Art. 13/14 — transparency and human oversight via the model card and review threshold.</li>
+              <li>Art. 9: risk management system via the live risk register.</li>
+              <li>Art. 10: data governance via the PII classification scheme.</li>
+              <li>Art. 13/14: transparency and human oversight via the model card and review threshold.</li>
               <li>ISO 42001 AIMS clauses mapped to each control above.</li>
             </ul>
           </div>
@@ -269,13 +269,13 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><h2>8. Supporting Artefacts</h2><p>Real model, real evidence — not staged screenshots.</p></div>
+      <div class="section-head"><h2>8. Supporting Artefacts</h2><p>Real model, real evidence, not staged screenshots.</p></div>
       <div class="cards">
         <article class="card full">
           <div class="card-inner">
             <div class="kicker"><span class="tag ok">Genuine model output</span></div>
             <h3>A Real Churn Model, Not a Mock-Up</h3>
-            <p>Rather than describing bias testing in the abstract, this project trains an actual logistic regression churn model on a synthetic NovaTel dataset, then runs a genuine fairness check across age bands — a protected characteristic under the UK Equality Act 2010. The model really did initially fail the 80% disparate-impact rule (ratio 0.516), and the mitigation applied really did fix it (ratio 0.987). Every chart and figure in the evidence pack is generated directly from this model's output.</p>
+            <p>Rather than describing bias testing in the abstract, this project trains an actual logistic regression churn model on a synthetic NovaTel dataset, then runs a genuine fairness check across age bands, a protected characteristic under the UK Equality Act 2010. The model really did initially fail the 80% disparate-impact rule (ratio 0.516), and the mitigation applied really did fix it (ratio 0.987). Every chart and figure in the evidence pack is generated directly from this model's output.</p>
             <a class="card-link" href="ai-governance-evidence.html">View the full evidence pack &rarr;</a>
           </div>
         </article>
@@ -305,7 +305,7 @@
   </div>
 
   <div class="outcome">
-    <b>Outcome:</b> A live-operated AI governance model for a genuinely high-risk AI system — risk classification, a concrete human-oversight control, a documented PCI scope boundary, a real trained model with a genuine fairness finding and measured mitigation, and a filterable, inherent-vs-residual risk dashboard demonstrating that governance here is practiced, not just written down.
+    <b>Outcome:</b> A live-operated AI governance model for a genuinely high-risk AI system: risk classification, a concrete human-oversight control, a documented PCI scope boundary, a real trained model with a genuine fairness finding and measured mitigation, and a filterable, inherent-vs-residual risk dashboard demonstrating that governance here is practiced, not just written down.
   </div>
 </main>
 

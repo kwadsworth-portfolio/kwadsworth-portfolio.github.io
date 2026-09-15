@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>AI Governance — Evidence Pack | Kevin Wadsworth</title>
+  <title>AI Governance: Evidence Pack | Kevin Wadsworth</title>
   <meta name="description" content="Evidence pack for the NovaTel churn model: training results, fairness testing and mitigation, with real model output."/>
   <style>
     :root{
@@ -106,8 +106,8 @@
 <section class="banner-hero">
   <div class="banner-overlay"></div>
   <div class="banner-content">
-    <h1>Evidence Pack — AI Governance</h1>
-    <p>Real model output: training results, a genuine fairness finding, and a measured mitigation — not staged screenshots.</p>
+    <h1>Evidence Pack: AI Governance</h1>
+    <p>Real model output: training results, a genuine fairness finding, and a measured mitigation, not staged screenshots.</p>
   </div>
 </section>
 
@@ -126,16 +126,16 @@
           <div class="card-inner">
             <div class="kicker"><span class="tag ok">Trained</span><span class="tag">scikit-learn</span></div>
             <h3>Confusion Matrix &amp; Feature Coefficients</h3>
-            <p><b style="color:var(--text)">Risk:</b> An AI-driven retention model that isn't evaluated on real performance metrics can't be governed responsibly — you can't manage what you haven't measured.</p>
+            <p><b style="color:var(--text)">Risk:</b> An AI-driven retention model that isn't evaluated on real performance metrics can't be governed responsibly. You can't manage what you haven't measured.</p>
             <p><b style="color:var(--text)">Decision:</b> Train a real baseline model and report accuracy, precision, recall and ROC AUC honestly, including its weaknesses, rather than presenting only favourable numbers.</p>
           </div>
           <figure>
             <img class="shot" src="assets/case-studies/ai-governance/confusion_matrix.png" data-full="assets/case-studies/ai-governance/confusion_matrix.png" alt="Confusion matrix for the churn model on the held-out test set">
-            <figcaption class="caption">Evidence: confusion matrix on the held-out test set (n=1,500). Precision is modest (0.22) by design — the model favours catching at-risk customers over avoiding false alarms, appropriate for a retention use case where a missed churner is costlier than an unnecessary offer.</figcaption>
+            <figcaption class="caption">Evidence: confusion matrix on the held-out test set (n=1,500). Precision is modest (0.22) by design: the model favours catching at-risk customers over avoiding false alarms, appropriate for a retention use case where a missed churner is costlier than an unnecessary offer.</figcaption>
           </figure>
           <figure>
             <img class="shot" src="assets/case-studies/ai-governance/feature_importance.png" data-full="assets/case-studies/ai-governance/feature_importance.png" alt="Feature coefficients chart for the churn model">
-            <figcaption class="caption">Evidence: model coefficients. Contract type and support ticket volume dominate, as expected — but age_band_18-24 and age_band_25-34 also carry a positive coefficient, meaning the model directly treats younger age as a churn-risk signal. This is the finding investigated in the fairness check below.</figcaption>
+            <figcaption class="caption">Evidence: model coefficients. Contract type and support ticket volume dominate, as expected, but age_band_18-24 and age_band_25-34 also carry a positive coefficient, meaning the model directly treats younger age as a churn-risk signal. This is the finding investigated in the fairness check below.</figcaption>
           </figure>
         </article>
       </div>
@@ -150,7 +150,7 @@
             <h3>Age-Band Disparity Detected</h3>
             <p><b style="color:var(--text)">Risk:</b> If the model flags younger customers at a materially higher rate than older customers with otherwise similar behaviour, that's indirect age discrimination under the UK Equality Act 2010 and a direct EU AI Act Art. 10 data-governance failure.</p>
             <p><b style="color:var(--text)">Test:</b> Compared churn-flag rate across six age bands on the test set, using the standard four-fifths (80%) rule as a screening threshold.</p>
-            <p><b style="color:var(--text)">Result:</b> 18-24 flagged at 53.6% vs 27.6% for 55-64. Disparate impact ratio: <b style="color:var(--bad)">0.516</b> — fails the 80% threshold.</p>
+            <p><b style="color:var(--text)">Result:</b> 18-24 flagged at 53.6% vs 27.6% for 55-64. Disparate impact ratio: <b style="color:var(--bad)">0.516</b>, which fails the 80% threshold.</p>
           </div>
         </article>
       </div>
@@ -164,11 +164,11 @@
             <div class="kicker"><span class="tag ok">Mitigated</span><span class="tag">Per-group threshold calibration</span></div>
             <h3>Before vs After</h3>
             <p><b style="color:var(--text)">Decision:</b> Apply per-group decision thresholds so each age band's flag rate converges toward the overall base rate, rather than using one global threshold for every customer.</p>
-            <p><b style="color:var(--text)">Result:</b> Disparate impact ratio improved from <b style="color:var(--bad)">0.516</b> to <b style="color:var(--ok)">0.987</b> — comfortably clearing the 80% rule.</p>
+            <p><b style="color:var(--text)">Result:</b> Disparate impact ratio improved from <b style="color:var(--bad)">0.516</b> to <b style="color:var(--ok)">0.987</b>, comfortably clearing the 80% rule.</p>
           </div>
           <figure>
             <img class="shot" src="assets/case-studies/ai-governance/fairness_before_after.png" data-full="assets/case-studies/ai-governance/fairness_before_after.png" alt="Churn flag rate by age band before and after mitigation">
-            <figcaption class="caption">Evidence: churn-flag rate by age band, before (red) and after (green) mitigation. This maps directly to risk AI-001 in the project's risk register — inherent score 6, residual score 3.</figcaption>
+            <figcaption class="caption">Evidence: churn-flag rate by age band, before (red) and after (green) mitigation. This maps directly to risk AI-001 in the project's risk register: inherent score 6, residual score 3.</figcaption>
           </figure>
           <figure>
             <img class="shot" src="assets/case-studies/ai-governance/fairness_by_age_band.png" data-full="assets/case-studies/ai-governance/fairness_by_age_band.png" alt="Original churn flag rate by age band before mitigation">
@@ -185,8 +185,8 @@
           <div class="card-inner">
             <div class="kicker"><span class="tag warn">Scope</span></div>
             <ul>
-              <li>Training data is synthetic, generated for this project — not real NovaTel customer data.</li>
-              <li>Per-group threshold calibration fixes the flag-rate disparity but doesn't remove age as a feature the model weights internally — a fuller fix would retrain without it as a direct input.</li>
+              <li>Training data is synthetic, generated for this project, not real NovaTel customer data.</li>
+              <li>Per-group threshold calibration fixes the flag-rate disparity but doesn't remove age as a feature the model weights internally; a fuller fix would retrain without it as a direct input.</li>
               <li>Only age band was tested for fairness here; a production deployment would test additional characteristics and their intersections.</li>
             </ul>
           </div>
@@ -197,7 +197,7 @@
   </div>
 
   <div class="outcome">
-    <b>Outcome:</b> A real trained model, a genuine fairness failure detected through testing, and a measured, working mitigation — the full loop that AI governance frameworks describe in the abstract, demonstrated here with actual numbers rather than a hypothetical example.
+    <b>Outcome:</b> A real trained model, a genuine fairness failure detected through testing, and a measured, working mitigation: the full loop that AI governance frameworks describe in the abstract, demonstrated here with actual numbers rather than a hypothetical example.
   </div>
 </main>
 
