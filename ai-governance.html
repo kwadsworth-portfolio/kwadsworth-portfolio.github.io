@@ -76,6 +76,8 @@
     .card li{margin-bottom:.35em}
     .card-link{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:var(--accent);font-size:.88rem;font-weight:500}
     .card-link:hover{gap:10px;text-decoration:none}
+    .btn-solid{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:10px 22px;border-radius:999px;background:var(--accent);color:#0b1220;font-size:.88rem;font-weight:700;transition:background .2s,transform .2s}
+    .btn-solid:hover{background:#8eeffd;transform:translateY(-1px);text-decoration:none}
     .outcome{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);color:var(--muted);font-size:13px;background:rgba(255,255,255,.02)}
     .outcome b{color:var(--text)}
     .site-footer{text-align:center;padding:20px 16px;font-size:.83rem;color:var(--muted);border-top:1px solid var(--line);background:rgba(11,18,32,.6)}
@@ -108,8 +110,8 @@
 </section>
 
 <div class="page-nav">
-  <a href="projects.html">&larr; Back to Projects</a>
-  <a href="ai-governance-dashboard.html">Open live risk dashboard &rarr;</a>
+  <a class="pill" href="projects.html">Back to Projects</a>
+  <a class="pill" href="ai-governance-dashboard.html">Open live risk dashboard</a>
 </div>
 
 <main class="wrap">
@@ -211,7 +213,7 @@
             <div class="kicker"><span class="tag warn">8 tracked risks</span><span class="tag accent">Inherent &amp; residual scoring</span></div>
             <h3>Live Risk Register</h3>
             <p>Every risk is tracked with a unique ID, category, likelihood, impact, inherent and residual score, response strategy (Reduce/Avoid/Transfer/Accept), a named owner, a key risk indicator, and a review cadence. Risks are also tagged by nature (Recurring, One-off or Event-triggered) to distinguish ongoing operational risk from risks that close out once a control lands.</p>
-            <a class="card-link" href="ai-governance-dashboard.html">Open the live, filterable dashboard &rarr;</a>
+            <a class="btn-solid" href="ai-governance-dashboard.html">View live dashboard</a>
           </div>
         </article>
       </div>
@@ -276,7 +278,7 @@
             <div class="kicker"><span class="tag ok">Genuine model output</span></div>
             <h3>A Real Churn Model, Not a Mock-Up</h3>
             <p>Rather than describing bias testing in the abstract, this project trains an actual logistic regression churn model on a synthetic NovaTel dataset, then runs a genuine fairness check across age bands, a protected characteristic under the UK Equality Act 2010. The model really did initially fail the 80% disparate-impact rule (ratio 0.516), and the mitigation applied really did fix it (ratio 0.987). Every chart and figure in the evidence pack is generated directly from this model's output.</p>
-            <a class="card-link" href="ai-governance-evidence.html">View the full evidence pack &rarr;</a>
+            <a class="btn-solid" href="ai-governance-evidence.html">View evidence pack</a>
           </div>
         </article>
         <article class="card half">
